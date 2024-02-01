@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'chat/css/oda.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "Sohbet Odası" %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="form-floating mb-3">
+	<textarea readonly autofocus id="chatarea" cols="50" rows="15" ></textarea>
+	</div>
+	<div class="input-group">
+		<input type="text" class="form-control" id="chatinput" placeholder="{% trans "İletinizi buraya yazınız" %}">
+		<button id="chatbtn" class="btn btn-primary">{% trans "Gönder" %}</button>
+		<button id="chatext" class="btn btn-primary"style="background-color:#7a1b0c;">{% trans "Odadan Çık" %}</button>
+	</div>
+</div>
+
+{{roomname|json_script:"roomname"}}  
+
+{% endblock %}
+
+{% block js_files %}
+	<script src="{% static 'chat/js/oda.js' %}"></script>
+	<script src="{% static 'chat/js/script.js' %}"></script>
+	<script>
+	var chatextt=document.querySelector("#chatext");
+	var text = "{% trans 'Sohbet Odasında Çıkıldı' %}";
+	chatextt.onclick = function(){
+		window.alert(text);
+		document.location.href = '{% url "sohbet_anasayfa" %}';
+	};
+	</script>
+{% endblock %}
