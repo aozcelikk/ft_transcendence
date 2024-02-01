@@ -1,0 +1,51 @@
+{% extends "basel.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'account/css/styles.css' %}">
+{% endblock %}
+
+{% block title %}{% trans "Giriş" %}{% endblock %}
+
+{% block content %}
+<section class="vh-100" style="background-color: #508bfc;">
+	<div class="container py-5 h-200">
+		<div class="row d-flex justify-content-center align-items-center h-100">
+			<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+				<div class="card shadow-2-strong" style="border-radius: 1rem;">
+					<div class="card-body p-5 text-center">
+						<h3 class="mb-5">{% trans "Giriş" %}</h3>
+						<form method="POST">
+							{% csrf_token %}
+							{% if error %}
+								<div class="alert alert-danger">
+									{{ error }}
+								</div>
+							{% endif %}
+							<div class="mb-3">
+								<label for="username" class="form-label">{% trans "Kullanıcı adı" %}</label>
+								<input type="text" class="form-control" name="username">
+							</div>
+							<div class="mb-3">
+								<label for="password" class="form-label">{% trans "Parola" %}</label>
+								<input type="password" class="form-control" name="password">
+							</div>
+							<div class="mb-3">
+
+							<input type="submit" value="{% trans "Giriş" %}" class="btn btn-primary" style="background-color:#7a1b0c;">
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+
+{% endblock %}
+
+{% block js_files %}
+	<script src="{% static 'account/js/script.js' %}"></script>
+{% endblock %}
