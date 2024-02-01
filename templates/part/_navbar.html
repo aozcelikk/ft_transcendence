@@ -1,0 +1,48 @@
+{% load  static %}
+{% load i18n %}
+<nav class="navbar navbar-expand-lg border-bottom" style="background-color: #7a1b0c;">
+	<div class="container">
+		<a class="navbar-brand" style="color: white" href="{% url 'anasayfa' %}">Ping Pong</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" style="color:white; border-color:white;">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+			<div class="collapse navbar-collapse" id="navbar">
+			<ul class="navbar-nav me-auto">
+				<li class="nav-item">
+					<a class="nav-link" style="color: white" href="{% url 'anasayfa' %}">{% trans "Anasayfa" %}</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" style="color: white" href="{% url 'sohbet_anasayfa' %}">{% trans "Sohbet" %}</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" style="color: white" href="{% url 'pingpong' %}">{% trans "PingPong" %}</a>
+				</li>
+			</ul>
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						{% trans "Diller" %}
+					</a>
+					<ul class="dropdown-menu">
+					  <li><a class="dropdown-item" href="/tr/" role="button">{% trans "Türkçe" %}</a></li>
+					  <li><a class="dropdown-item" href="/en/" role="button">{% trans "İngilizce" %}</a></li>
+					</ul>
+				</li>
+				{% if user.is_authenticated %}
+				<li class="nav-item">
+					<a class="nav-link" style="color: white" href="{% url 'cikis' %}">{% trans "Çıkış" %}</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" style="color: white" href="">{% trans "Hoşgeldiniz" %} {{ user.get_full_name|title }}</a>
+				{% else %}
+				<li class="nav-item">
+					<a class="nav-link" style="color: white" href="{% url 'giris' %}">{% trans "Giriş" %}</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" style="color: white" href="{% url 'kayit' %}">{% trans "Kaydol" %}</a>
+				</li>
+				{% endif %}
+				</li>
+		</div>
+	</div>
+</nav>

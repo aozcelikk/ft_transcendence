@@ -1,0 +1,54 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+	<title>{% block title %} {% endblock %} {% trans "404 Sayfa Bulunmamaktadır!" %}</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .emoji {
+            font-size: 8rem;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            font-size: 1.25rem;
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emoji">😕</div>
+        <h1>{% trans "Sayfa Bulunmamaktadır!" %}</h1>
+        <p>{% trans "Aradığınız sayfayı bulamadık." %}</p>
+        <a class="btn btn-primary" href="/">{% trans "Anasayfaya Git" %}</a>
+    </div>
+</body>
+</html>
