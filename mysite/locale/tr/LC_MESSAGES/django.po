@@ -1,0 +1,196 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-12-10 20:12+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+#: .\account\templates\account\login.html:9
+#: .\account\templates\account\login.html:18
+#: .\account\templates\account\login.html:36 .\templates\part\_navbal.html:27
+#: .\templates\part\_navbar.html:39
+msgid "Giriş"
+msgstr ""
+
+#: .\account\templates\account\login.html:27
+#: .\account\templates\account\register.html:26
+msgid "Kullanıcı adı"
+msgstr ""
+
+#: .\account\templates\account\login.html:31
+#: .\account\templates\account\register.html:45
+msgid "Parola"
+msgstr ""
+
+#: .\account\templates\account\register.html:9
+#: .\account\templates\account\register.html:15
+#: .\account\templates\account\register.html:55
+#: .\templates\part\_navbal.html:30 .\templates\part\_navbar.html:42
+msgid "Kaydol"
+msgstr ""
+
+#: .\account\templates\account\register.html:30
+msgid "Email"
+msgstr ""
+
+#: .\account\templates\account\register.html:35
+msgid "İsim"
+msgstr ""
+
+#: .\account\templates\account\register.html:39
+msgid "Soyisim"
+msgstr ""
+
+#: .\account\templates\account\register.html:49
+msgid "Yeniden Parola"
+msgstr ""
+
+#: .\account\urls.py:7
+msgid "giris"
+msgstr ""
+
+#: .\account\urls.py:8
+msgid "kayit"
+msgstr ""
+
+#: .\account\urls.py:9
+msgid "cikis"
+msgstr ""
+
+#: .\account\views.py:22
+msgid "Kullanıcı adı yada parola yanlış"
+msgstr ""
+
+#: .\account\views.py:42
+msgid "Kullanıcı adı bulunmakta!"
+msgstr ""
+
+#: .\account\views.py:51
+msgid "Email kullanılmakta!"
+msgstr ""
+
+#: .\account\views.py:64
+msgid "Parola eşleşmiyor!"
+msgstr ""
+
+#: .\blog\templates\blog\indexOO.html:10 .\blog\templates\blog\indexOO.html:18
+#: .\blog\templates\blog\pingpong.html:20 .\templates\part\_navbar.html:12
+msgid "Anasayfa"
+msgstr ""
+
+#: .\blog\templates\blog\pingpong.html:10
+#: .\blog\templates\blog\pingpong.html:21 .\templates\part\_navbar.html:18
+msgid "PingPong"
+msgstr ""
+
+#: .\blog\urls.py:10
+msgid "anasayfa"
+msgstr ""
+
+#: .\blog\urls.py:11
+msgid "pingpong"
+msgstr ""
+
+#: .\chat\templates\oda.html:10 .\chat\templates\sohbet_anasayfa.html:21
+msgid "Sohbet Odası"
+msgstr ""
+
+#: .\chat\templates\oda.html:19
+msgid "İletinizi buraya yazınız"
+msgstr ""
+
+#: .\chat\templates\oda.html:20
+msgid "Gönder"
+msgstr ""
+
+#: .\chat\templates\oda.html:21
+msgid "Odadan Çık"
+msgstr ""
+
+#: .\chat\templates\oda.html:34
+msgid "Sohbet Odasında Çıkıldı"
+msgstr ""
+
+#: .\chat\templates\sohbet_anasayfa.html:10
+msgid "Sohbet Anasayfası"
+msgstr ""
+
+#: .\chat\templates\sohbet_anasayfa.html:23
+msgid "Sohbete Katıl"
+msgstr ""
+
+#: .\chat\urls.py:10
+msgid "anasayfa/"
+msgstr ""
+
+#: .\mysite\settings.py:166
+msgid "English"
+msgstr "İngilizce"
+
+#: .\mysite\settings.py:167
+msgid "Turkish"
+msgstr "Türkçe"
+
+#: .\mysite\urls.py:27
+msgid "admin/"
+msgstr "yonetici/"
+
+#: .\mysite\urls.py:29
+msgid "sohbet/"
+msgstr ""
+
+#: .\mysite\urls.py:30
+msgid "hesap/"
+msgstr ""
+
+#: .\templates\404.html:9
+msgid "404 Sayfa Bulunmamaktadır!"
+msgstr ""
+
+#: .\templates\404.html:49
+msgid "Sayfa Bulunmamaktadır!"
+msgstr ""
+
+#: .\templates\404.html:50
+msgid "Aradığınız sayfayı bulamadık."
+msgstr ""
+
+#: .\templates\404.html:51
+msgid "Anasayfaya Git"
+msgstr ""
+
+#: .\templates\part\_navbal.html:12 .\templates\part\_navbar.html:24
+msgid "Diller"
+msgstr ""
+
+#: .\templates\part\_navbal.html:15 .\templates\part\_navbar.html:27
+msgid "Türkçe"
+msgstr ""
+
+#: .\templates\part\_navbal.html:16 .\templates\part\_navbar.html:28
+msgid "İngilizce"
+msgstr ""
+
+#: .\templates\part\_navbal.html:21 .\templates\part\_navbar.html:33
+msgid "Çıkış"
+msgstr ""
+
+#: .\templates\part\_navbal.html:24 .\templates\part\_navbar.html:36
+msgid "Hoşgeldiniz"
+msgstr ""
+
+#: .\templates\part\_navbar.html:15
+msgid "Sohbet"
+msgstr ""

@@ -1,0 +1,196 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-12-10 20:12+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: .\account\templates\account\login.html:9
+#: .\account\templates\account\login.html:18
+#: .\account\templates\account\login.html:36 .\templates\part\_navbal.html:27
+#: .\templates\part\_navbar.html:39
+msgid "Giriş"
+msgstr "Login"
+
+#: .\account\templates\account\login.html:27
+#: .\account\templates\account\register.html:26
+msgid "Kullanıcı adı"
+msgstr "Username"
+
+#: .\account\templates\account\login.html:31
+#: .\account\templates\account\register.html:45
+msgid "Parola"
+msgstr "Password"
+
+#: .\account\templates\account\register.html:9
+#: .\account\templates\account\register.html:15
+#: .\account\templates\account\register.html:55
+#: .\templates\part\_navbal.html:30 .\templates\part\_navbar.html:42
+msgid "Kaydol"
+msgstr "Register"
+
+#: .\account\templates\account\register.html:30
+msgid "Email"
+msgstr "Email"
+
+#: .\account\templates\account\register.html:35
+msgid "İsim"
+msgstr "Firstname"
+
+#: .\account\templates\account\register.html:39
+msgid "Soyisim"
+msgstr "Lastname"
+
+#: .\account\templates\account\register.html:49
+msgid "Yeniden Parola"
+msgstr "Re-password"
+
+#: .\account\urls.py:7
+msgid "giris"
+msgstr "login"
+
+#: .\account\urls.py:8
+msgid "kayit"
+msgstr "register"
+
+#: .\account\urls.py:9
+msgid "cikis"
+msgstr "logout"
+
+#: .\account\views.py:22
+msgid "Kullanıcı adı yada parola yanlış"
+msgstr "Username or password is incorrect"
+
+#: .\account\views.py:42
+msgid "Kullanıcı adı bulunmakta!"
+msgstr "Username is available!"
+
+#: .\account\views.py:51
+msgid "Email kullanılmakta!"
+msgstr "Email is in use!"
+
+#: .\account\views.py:64
+msgid "Parola eşleşmiyor!"
+msgstr "Password doesn't match!"
+
+#: .\blog\templates\blog\indexOO.html:10 .\blog\templates\blog\indexOO.html:18
+#: .\blog\templates\blog\pingpong.html:20 .\templates\part\_navbar.html:12
+msgid "Anasayfa"
+msgstr "Homepage"
+
+#: .\blog\templates\blog\pingpong.html:10
+#: .\blog\templates\blog\pingpong.html:21 .\templates\part\_navbar.html:18
+msgid "PingPong"
+msgstr "PingPong"
+
+#: .\blog\urls.py:10
+msgid "anasayfa"
+msgstr "homepage"
+
+#: .\blog\urls.py:11
+msgid "pingpong"
+msgstr "pingpong"
+
+#: .\chat\templates\oda.html:10 .\chat\templates\sohbet_anasayfa.html:21
+msgid "Sohbet Odası"
+msgstr "Chat room"
+
+#: .\chat\templates\oda.html:19
+msgid "İletinizi buraya yazınız"
+msgstr "Enter your message here"
+
+#: .\chat\templates\oda.html:20
+msgid "Gönder"
+msgstr "Send"
+
+#: .\chat\templates\oda.html:21
+msgid "Odadan Çık"
+msgstr "Exit the room"
+
+#: .\chat\templates\oda.html:34
+msgid "Sohbet Odasında Çıkıldı"
+msgstr "Exit in the Chat Room"
+
+#: .\chat\templates\sohbet_anasayfa.html:10
+msgid "Sohbet Anasayfası"
+msgstr "Chat Homepage"
+
+#: .\chat\templates\sohbet_anasayfa.html:23
+msgid "Sohbete Katıl"
+msgstr "Join the Chat"
+
+#: .\chat\urls.py:10
+msgid "anasayfa/"
+msgstr "homepage/"
+
+#: .\mysite\settings.py:166
+msgid "English"
+msgstr "English"
+
+#: .\mysite\settings.py:167
+msgid "Turkish"
+msgstr "Turkish"
+
+#: .\mysite\urls.py:27
+msgid "admin/"
+msgstr "admin/"
+
+#: .\mysite\urls.py:29
+msgid "sohbet/"
+msgstr "chat/"
+
+#: .\mysite\urls.py:30
+msgid "hesap/"
+msgstr "account/"
+
+#: .\templates\404.html:9
+msgid "404 Sayfa Bulunmamaktadır!"
+msgstr "404 Page Not Found!"
+
+#: .\templates\404.html:49
+msgid "Sayfa Bulunmamaktadır!"
+msgstr "Page Not Found!"
+
+#: .\templates\404.html:50
+msgid "Aradığınız sayfayı bulamadık."
+msgstr "We could not find the page you are looking for."
+
+#: .\templates\404.html:51
+msgid "Anasayfaya Git"
+msgstr "Go to Homepage"
+
+#: .\templates\part\_navbal.html:12 .\templates\part\_navbar.html:24
+msgid "Diller"
+msgstr "Languages"
+
+#: .\templates\part\_navbal.html:15 .\templates\part\_navbar.html:27
+msgid "Türkçe"
+msgstr "Turkish"
+
+#: .\templates\part\_navbal.html:16 .\templates\part\_navbar.html:28
+msgid "İngilizce"
+msgstr "English"
+
+#: .\templates\part\_navbal.html:21 .\templates\part\_navbar.html:33
+msgid "Çıkış"
+msgstr "Logout"
+
+#: .\templates\part\_navbal.html:24 .\templates\part\_navbar.html:36
+msgid "Hoşgeldiniz"
+msgstr "Welcome"
+
+#: .\templates\part\_navbar.html:15
+msgid "Sohbet"
+msgstr "Chat"
