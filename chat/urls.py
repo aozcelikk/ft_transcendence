@@ -8,5 +8,5 @@ from django.utils import translation
 
 urlpatterns = [
 	path(_("anasayfa/"), views.sohbet_anasayfa, name="sohbet_anasayfa"),
-    path("<str:room_name>/",views.sohbet_oda),
+	path(_("<str:room_name>/"),views.sohbet_oda),
 ]
