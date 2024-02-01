@@ -24,8 +24,3 @@ input{
 input:focus{
 	box-shadow: 0px 0px 20px;
 }
-
-button{
-	width : 20%;
-	height: 50px;
-}
