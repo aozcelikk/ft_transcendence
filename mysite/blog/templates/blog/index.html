@@ -1,0 +1,32 @@
+{% extends "basel.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+<style>
+.resim 
+{
+	background-color: #7a1b0c !important;
+	object-fit : contain ;
+	background-repeat: no-repeat, repeat;
+	background-position: center;
+	background-size: cover;
+	margin: auto;
+	border: 2px solid white;
+
+}
+body
+{
+	background-color: #7a1b0c;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class= "resim">
+	<img style="display: block; margin: auto;" src="{% static "blog/img/7.jpg" %}">
+<div>
+
+{% endblock %}
+
