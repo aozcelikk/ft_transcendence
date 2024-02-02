@@ -19,7 +19,7 @@
 		{% for kisi in kisiler %}
 			{% if kisi.kullanici == user.get_username %}
 			<div class="col-3">	
-				<img src="{%static kisi.resim %}" style="width:100%; height:auto; border: 1px solid #ddd; border-radius: 15%;">
+				<img src="{{ kisi.resim.url }}" style="width:100%; height:auto; border: 1px solid #ddd; border-radius: 15%;">
 			</div>
 				<div class="col-9">
 					<div class="col-9">

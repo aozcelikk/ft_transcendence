@@ -22,7 +22,7 @@ class Kategori(models.Model):
 class Kisiler(models.Model):
 	kullanici = models.CharField(max_length=150, null=False)
 	tam_adi = models.CharField(max_length=150, null=False)
-	resim = models.ImageField(upload_to="blogs", default="blog/img/7.jpg")
+	resim = models.ImageField(upload_to="blogs", default="images/blogs/7.jpg")
 	toplam_mac = models.IntegerField(default=0)
 	zafer_mac = models.IntegerField(default=0)
 	bozgun_mac = models.IntegerField(default=0)
