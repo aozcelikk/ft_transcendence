@@ -40,7 +40,7 @@ class Kisiler(models.Model):
 		self.slug = slugify(self.user)
 		self.kullanici = self.user.username
 		self.tam_adi = self.user.first_name + " " + self.user.last_name
-		# toplam_mac = self.zafer_mac + self.bozgun_mac
+		self.toplam_mac = self.zafer_mac + self.bozgun_mac
 		super().save(*args, **kwargs)
 
 	@receiver(post_save, sender = User)
