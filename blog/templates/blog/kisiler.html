@@ -26,7 +26,7 @@
 			<hr>
 			{% if kisiler|length > 0 %}
 				{% for kisi in kisiler %}
-					{% if kisi.kullanici != "admin" and kisi.kullanici != user.get_username and kisi.cevrimici %}
+					{% if kisi.kullanici != user.get_username and kisi.cevrimici %}
 						{% include "blog/part/_kisi.html" %}
 					{% endif %}
 				{% endfor %}
@@ -41,5 +41,4 @@
 
 {% block js_files %}
 	<script src="{% static 'blog/js/script.js' %}"></script>
-
 {% endblock %}

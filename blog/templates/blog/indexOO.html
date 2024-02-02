@@ -16,26 +16,27 @@
 	<div class="row">
 		<h1>{% trans "İstatik Sayfam" %}</h1>
 		<hr>
-		<div class="col-3">
-			{kisi.resim}
-		</div>
-		<div class="col-9">
-			
-			<h1>{{slug.tam_adi}}</h1>
-			<hr>
-			<div class="col-9">
-				<h2>{% trans "İstatik Veriler" %}</h2>
-				<div class="alert alert-success" role="alert">
-					{% trans "Kazandığı Maçlar" %} | <medium> {{ slug.zafer_mac }}</medium>
-				</div>
-				<div class="alert alert-danger" role="alert">
-					{% trans "Kaybettiği Maçlar" %} | <medium> {{ slug.bozgun_mac }}</medium>
-				</div>
-				<div class="alert alert-warning " role="alert">
-					{% trans "Toplam Oynadığı Maçlar" %} | <medium> {{ slug.toplam_mac }}</medium>
-				</div>
+		{% for kisi in kisiler %}
+			{% if kisi.kullanici == user.get_username %}
+			<div class="col-3">	
+				<img class ="resim" url="{% static '{{kisi.resim}}' %}" alt="" max-width="500;" height="240;">
+				
 			</div>
-		</div>
+				<div class="col-9">
+					<div class="col-9">
+						<div class="alert alert-success" role="alert">
+							{% trans "Kazandığı Maçlar" %} | <medium>{{kisi.zafer_mac}}</medium>
+						</div>
+						<div class="alert alert-danger" role="alert">
+							{% trans "Kaybettiği Maçlar" %} | <medium>{{kisi.bozgun_mac}}</medium>
+						</div>
+						<div class="alert alert-warning " role="alert">
+							{% trans "Toplam Oynadığı Maçlar" %} | <medium>{{kisi.toplam_mac}}</medium>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+		{% endfor %}
 	</div>
 </div>
 
