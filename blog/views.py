@@ -19,8 +19,7 @@ def index(request):
 def indexOO(request):
 	if request.user.is_authenticated:
 		kullanici_veri = {
-			"kisiler":Kisiler.objects.all(),
-			"kategoriler":Kategori.objects.all()
+			"kisiler":Kisiler.objects.all()
 		}
 		return render(request, "blog/indexOO.html", kullanici_veri)
 	return render(request, "blog/index.html")
