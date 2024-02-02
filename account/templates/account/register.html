@@ -9,7 +9,6 @@
 {% block title %} {% trans "Kaydol" %} {% endblock %}
 
 {% block content %}
-
 <div class="container mt-3">
 	<div class="col">
 		<h1>{% trans "Kaydol" %}</h1>
@@ -24,37 +23,36 @@
 			{% endif %}
 			<div class="mb-3">
 				<label for="username" class="form-label">{% trans "Kullanıcı adı" %}</label>
-				<input type="text" class="form-control" name="username", value="{{ username }}">
+				<input type="text" class="form-control" name="username", value="{{ username }}" required>
 			</div>
 			<div class="mb-3">
 				<label for="email" class="form-label">{% trans "Email" %}</label>
-				<input type="email" class="form-control" name="email", value="{{ email }}">
+				<input type="email" class="form-control" name="email", value="{{ email }}" required>
 			</div>
 			<div class="row mb-3">
 				<div class="col">
 					<label for="firstname" class="form-label">{% trans "İsim" %}</label>
-					<input type="text" class="form-control" name="firstname", value="{{ firstname }}">
+					<input type="text" class="form-control" name="firstname", value="{{ firstname }}" required>
 				</div>
 				<div class="col">
 						<label for="lastname" class="form-label">{% trans "Soyisim" %}</label>
-						<input type="text" class="form-control" name="lastname", value="{{ lastname }}">
+						<input type="text" class="form-control" name="lastname", value="{{ lastname }}" required>
 				</div>
 			</div>
 			<div class="row mb-3">
 				<div class="col">
 					<label for="password" class="form-label">{% trans "Parola" %}</label>
-					<input type="password" class="form-control" name="password">
+					<input type="password" class="form-control" name="password" required>
 				</div>
 				<div class="col">
 					<label for="repassword" class="form-label">{% trans "Yeniden Parola" %}</label>
-					<input type="password" class="form-control" name="repassword">
+					<input type="password" class="form-control" name="repassword" required>
 				</div>
 			</div>
 
 			<div class="mb-3"></div>
 			<input type="submit" value="{% trans "Kaydol" %}" class="btn btn-primary" style="background-color:#7a1b0c;">
 			
-
 		</form>
 	</div>
 </div>

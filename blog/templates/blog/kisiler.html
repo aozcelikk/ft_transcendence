@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "Kişiler" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+	<div class="row">
+		<div class="col-3">
+			{% include "blog/part/_kategori.html" %}
+		</div>
+		<div class="col-9">
+			{% comment %} {% for kisi in kisiler %}
+				{% if kisi.get_username != "admin" %}
+					{% if kisi.get_username != user.get_username %}
+						{% include "blog/part/_kisi.html" %}
+					{% endif %}
+				{% endif %}
+			{% endfor %}  {% endcomment %}
+
+			{%for s in Session.objects.all %}
+				{% if  AnonymousUser.is_authenticated %}
+					{% if kisi.get_username != "admin" %}
+						{% if kisi.get_username != user.get_username %}
+							{% include "blog/part/_kisi.html" %}
+						{% endif %}
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+
+
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block js_files %}
+	<script src="{% static 'blog/js/script.js' %}"></script>
+
+{% endblock %}

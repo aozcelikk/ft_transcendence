@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'account/css/styles.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "Kullanıcı Ayarları" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+	<div class="row">
+
+		<div class="col-3">
+			<h3>{% trans "Kullanıcı Ayarları" %}</h3>
+		</div>
+		
+		<div class="p-3">
+			<h5>{% trans "Şifre Değiştir" %}</h5>
+		</div>
+		<div class="col-9">
+			<hr>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block js_files %}
+	<script src="{% static 'account/js/script.js' %}"></script>
+{% endblock %}

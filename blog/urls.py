@@ -9,4 +9,6 @@ urlpatterns = [
 	path("index", views.index, name="ilksayfa"),
 	path(_("anasayfa"), views.indexOO, name="anasayfa"),
 	path(_("pingpong"), views.pingpong, name="pingpong"),
+	path(_("kisiler"), views.kisiler, name="kisiler"),
+	path(_("kisiler/<str:id>"), views.kisiler_detay, name="kisiler_detay"),
 ]

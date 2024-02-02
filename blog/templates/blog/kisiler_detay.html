@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+{% endblock %}
+
+{% block title %}
+{{id}}{% trans " İstatik Sayfası" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+	<div class="row">
+		<div class="col-3">
+			{% include "blog/part/_kategori.html" %}
+		</div>
+		<div class="col-9">
+			<h1>{{id}}</h1>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block js_files %}
+	<script src="{% static 'blog/js/script.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% load static %}
+{% load i18n %}
+<style>
+	.resim
+	{
+		max-width:100%;
+		height:auto;
+		border: 1px solid #ddd;
+		border-radius: 15%;
+	}
+
+</style>
+<div class="card mb-3">
+	<div class="row">
+		<div class="col-md-3">
+			<img class ="resim" src="{% static "blog/img/7.jpg" %}" alt="" >
+		</div>
+		<div class="col-md-9">
+			<h5 class="card-title">
+			<a href={% url "kisiler_detay"  kisi.get_username %}> {{ kisi.get_full_name }} </a>
+			</h5>
+			<p class="card-title">{% lorem 1 b %}</p>
+		</div>
+	</div>
+	
+</div>

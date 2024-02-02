@@ -7,4 +7,5 @@ urlpatterns = [
 	path(_("giris"), views.login_request, name="giris"),
 	path(_("kayit"), views.register_request, name="kayit"),
 	path(_("cikis"), views.logout_request, name="cikis"),
+	path(_("kullanici"),views.auth_settings, name="kullanici"),
 ]

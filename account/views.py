@@ -58,7 +58,7 @@ def register_request(request):
 					user = User.objects.create_user(username=username,email=email,
 					first_name=firstname,last_name=lastname,password=password)
 					user.save()
-					return redirect("giris")				
+					return redirect("giris")
 		else:
 			return render(request, "account/register.html", {
 				"error": _("Parola eşleşmiyor!"),
@@ -69,6 +69,12 @@ def register_request(request):
 			})
 
 	return render(request, "account/register.html")
+
+
+def auth_settings(request):
+	if request.user.is_authenticated:
+		return render(request, "account/user_page.html")
+	return redirect("anasayfa")
 
 def logout_request(request):
 	logout(request)
