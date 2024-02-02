@@ -41,10 +41,10 @@ def kisiler(request):
 def kisiler_detay(request, slug):
 	if request.user.is_authenticated:
 		kullanici_veri = {
-			"kisiler":Kisiler.objects.get(slug=slug)
+			"kisiler":Kisiler.objects.get(slug=slug),
 		}
 		return render(request, "blog/kisiler_detay.html",{
-			"kisiler": kullanici_veri
+			"slug": kullanici_veri["kisiler"]
 		})
 	return render(request, "blog/index.html")
 

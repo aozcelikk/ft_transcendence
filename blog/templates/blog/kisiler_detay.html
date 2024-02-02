@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block title %}
-{{kisi.slug}}{% trans " İstatik Sayfası" %}
+{{slug.tam_adi}}{% trans " İstatik Sayfası" %}
 {% endblock %}
 
 {% block content %}
@@ -18,8 +18,7 @@
 			{% include "blog/part/_kategori.html" %}
 		</div>
 		<div class="col-9">
-			<h1>{{kisi.slug}}{{slug}}</h1>
-			<h1>Aloo</h1>
+			<h1>{{slug.tam_adi}}</h1>
 		</div>
 	</div>
 </div>
