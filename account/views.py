@@ -8,7 +8,6 @@ from blog.models import Kisiler
 
 
 def login_request(request):
-	kisiler = Kisiler.objects.all()
 	if request.user.is_authenticated:
 		return redirect("anasayfa")
 	if request.method == "POST":
@@ -23,7 +22,7 @@ def login_request(request):
 		else:
 			return render(request, "account/login.html", {
 					"error": _("Kullanıcı adı yada parola yanlış"),
-					"kisiler":kisiler
+					"kisiler":Kisiler.objects.all()
 				})
 
 	return render(request, "account/login.html")

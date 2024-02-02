@@ -42,9 +42,14 @@ def kisiler_detay(request, slug):
 	if request.user.is_authenticated:
 		kullanici_veri = {
 			"kisiler":Kisiler.objects.get(slug=slug),
+			"kategoriler":Kategori.objects.all(),
+			"secilen": slug,
+			"tumu":Kisiler.objects.all()
 		}
 		return render(request, "blog/kisiler_detay.html",{
-			"slug": kullanici_veri["kisiler"]
+			"slug": kullanici_veri["kisiler"],
+			"kategoriler": kullanici_veri["kategoriler"],
+			"secilen": kullanici_veri["secilen"]
 		})
 	return render(request, "blog/index.html")
 

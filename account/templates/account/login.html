@@ -16,17 +16,15 @@
 				<div class="card shadow-2-strong" style="border-radius: 1rem;">
 					<div class="card-body p-5 text-center">
 						<h3 class="mb-5">{% trans "Giriş" %}</h3>
-
-
-
-
-						<form method="POST">
-								
-							{% for kisi in kisiler %}
-								<h1>Naber</h1>
-							{% endfor %}
-							
+						
+						<form method="POST">							
 							{% csrf_token %}
+							{% for kisi in kisiler %}
+								{% if kisi.username == username %}
+									{{ kisi.username }}
+									sdfds
+								{% endif %} 
+							{% endfor %}
 							{% if error %}
 								<div class="alert alert-danger">
 									{{ error }}
