@@ -46,21 +46,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-# INSTALLED_APPS = [
-# 	'daphne',
-# 	'blog',
-# 	'account',
-# 	'chat',
-#     'django.contrib.admin',
-#     'django.contrib.auth',
-#     'django.contrib.contenttypes',
-#     'django.contrib.sessions',
-#     'django.contrib.messages',
-#     'django.contrib.staticfiles',
-# 	'channels',
-# ]
-
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -107,27 +92,27 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.environ.get("SQL_NAME"),
-#         "USER": os.environ.get("SQL_USER"),
-#         "PASSWORD": os.environ.get("SQL_PASSWORD"),
-#         "HOST": os.environ.get("HOST"),
-#         "PORT": os.environ.get("PORT"),
-#     }
-# }
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "mysite",
-        "USER": "postgres",
-        "PASSWORD": "123456",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
+        "NAME": os.environ.get("SQL_NAME"),
+        "USER": os.environ.get("SQL_USER"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD"),
+        "HOST": os.environ.get("HOST"),
+        "PORT": os.environ.get("PORT"),
     }
 }
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "mysite",
+#         "USER": "postgres",
+#         "PASSWORD": "123456",
+#         "HOST": "127.0.0.1",
+#         "PORT": "5432",
+#     }
+# }
 
 
 # Password validation

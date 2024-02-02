@@ -7,6 +7,32 @@ from django.contrib.auth.models import User
 from blog.models import Kisiler,Kategori
 
 
+# data = {
+# 	"kategori":[
+# 		{
+# 			"id": 1,
+# 			"name": "Arkadaşlar",
+# 			"slug": "arkadaslar"
+# 		},
+# 		{
+# 			"id": 2,
+# 			"name": "Engellenenler",
+# 			"slug": "engellenenler"
+# 		},		
+# 		{
+# 			"id": 3,
+# 			"name": "Çevrimici",
+# 			"slug": "cevrimici"
+# 		},
+# 		{
+# 			"id": 4,
+# 			"name": "Tümü",
+# 			"slug": "tumu"
+# 		}
+# 	]
+# }
+
+
 
 def error_404(request, exception):
     return render(request, '404.html', status=404)
@@ -28,9 +54,6 @@ def pingpong(request):
 	if request.user.is_authenticated:
 		return render(request, "blog/pingpong.html")
 	return render(request, "blog/index.html")
-
-
-
 
 def kisiler(request):
 	if request.user.is_authenticated:

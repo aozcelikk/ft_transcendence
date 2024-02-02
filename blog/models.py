@@ -5,6 +5,17 @@ from django.utils.text import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
+# class Kategori(models.Model):
+# 	name = models.CharField(max_length=150)
+# 	slug = models.SlugField(null=False,blank=True,unique=True,db_index=True,editable=False)
+
+# 	def save(self, *args, **kwargs):
+# 		self.slug = slugify(self.name)
+# 		super().save(*args, **kwargs)
+
+# 	def __str__(self):
+# 		return self.name
+
 
 class Kategori(models.Model):
 	name = models.CharField(max_length=150)
@@ -18,11 +29,10 @@ class Kategori(models.Model):
 		return self.name
 	
 
-
 class Kisiler(models.Model):
 	kullanici = models.CharField(max_length=150, null=False)
 	tam_adi = models.CharField(max_length=150, null=False)
-	resim = models.ImageField(upload_to="blogs", default="images/blogs/7.jpg")
+	resim = models.ImageField(upload_to="blogs", default="blogs/7.jpg")
 	toplam_mac = models.IntegerField(default=0)
 	zafer_mac = models.IntegerField(default=0)
 	bozgun_mac = models.IntegerField(default=0)
@@ -30,7 +40,8 @@ class Kisiler(models.Model):
 	cevrimici = models.BooleanField(default=False)
 	slug = models.SlugField(null=False,blank=True, unique=True, db_index=True, editable=False)
 	kategoriler = models.ManyToManyField(Kategori, blank=True)
-	user = models.OneToOneField(User, on_delete= models.CASCADE )
+	user = models.OneToOneField(User, on_delete= models.CASCADE)
+	objects = Kategori()
 
 
 	def __str__(self):
@@ -51,3 +62,15 @@ class Kisiler(models.Model):
 			instance.kisiler.save()
 
 
+
+
+
+
+# kayt = Kategori(name = "Arkadaşlar", slug = "arkadaslar")
+# kayt.save()
+# kayt = Kategori(name = "Engellenenler", slug = "engellenenler")
+# kayt.save()
+# kayt = Kategori(name = "Çevrimici", slug = "cevrimici")
+# kayt.save()
+# kayt = Kategori(name = "Tümü", slug = "tumu")
+# kayt.save()
