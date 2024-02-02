@@ -15,7 +15,7 @@ def login_request(request):
 		password = request.POST["password"]
 
 		user = authenticate(request, username = username, password = password)
-
+		
 		if user is not None:
 			login(request, user)
 			return redirect("giris")

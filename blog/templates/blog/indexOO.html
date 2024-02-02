@@ -19,8 +19,8 @@
 		{% for kisi in kisiler %}
 			{% if kisi.kullanici == user.get_username %}
 			<div class="col-3">	
-				<img class ="resim" url="{% static '{{kisi.resim}}' %}" alt="" max-width="500;" height="240;">
-				
+				<img class ="resim" url="{% get_media_prefix %}{{kisi.resim}}" alt="" max-width="500;" height="240;">
+				{{kisi.resim}}
 			</div>
 				<div class="col-9">
 					<div class="col-9">
