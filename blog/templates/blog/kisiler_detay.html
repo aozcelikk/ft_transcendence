@@ -18,19 +18,21 @@
 			{% include "blog/part/_kategori.html" %}
 		</div>
 		<div class="col-9">
+			
 			<h1>{{slug.tam_adi}}</h1>
 			<hr>
-			<h2>{% trans "İstatik Veriler" %}</h2>
-			<div class="alert alert-success" role="alert">
-				{% trans "Kazandığı Maçlar" %} | <medium> {{ slug.zafer_mac }}</medium>
-			  </div>
-			<div class="alert alert-danger" role="alert">
-				{% trans "Kaybettiği Maçlar" %} | <medium> {{ slug.bozgun_mac }}</medium>
+			<div class="col-9 row-3">
+				<h2>{% trans "İstatik Veriler" %}</h2>
+				<div class="alert alert-success" role="alert">
+					{% trans "Kazandığı Maçlar" %} | <medium> {{ slug.zafer_mac }}</medium>
+				</div>
+				<div class="alert alert-danger" role="alert">
+					{% trans "Kaybettiği Maçlar" %} | <medium> {{ slug.bozgun_mac }}</medium>
+				</div>
+				<div class="alert alert-warning " role="alert">
+					{% trans "Toplam Oynadığı Maçlar" %} | <medium> {{ slug.toplam_mac }}</medium>
+				</div>
 			</div>
-			<div class="alert alert-warning " role="alert">
-				{% trans "Toplam Oynadığı Maçlar" %} | <medium> {{ slug.toplam_mac }}</medium>
-			</div>
-			  
 		</div>
 	</div>
 </div>

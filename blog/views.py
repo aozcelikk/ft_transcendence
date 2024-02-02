@@ -43,8 +43,7 @@ def kisiler_detay(request, slug):
 		kullanici_veri = {
 			"kisiler":Kisiler.objects.get(slug=slug),
 			"kategoriler":Kategori.objects.all(),
-			"secilen": slug,
-			"tumu":Kisiler.objects.all()
+			"secilen": slug
 		}
 		return render(request, "blog/kisiler_detay.html",{
 			"slug": kullanici_veri["kisiler"],

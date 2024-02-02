@@ -4,9 +4,9 @@
 <div class="list-group">
 	{% for kategori in kategoriler %}
 		{% if kategori.slug == secilen %}
-			<a href="{% url 'kisiler_kagetori' kategori.slug %}" class="list-group-item list-group-item-action active" aria-current="true" style="background-color: #7a1b0c;">{% blocktranslate %}'{{kategori.name}}'{% endblocktranslate %}</a>
+			<a href="{% url 'kisiler_kagetori' kategori.slug %}" class="list-group-item list-group-item-action active" aria-current="true" style="background-color: #7a1b0c;">{% blocktranslate %}{{kategori}}{% endblocktranslate %}</a>
 		{% else %}
-			<a href="{% url 'kisiler_kagetori' kategori.slug %}" class="list-group-item list-group-item-action" aria-current="true">{% blocktranslate %}'{{kategori.name}}'{% endblocktranslate %}</a>
+			<a href="{% url 'kisiler_kagetori' kategori.slug %}" class="list-group-item list-group-item-action" aria-current="true">{% blocktranslate %}{{kategori}}{% endblocktranslate %}</a>
 		{% endif %}
 	{% endfor %}
 </div>

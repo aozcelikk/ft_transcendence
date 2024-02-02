@@ -18,7 +18,11 @@
 			{% include "blog/part/_kategori.html" %}
 		</div>
 		<div class="col-9">
-			<h1>{% trans "Kişiler" %}</h1>
+			{% for kategori in kategoriler %}
+				{% if kategori.slug == secilen %}
+					<h1>{% blocktranslate %}{{kategori}}{% endblocktranslate %}</h1>
+				{% endif %}
+			{% endfor %}
 			<hr>
 			{% if kisiler|length > 0 %}
 				{% for kisi in kisiler %}
