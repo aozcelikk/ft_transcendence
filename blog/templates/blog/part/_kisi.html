@@ -20,7 +20,11 @@
 			<a href={% url "kisiler_detay"  kisi.get_username %}> {{ kisi.get_full_name }} </a>
 			</h5>
 			<p class="card-title">{% lorem 1 b %}</p>
+			<div class="float-md-end mb-3 ms-md-3">
+				<a href="#" type="button" class="btn btn-danger">{% trans "Müsabaka Tertip et" %}</a>
+				<a href="#" type="button" class="btn btn-info">{% trans "Mesaj Gönder" %}</a>
+			</div>	  
 		</div>
 	</div>
-	
 </div>
+

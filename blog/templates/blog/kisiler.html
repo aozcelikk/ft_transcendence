@@ -18,23 +18,14 @@
 			{% include "blog/part/_kategori.html" %}
 		</div>
 		<div class="col-9">
-			{% comment %} {% for kisi in kisiler %}
+			{% for kisi in kisiler %}
 				{% if kisi.get_username != "admin" %}
 					{% if kisi.get_username != user.get_username %}
 						{% include "blog/part/_kisi.html" %}
 					{% endif %}
 				{% endif %}
-			{% endfor %}  {% endcomment %}
-
-			{%for s in Session.objects.all %}
-				{% if  AnonymousUser.is_authenticated %}
-					{% if kisi.get_username != "admin" %}
-						{% if kisi.get_username != user.get_username %}
-							{% include "blog/part/_kisi.html" %}
-						{% endif %}
-					{% endif %}
-				{% endif %}
 			{% endfor %}
+
 
 
 		</div>
