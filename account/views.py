@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
+from django.db import models
 
 
 def login_request(request):
@@ -13,7 +14,7 @@ def login_request(request):
 		password = request.POST["password"]
 
 		user = authenticate(request, username = username, password = password)
-		
+
 		if user is not None:
 			login(request, user)
 			return redirect("giris")

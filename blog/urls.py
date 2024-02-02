@@ -10,5 +10,6 @@ urlpatterns = [
 	path(_("anasayfa"), views.indexOO, name="anasayfa"),
 	path(_("pingpong"), views.pingpong, name="pingpong"),
 	path(_("kisiler"), views.kisiler, name="kisiler"),
-	path(_("kisiler/<str:id>"), views.kisiler_detay, name="kisiler_detay"),
+	path(_("kategori/<slug:slug>"), views.kisiler_kagetori, name="kisiler_kagetori"),
+	path(_("kisiler/<slug:slug>"), views.kisiler_detay, name="kisiler_detay"),
 ]
