@@ -9,7 +9,7 @@
 			<div class="collapse navbar-collapse" id="navbar">
 			<ul class="navbar-nav me-auto">
 				<li class="nav-item">
-					<a class="nav-link" style="color: white" href="{% url 'anasayfa' %}">{% trans "Anasayfa" %}</a>
+					<a class="nav-link" style="color: white" href="{% url 'kisiler' %}">{% trans "Şahıslar" %}</a>
 				</li>
 				<li class="nav-item">
 					<a class="nav-link" style="color: white" href="{% url 'sohbet_anasayfa' %}">{% trans "Sohbet" %}</a>
@@ -34,7 +34,7 @@
 						{% trans "Hoşgeldiniz" %} | {{ user.get_full_name|title }}
 					</button>
 					<ul class="dropdown-menu">
-						<li><a class="dropdown-item" href="#">{% trans "Kullanıcı Ayarları" %}</a></li>
+						<li><a class="dropdown-item" href="{% url "kullanici" %}">{% trans "Kullanıcı Ayarları" %}</a></li>
 						<li><a class="dropdown-item" href="{% url 'cikis' %}">{% trans "Çıkış" %}</a></li>
 					</ul>
 				</li>
