@@ -16,33 +16,28 @@
 	<div class="row">
 		<h1>{% trans "İstatik Sayfam" %}</h1>
 		<hr>
-		{% for kisi in kisiler %}
-			{% if kisi.kullanici == user.get_username %}
-				{% for kategori in kategoriler %}
-					{% if kategori.name == "Tümü" %}
-						<h1>Geldi brooo</h1>
-						
-					{% endif %}
-				{% endfor %}
-			<div class="col-3">	
-				<img src="{{ kisi.resim.url }}" style="width:100%; height:auto; border: 1px solid #ddd; border-radius: 15%;">
-			</div>
+		<div class="col-3">	
+			<img src="{{ user.kisiler.resim.url }}" style="width:100%; height:auto; border: 1px solid #ddd; border-radius: 15%;">
+		</div>
+		<div class="col-9">
 			<div class="col-9">
-				<div class="col-9">
-					<div class="alert alert-success" role="alert">
-						{% trans "Kazandığı Maçlar" %} | <medium>{{kisi.zafer_mac}}</medium>
-					</div>
-					<div class="alert alert-danger" role="alert">
-						{% trans "Kaybettiği Maçlar" %} | <medium>{{kisi.bozgun_mac}}</medium>
-					</div>
-					<div class="alert alert-warning " role="alert">
-						{% trans "Toplam Oynadığı Maçlar" %} | <medium>{{kisi.toplam_mac}}</medium>
-					</div>
+				<div class="alert alert-success" role="alert">
+					{% trans "Kazandığı Maçlar" %} | <medium>{{user.kisiler.zafer_mac}}</medium>
+				</div>
+				<div class="alert alert-danger" role="alert">
+					{% trans "Kaybettiği Maçlar" %} | <medium>{{user.kisiler.bozgun_mac}}</medium>
+				</div>
+				<div class="alert alert-warning " role="alert">
+					{% trans "Toplam Oynadığı Maçlar" %} | <medium>{{user.kisiler.toplam_mac}}</medium>
 				</div>
 			</div>
-			{% endif %}
-		{% endfor %}
+		</div>
 	</div>
+	{% comment %} <form action=" " method="post">
+		{% csrf_token %}
+		{{form.as_p}}
+	<button class="btn btn-outline-danger" type="submit">{% trans "Ayarları Değiştir" %}</button>
+	</form> {% endcomment %}
 </div>
 
 {% endblock %}

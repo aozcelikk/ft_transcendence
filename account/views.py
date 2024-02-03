@@ -5,12 +5,11 @@ from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from blog.models import Kisiler,Kategori
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm, AuthenticationForm,PasswordChangeForm,SetPasswordForm
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.messages import constants as messages
-from .forms import ResimForm,KullaniciAyarForm
-
+from .forms import ResimForm,KullaniciAyarForm,KategoriSecme
 
 def login_request(request):
 	if request.user.is_authenticated:

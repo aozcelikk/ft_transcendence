@@ -5,6 +5,22 @@ from django.utils import translation
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from blog.models import Kisiler,Kategori
+from account.forms import ResimForm,KullaniciAyarForm,KategoriSecme
+
+# def indexOO(request):
+# 	if request.user.is_authenticated:
+# 		if request.method=="POST":
+# 			form = KategoriSecme(request.POST, instance=request.user.kisiler)
+# 			if form.is_valid():
+# 				form.save()
+# 				return render(request,"blog/indexOO.html")
+# 			else:
+# 				form = KategoriSecme(instance=request.user)
+# 		else:
+# 			form=KategoriSecme()
+# 		return render(request, "blog/indexOO.html", {'form': form})
+# 	return redirect("blog/index.html")
+
 
 def error_404(request, exception):
     return render(request, '404.html', status=404)
