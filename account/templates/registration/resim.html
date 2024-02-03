@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block title %}
-{% trans "Resim Ayarları" %}
+{% trans "Kullanıcı Ayarları" %}
 {% endblock %}
 
 {% block content %}
@@ -16,32 +16,36 @@
 	<div class="row">
 
 		<div class="col-3">
-			<h2>{% trans "Resim Ayarları" %}</h2>
+			<h2>{% trans "Kullanıcı Ayarları" %}</h2>
 			<div class="p-3">
 				<div class="list-group">
 					<a href="{% url 'sifre' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Şifre Değiştir" %}</a>
-					<a href="{% url 'kullan' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Kullanıcı Ayarlar Değiştir" %}</a>
 					<a href="{% url 'resim' %}" class="list-group-item list-group-item-action active" aria-current="true"  style="background-color: #7a1b0c;">{% trans "Resmi Değiştir" %}</a>
 				</div>
 			</div>
 		</div>
-		
-		<div class="card mb-3" style="max-width: 980px;">
-			<div class="row g-0">
-				<div class="col-md-4">
-					<img src="{{user.kisiler.resim.url}}" style="width:100%; height:auto%; border: 1px solid #ddd; border-radius: 15%;">
-				</div>
-				<div class="col-md-8">
-					<div class="card-body">
-						<form action=" " method="post" enctype="multipart/form-data">
-							{% csrf_token %}
-							{{form.as_p}}
-						<button class="btn btn-outline-primary" type="submit">{% trans "Resmi Değiştir" %}</button>
-						</form>
+		{% for kisi in kisiler %}
+			{% if kisi.kullanici == user.get_username %}
+				<div class="card mb-3" style="max-width: 980px;">
+					<div class="row g-0">
+					<div class="col-md-4">
+						<img src="{{kisi.resim.url}}" style="width:100%; height:auto%; border: 1px solid #ddd; border-radius: 15%;">
+					</div>
+					<div class="col-md-8">
+						<div class="card-body">
+							<form action=" " method="POST" enctype="multipart/form-data">
+								{% csrf_token %}
+								<h3>{{kisi.tam_adi|title}}</h3>
+								<h6>{{user.email}}</h6>
+								{{form.as_p}}
+							<input type="submit" class="btn btn-secondary" value="{% trans "Resmi Değiştir" %}">
+							</form>  
+						</div>
+					</div>
 					</div>
 				</div>
-			</div>
-		</div>
+			{% endif %}
+		{% endfor %}
 	</div>
 </div>
 

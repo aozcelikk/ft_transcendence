@@ -28,6 +28,7 @@ urlpatterns = i18n_patterns(
 	path('', include('blog.urls')),
 	path(_('sohbet/'), include('chat.urls')),
 	path(_('hesap/'), include('account.urls')),
+	path(_("hesap/"), include('django.contrib.auth.urls')),
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) \
   + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

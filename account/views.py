@@ -5,6 +5,9 @@ from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from blog.models import Kisiler,Kategori
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.urls import reverse_lazy
+from django.views import generic
 
 
 def login_request(request):
@@ -82,28 +85,10 @@ def auth_settings(request):
 		return render(request, "account/user_page.html", veri)
 	return redirect("anasayfa")
 
-def sifre(request):
-	if request.user.is_authenticated:
-		veri={
-			"kisiler":Kisiler.objects.all()
-		}
-		return render(request, "register/sifre.html", veri)
-	return redirect("anasayfa")
 
-def adi(request):
+def password_change(request):
 	if request.user.is_authenticated:
-		veri={
-			"kisiler":Kisiler.objects.all()
-		}
-		return render(request, "register/adi.html", veri)
-	return redirect("anasayfa")
-
-def email(request):
-	if request.user.is_authenticated:
-		veri={
-			"kisiler":Kisiler.objects.all()
-		}
-		return render(request, "register/email.html", veri)
+		return render(request, "registration/password_change_form.html")
 	return redirect("anasayfa")
 
 def resim(request):
@@ -111,9 +96,10 @@ def resim(request):
 		veri={
 			"kisiler":Kisiler.objects.all()
 		}
-		return render(request, "register/resim.html", veri)
+		return render(request, "registration/resim.html", veri)
 	return redirect("anasayfa")
 
 def logout_request(request):
 	logout(request)
 	return redirect("giris")
+
