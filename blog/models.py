@@ -5,25 +5,6 @@ from django.utils.text import slugify
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
-# class Kategori(models.Model):
-# 	STATUS = (
-# 		("Arkadaşlar", "arkadaslar"),
-# 		("Engellenenler", "engellenenler"),
-# 		("Çevrimici", "cevrimici"),
-# 		("Tümü", "tumu")
-# 	)
-# 	name = models.CharField(max_length=150, choices = STATUS)
-# 	slug = models.SlugField(null=False,blank=True,unique=True,db_index=True,editable=False)
-
-# 	def save(self, *args, **kwargs):
-# 		self.slug = slugify(self.name)
-# 		super().save(*args, **kwargs)
-
-# 	def __str__(self):
-# 		return self.name
-	
-
-
 class Kategori(models.Model):
 	name = models.CharField(max_length=150)
 	slug = models.SlugField(null=False,blank=True,unique=True,db_index=True,editable=False)
@@ -38,7 +19,7 @@ class Kategori(models.Model):
 class Kisiler(models.Model):
 	kullanici = models.CharField(max_length=150, null=False)
 	tam_adi = models.CharField(max_length=150, null=False)
-	resim = models.ImageField(upload_to="blogs", default="blogs/7.jpg")
+	resim = models.ImageField(upload_to="blogs", default="blogs/7.jpg", blank=True)
 	toplam_mac = models.IntegerField(default=0)
 	zafer_mac = models.IntegerField(default=0)
 	bozgun_mac = models.IntegerField(default=0)

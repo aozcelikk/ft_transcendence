@@ -5,7 +5,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from blog.models import Kisiler,Kategori
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm, AuthenticationForm,PasswordChangeForm,SetPasswordForm
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.messages import constants as messages
@@ -93,48 +93,19 @@ def password_change(request):
 		return render(request, "registration/password_change_form.html")
 	return redirect("anasayfa")
 
-# def resim(request):
-# 	if request.user.is_authenticated:
-# 		veri={
-# 			"kisiler":Kisiler.objects.all()
-# 		}
-# 		if request.method == 'POST':
-# 			depo = Kisiler()
-# 			if len(request.FILES) != 0:
-# 				depo.resim = request.FILES['resim']
-# 				depo.kullanici = request.POST.get('{{ user.get_username }}')
-# 			depo.save()
-# 			messages.success(request, "Resim Başarıyla Değiştirildi")
-			
-# 			return redirect("anasayfa")
-# 		return render(request, "registration/resim.html", veri)
-# 	return redirect("anasayfa")
-
-
-def image_upload_view(request):
-	if request.method == 'POST':
-		form = ImageForm(request.POST, request.FILES)
-		if form.is_valid():
-			form.save()
-			# Get the current instance object to display in the template
-			img_obj = form.instance
-			return render(request, 'registration/resim.html', {'form': form, 'img_obj': img_obj})
-	else:
-		form = ImageForm()
+def resim(request):
+	if request.user.is_authenticated:
+		if request.method=="POST":
+			form = ImageForm(request.POST, request.FILES, instance=request.user.kisiler)
+			if form.is_valid():
+				form.save()
+				return redirect('kullanici')
+			else:
+				form = ImageForm(instance=request.user)
+		else:
+			form=ImageForm()
 		return render(request, 'registration/resim.html', {'form': form})
-
-
-
-
-
-
-# def resim(request):
-# 	if request.user.is_authenticated:
-# 		veri={
-# 			"kisiler":Kisiler.objects.all()
-# 		}
-# 		return render(request, "registration/resim.html", veri)
-# 	return redirect("anasayfa")
+	return redirect("anasayfa")
 
 def logout_request(request):
 	logout(request)
