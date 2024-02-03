@@ -24,28 +24,32 @@
 				</div>
 			</div>
 		</div>
-		{% for kisi in kisiler %}
-			{% if kisi.kullanici == user.get_username %}
+		{% comment %} {% for kisi in kisiler %}
+			{% if kisi.kullanici == user.get_username %} {% endcomment %}
 				<div class="card mb-3" style="max-width: 980px;">
 					<div class="row g-0">
-					<div class="col-md-4">
-						<img src="{{kisi.resim.url}}" style="width:100%; height:auto%; border: 1px solid #ddd; border-radius: 15%;">
-					</div>
-					<div class="col-md-8">
-						<div class="card-body">
-							<form action=" " method="POST" enctype="multipart/form-data">
-								{% csrf_token %}
-								<h3>{{kisi.tam_adi|title}}</h3>
-								<h6>{{user.email}}</h6>
-								{{form.as_p}}
-							<input type="submit" class="btn btn-secondary" value="{% trans "Resmi Değiştir" %}">
-							</form>  
+						<div class="col-md-4">
+							<img src="{{kisi.resim.url}}" style="width:100%; height:auto%; border: 1px solid #ddd; border-radius: 15%;">
+						</div>
+						<div class="col-md-8">
+							<div class="card-body">
+								<form action=" " method="post" enctype="multipart/form-data">
+									{% csrf_token %}
+									{% comment %} <h3>{{user.get_full_name|title}}</h3>
+									<h6>{{user.email}}</h6> {% endcomment %}
+									{{form.as_p}}
+									<div class="mb-3">
+										<label for="" class="form-label">{% trans "Resim" %}</label>
+										<input type="file" Required name="resim" class="form-control">
+									</div>
+								<input type="submit" class="btn btn-primary" value="{% trans "Resmi Değiştir" %}">
+								</form> {% if img_obj %}  <h3>Succesfully uploaded : {{img_obj.kullanici}}</h3> {% endif %}
+							</div>
 						</div>
 					</div>
-					</div>
 				</div>
-			{% endif %}
-		{% endfor %}
+			{% comment %} {% endif %}
+		{% endfor %} {% endcomment %}
 	</div>
 </div>
 

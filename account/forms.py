@@ -1,16 +1,8 @@
 from django import forms
-from blog.models import Kisiler
-from django.contrib.auth.forms import UserCreationForm,UserChangeForm
-from django.contrib.auth.models import User
+from blog.models import Kisiler,Kategori
 
 
-class ResimForm(forms.ModelForm):
-	class Meta:
-		model = Kisiler
-		fields = ['resim']
-
-class KullaniciAyarForm(forms.ModelForm):
-	class Meta:
-		model = User
-		fields = ('username', 'first_name', 'last_name', 'email')
-
+class ImageForm(forms.ModelForm):
+    class Meta:
+        model = Kisiler
+        fields = ('kullanici', 'tam_adi', 'resim', 'toplam_mac', 'zafer_mac', 'bozgun_mac', 'engel', 'cevrimici', 'kategoriler', 'user')
