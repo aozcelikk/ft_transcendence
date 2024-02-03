@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block title %}
-{% trans "Kullanıcı Ayarları" %}
+{% trans "Şifre Ayarları" %}
 {% endblock %}
 
 {% block content %}
@@ -16,34 +16,31 @@
 	<div class="row">
 
 		<div class="col-3">
-			<h2>{% trans "Kullanıcı Ayarları" %}</h2>
+			<h2>{% trans "Şifre Ayarları" %}</h2>
 			<div class="p-3">
 				<div class="list-group">
-					<a href="{% url 'sifre' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Şifre Değiştir" %}</a>
+					<a href="{% url 'sifre' %}" class="list-group-item list-group-item-action active" aria-current="true" style="background-color: #7a1b0c;">{% trans "Şifre Değiştir" %}</a>
 					<a href="{% url 'adi' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Adı Soyadı Değiştir" %}</a>
 					<a href="{% url 'email' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Email Değiştir" %}</a>
 					<a href="{% url 'resim' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Resmi Değiştir" %}</a>
 				</div>
-			</div>	
+			</div>
 		</div>
-		{% for kisi in kisiler %}
-			{% if kisi.kullanici == user.get_username %}
-				<div class="card mb-3" style="max-width: 980px;">
-					<div class="row g-0">
-					<div class="col-md-4">
-						<img src="{{kisi.resim.url}}" style="width:100%; height:auto%; border: 1px solid #ddd; border-radius: 15%;">
-					</div>
-					<div class="col-md-8">
-						<div class="card-body">
-							<h3>{{kisi.tam_adi|title}}</h3>
-							<h6>{{user.email}}</h6>
-							<h6>{{user.password}}</h6>
-						</div>
-					</div>
-					</div>
+		<div class="card mb-3" style="max-width: 980px; height:500px;">
+			<div class="row g-0">
+				<h2 style="text-align:center;">{% trans "Şifre Değiştirme" %}</h2>
+			<div class="col-md-8">
+				<div class="card-body">
+					<p>{% trans "Lütfen önceki şifrenizi giriniz ardından yeni şifrenizi 2 defa aynı olmak şartıyla giriniz" %}</p>
+					<form method="POST">
+						{% csrf_token %}
+						{{ form.as_p }}
+						<input class="btn btn-success" type="submit" value="{% trans "Şifre Değiştir" %}">
+					</form>
 				</div>
-			{% endif %}
-		{% endfor %}
+			</div>
+			</div>
+		</div>
 	</div>
 </div>
 

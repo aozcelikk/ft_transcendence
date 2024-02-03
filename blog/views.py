@@ -6,34 +6,6 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from blog.models import Kisiler,Kategori
 
-
-# data = {
-# 	"kategori":[
-# 		{
-# 			"id": 1,
-# 			"name": "Arkadaşlar",
-# 			"slug": "arkadaslar"
-# 		},
-# 		{
-# 			"id": 2,
-# 			"name": "Engellenenler",
-# 			"slug": "engellenenler"
-# 		},		
-# 		{
-# 			"id": 3,
-# 			"name": "Çevrimici",
-# 			"slug": "cevrimici"
-# 		},
-# 		{
-# 			"id": 4,
-# 			"name": "Tümü",
-# 			"slug": "tumu"
-# 		}
-# 	]
-# }
-
-
-
 def error_404(request, exception):
     return render(request, '404.html', status=404)
 
@@ -45,7 +17,8 @@ def index(request):
 def indexOO(request):
 	if request.user.is_authenticated:
 		kullanici_veri = {
-			"kisiler":Kisiler.objects.all()
+			"kisiler":Kisiler.objects.all(),
+			"kategoriler":Kategori.objects.all()
 		}
 		return render(request, "blog/indexOO.html", kullanici_veri)
 	return render(request, "blog/index.html")

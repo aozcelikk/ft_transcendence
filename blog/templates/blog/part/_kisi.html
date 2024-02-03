@@ -24,11 +24,12 @@
 				{% if kisi.engel == False %}
 					<a href="#" type="button" class="btn btn-warning">{% trans "Engeli Kaldır" %}</a>
 				{% else %}
-					{% if kisi.cevrimici %}
+					{% if kisi.kategori.name == cevrimici %}
 						<a href="#" type="button" class="btn btn-warning">{% trans "Arkadaşlara Ekle" %}</a>
+						<a href="#" type="button" class="btn btn-danger">{% trans "Müsabaka Tertip et" %}</a>
+						<a href="#" type="button" class="btn btn-info">{% trans "Mesaj Gönder" %}</a>
 					{% endif %}
-					<a href="#" type="button" class="btn btn-danger">{% trans "Müsabaka Tertip et" %}</a>
-					<a href="#" type="button" class="btn btn-info">{% trans "Mesaj Gönder" %}</a>
+
 				{% endif %}
 			</div>	  
 		</div>

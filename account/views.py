@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-from blog.models import Kisiler
+from blog.models import Kisiler,Kategori
 
 
 def login_request(request):
@@ -76,7 +76,42 @@ def register_request(request):
 
 def auth_settings(request):
 	if request.user.is_authenticated:
-		return render(request, "account/user_page.html")
+		veri={
+			"kisiler":Kisiler.objects.all()
+		}
+		return render(request, "account/user_page.html", veri)
+	return redirect("anasayfa")
+
+def sifre(request):
+	if request.user.is_authenticated:
+		veri={
+			"kisiler":Kisiler.objects.all()
+		}
+		return render(request, "register/sifre.html", veri)
+	return redirect("anasayfa")
+
+def adi(request):
+	if request.user.is_authenticated:
+		veri={
+			"kisiler":Kisiler.objects.all()
+		}
+		return render(request, "register/adi.html", veri)
+	return redirect("anasayfa")
+
+def email(request):
+	if request.user.is_authenticated:
+		veri={
+			"kisiler":Kisiler.objects.all()
+		}
+		return render(request, "register/email.html", veri)
+	return redirect("anasayfa")
+
+def resim(request):
+	if request.user.is_authenticated:
+		veri={
+			"kisiler":Kisiler.objects.all()
+		}
+		return render(request, "register/resim.html", veri)
 	return redirect("anasayfa")
 
 def logout_request(request):

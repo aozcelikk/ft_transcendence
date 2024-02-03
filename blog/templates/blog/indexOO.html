@@ -18,23 +18,28 @@
 		<hr>
 		{% for kisi in kisiler %}
 			{% if kisi.kullanici == user.get_username %}
+				{% for kategori in kategoriler %}
+					{% if kategori.name == "Tümü" %}
+						<h1>Geldi brooo</h1>
+						
+					{% endif %}
+				{% endfor %}
 			<div class="col-3">	
 				<img src="{{ kisi.resim.url }}" style="width:100%; height:auto; border: 1px solid #ddd; border-radius: 15%;">
-					
 			</div>
+			<div class="col-9">
 				<div class="col-9">
-					<div class="col-9">
-						<div class="alert alert-success" role="alert">
-							{% trans "Kazandığı Maçlar" %} | <medium>{{kisi.zafer_mac}}</medium>
-						</div>
-						<div class="alert alert-danger" role="alert">
-							{% trans "Kaybettiği Maçlar" %} | <medium>{{kisi.bozgun_mac}}</medium>
-						</div>
-						<div class="alert alert-warning " role="alert">
-							{% trans "Toplam Oynadığı Maçlar" %} | <medium>{{kisi.toplam_mac}}</medium>
-						</div>
+					<div class="alert alert-success" role="alert">
+						{% trans "Kazandığı Maçlar" %} | <medium>{{kisi.zafer_mac}}</medium>
+					</div>
+					<div class="alert alert-danger" role="alert">
+						{% trans "Kaybettiği Maçlar" %} | <medium>{{kisi.bozgun_mac}}</medium>
+					</div>
+					<div class="alert alert-warning " role="alert">
+						{% trans "Toplam Oynadığı Maçlar" %} | <medium>{{kisi.toplam_mac}}</medium>
 					</div>
 				</div>
+			</div>
 			{% endif %}
 		{% endfor %}
 	</div>

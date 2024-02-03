@@ -6,18 +6,6 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 # class Kategori(models.Model):
-# 	name = models.CharField(max_length=150)
-# 	slug = models.SlugField(null=False,blank=True,unique=True,db_index=True,editable=False)
-
-# 	def save(self, *args, **kwargs):
-# 		self.slug = slugify(self.name)
-# 		super().save(*args, **kwargs)
-
-# 	def __str__(self):
-# 		return self.name
-
-
-# class Kategori(models.Model):
 # 	STATUS = (
 # 		("Arkadaşlar", "arkadaslar"),
 # 		("Engellenenler", "engellenenler"),
@@ -71,34 +59,18 @@ class Kisiler(models.Model):
 		self.toplam_mac = self.zafer_mac + self.bozgun_mac
 		super().save(*args, **kwargs)
 
-	@receiver(post_save, sender = User)
+	@receiver(post_save, sender=User)
 	def user_is_created(sender, instance, created, **kwargs):
 		if created:
-			Kisiler.objects.create(user= instance)
-			if not Kategori.objects.filter(name = "Arkadaşlar"):
-				kayt = Kategori(name = "Arkadaşlar", slug = "arkadaslar")
+			Kisiler.objects.create(user=instance)
+			if not Kategori.objects.filter(name="Arkadaşlar"):
+				kayt = Kategori(name="Arkadaşlar", slug="arkadaslar")
 				kayt.save()
-				kayt = Kategori(name = "Engellenenler", slug = "engellenenler")
+				kayt = Kategori(name="Engellenenler", slug="engellenenler")
 				kayt.save()
-				kayt = Kategori(name = "Çevrimici", slug = "cevrimici")
+				kayt = Kategori(name="Çevrimici", slug="cevrimici")
 				kayt.save()
-				kayt = Kategori(name = "Tümü", slug = "tumu")
+				kayt = Kategori(name="Tümü", slug="tumu")
 				kayt.save()
 		else:
 			instance.kisiler.save()
-
-			
-
-
-
-
-
-
-# kayt = Kategori(name = "Arkadaşlar", slug = "arkadaslar")
-# kayt.save()
-# kayt = Kategori(name = "Engellenenler", slug = "engellenenler")
-# kayt.save()
-# kayt = Kategori(name = "Çevrimici", slug = "cevrimici")
-# kayt.save()
-# kayt = Kategori(name = "Tümü", slug = "tumu")
-# kayt.save()

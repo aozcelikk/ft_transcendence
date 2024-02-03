@@ -26,7 +26,7 @@
 			<hr>
 			{% if kisiler|length > 0 %}
 				{% for kisi in kisiler %}
-					{% if kisi.kullanici != user.get_username and kisi.cevrimici %}
+					{% if kisi.kullanici != user.get_username %}
 						{% include "blog/part/_kisi.html" %}
 					{% endif %}
 				{% endfor %}

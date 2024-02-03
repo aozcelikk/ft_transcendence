@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+<div class="container mt-3">
+	<div class="row">
+
+		<div class="col-3">
+			<h2>{% trans "Kullanıcı Ayarları" %}</h2>
+			<div class="p-3">
+				<div class="list-group">
+					<a href="{% static 'register/sifre.html' %}" class="list-group-item list-group-item-action active" aria-current="true" style="background-color: #7a1b0c;">{% trans "Şifre Değiştir" %}</a>
+					<a href="{% static 'register/adi.html' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Adı Soyadı Değiştir" %}</a>
+					<a href="{% static 'register/email.html' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Email Değiştir" %}</a>
+					<a href="{% static 'register/resim.html' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Resmi Değiştir" %}</a>
+				</div>
+			</div>
+		</div>
+		{% for kisi in kisiler %}
+			{% if kisi.kullanici == user.get_username %}
+				<div class="card mb-3" style="max-width: 980px;">
+					<div class="row g-0">
+					<div class="col-md-4">
+						<img src="{{kisi.resim.url}}" style="width:100%; height:auto%; border: 1px solid #ddd; border-radius: 15%;">
+					</div>
+					<div class="col-md-8">
+						<div class="card-body">
+							<h3>{{kisi.tam_adi|title}}</h3>
+							<h6>{{user.email}}</h6>
+							<h6>{{user.password}}</h6>
+						</div>
+					</div>
+					</div>
+				</div>
+			{% endif %}
+		{% endfor %}
+	</div>
+</div>
