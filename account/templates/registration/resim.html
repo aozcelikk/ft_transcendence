@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block title %}
-{% trans "Kullanıcı Ayarları" %}
+{% trans "Resim Ayarları" %}
 {% endblock %}
 
 {% block content %}
@@ -16,10 +16,11 @@
 	<div class="row">
 
 		<div class="col-3">
-			<h2>{% trans "Kullanıcı Ayarları" %}</h2>
+			<h2>{% trans "Resim Ayarları" %}</h2>
 			<div class="p-3">
 				<div class="list-group">
 					<a href="{% url 'sifre' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Şifre Değiştir" %}</a>
+					<a href="{% url 'kullan' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Kullanıcı Ayarlar Değiştir" %}</a>
 					<a href="{% url 'resim' %}" class="list-group-item list-group-item-action active" aria-current="true"  style="background-color: #7a1b0c;">{% trans "Resmi Değiştir" %}</a>
 				</div>
 			</div>

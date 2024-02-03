@@ -9,7 +9,7 @@ from django.contrib.auth.forms import UserChangeForm, UserCreationForm, Authenti
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.messages import constants as messages
-from .forms import ImageForm
+from .forms import ResimForm,KullaniciAyarForm
 
 
 def login_request(request):
@@ -96,15 +96,29 @@ def password_change(request):
 def resim(request):
 	if request.user.is_authenticated:
 		if request.method=="POST":
-			form = ImageForm(request.POST, request.FILES, instance=request.user.kisiler)
+			form = ResimForm(request.POST, request.FILES, instance=request.user.kisiler)
 			if form.is_valid():
 				form.save()
 				return redirect('kullanici')
 			else:
-				form = ImageForm(instance=request.user)
+				form = ResimForm(instance=request.user)
 		else:
-			form=ImageForm()
+			form=ResimForm()
 		return render(request, 'registration/resim.html', {'form': form})
+	return redirect("anasayfa")
+
+def kullan(request):
+	if request.user.is_authenticated:
+		if request.method=="POST":
+			form = KullaniciAyarForm(request.POST,instance=request.user)
+			if form.is_valid():
+				form.save()
+				return redirect('kullanici')
+			else:
+				form = KullaniciAyarForm(instance=request.user)
+		else:
+			form=KullaniciAyarForm()
+		return render(request, 'registration/kullan.html', {'form': form})
 	return redirect("anasayfa")
 
 def logout_request(request):

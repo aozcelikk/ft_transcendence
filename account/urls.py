@@ -9,5 +9,6 @@ urlpatterns = [
 	path(_("cikis"), views.logout_request, name="cikis"),
 	path(_("kullanici"),views.auth_settings, name="kullanici"),
 	path(_("resim"),views.resim, name="resim"),
+	path(_("ayarlar"),views.kullan, name="kullan"),
 	path(_("password_change"),views.password_change, name="sifre"),
 ]
