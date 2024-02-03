@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'chat/css/oda.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "Oyun Geçmişi" %}
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 table-responsive">
+    <h2 class="mb-4">Oyun Geçmişi</h2>
+    <a href="{% url 'sohbet_anasayfa' %}" class="btn btn-danger">Oyun Anasayfası</a>
+    <hr>
+    <table class="table table-striped"
+    cellspacing="0" cellpadding="1" border="1" width="300">
+    <thead>
+        <tr>
+            <th scope="col">1.Oyuncu</th>
+            <th scope="col">2.Oyuncu</th>
+            <th scope="col">Kazanan</th>
+            <th scope="col">Oda Adı</th>
+            <th scope="col">Oyun Durumu</th>
+        </tr>
+    </thead>
+    <tbody>
+            {% for game in game_history %}
+                <tr>
+                    <td>{{ game.game_creator }}</td>
+                    <td>{{ game.game_opponent }}</td>
+                    <td>{{ game.winner }}</td>
+                    <td>{{ game.room_name }}</td>
+                    <td>{% if  game.is_over  == 1 %}
+                            Bitti
+                        {% else %}
+                            Devam Ediyor
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

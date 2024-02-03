@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'account/css/styles.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "Kullanıcı Ayarları" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+	<div class="row">
+
+		<div class="col-3">
+			<h2>{% trans "Kullanıcı Ayarları" %}</h2>
+			<div class="p-3">
+				<div class="list-group">
+					<a href="{% url 'sifre' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Şifre Değiştir" %}</a>
+					<a href="{% url 'kullan' %}" class="list-group-item list-group-item-action active" aria-current="true" style="background-color: #7a1b0c;">{% trans "Kullanıcı Ayarlar Değiştir" %}</a>
+					<a href="{% url 'resim' %}" class="list-group-item list-group-item-action" aria-current="true" >{% trans "Resmi Değiştir" %}</a>
+				</div>
+			</div>
+		</div>
+		
+		<div class="card mb-3" style="max-width: 980px;">
+			<div class="row g-0">
+				<div class="col-md-8">
+					<div class="card-body">
+						<form action=" " method="post">
+							{% csrf_token %}
+							{{form.as_ul}}
+						<button class="btn btn-outline-danger" type="submit">{% trans "Ayarları Değiştir" %}</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block js_files %}
+	<script src="{% static 'account/js/script.js' %}"></script>
+{% endblock %}

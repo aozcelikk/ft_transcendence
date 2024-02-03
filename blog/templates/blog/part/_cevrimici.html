@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'blog/css/styles.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "Çevrimiçi" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+	<div class="row">
+		<div class="col-3">
+			<div class="list-group">
+				<a href="{% url "arkadaslar" %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Arkadaşlar" %}</a>
+				<a href="{% url "engellenenler" %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Engellenenler" %}</a>
+				<a href="{% url "cevrimici" %}" class="list-group-item list-group-item-action active" aria-current="true" style="background-color: #7a1b0c;">{% trans "Çevrimiçi" %}</a>
+			</div>
+		</div>
+		<div class="col-9">
+			<h1>{% trans "Çevrimiçi Olanlar" %}</h1>
+			<hr>
+			{% if users|length > 0 %}
+				{% for user in users %}
+					{% if user.user.is_staff == False and user.user.is_superuser == False and user.cevrimici %}								
+						{% include "blog/part/_kisi_cevri.html" %}
+					{% endif %}
+				{% endfor %}
+			{% else %}
+				<div class="alert alert-warning">{% trans "Kimse Bulunmamakta" %}</div>
+			{% endif %}
+	</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block js_files %}
+	<script src="{% static 'blog/js/script.js' %}"></script>
+{% endblock %}

@@ -17,6 +17,25 @@ from django.db.models.signals import post_save
 # 		return self.name
 
 
+# class Kategori(models.Model):
+# 	STATUS = (
+# 		("Arkadaşlar", "arkadaslar"),
+# 		("Engellenenler", "engellenenler"),
+# 		("Çevrimici", "cevrimici"),
+# 		("Tümü", "tumu")
+# 	)
+# 	name = models.CharField(max_length=150, choices = STATUS)
+# 	slug = models.SlugField(null=False,blank=True,unique=True,db_index=True,editable=False)
+
+# 	def save(self, *args, **kwargs):
+# 		self.slug = slugify(self.name)
+# 		super().save(*args, **kwargs)
+
+# 	def __str__(self):
+# 		return self.name
+	
+
+
 class Kategori(models.Model):
 	name = models.CharField(max_length=150)
 	slug = models.SlugField(null=False,blank=True,unique=True,db_index=True,editable=False)
@@ -27,7 +46,6 @@ class Kategori(models.Model):
 
 	def __str__(self):
 		return self.name
-	
 
 class Kisiler(models.Model):
 	kullanici = models.CharField(max_length=150, null=False)
@@ -41,7 +59,6 @@ class Kisiler(models.Model):
 	slug = models.SlugField(null=False,blank=True, unique=True, db_index=True, editable=False)
 	kategoriler = models.ManyToManyField(Kategori, blank=True)
 	user = models.OneToOneField(User, on_delete= models.CASCADE)
-	objects = Kategori()
 
 
 	def __str__(self):
@@ -58,8 +75,19 @@ class Kisiler(models.Model):
 	def user_is_created(sender, instance, created, **kwargs):
 		if created:
 			Kisiler.objects.create(user= instance)
+			if not Kategori.objects.filter(name = "Arkadaşlar"):
+				kayt = Kategori(name = "Arkadaşlar", slug = "arkadaslar")
+				kayt.save()
+				kayt = Kategori(name = "Engellenenler", slug = "engellenenler")
+				kayt.save()
+				kayt = Kategori(name = "Çevrimici", slug = "cevrimici")
+				kayt.save()
+				kayt = Kategori(name = "Tümü", slug = "tumu")
+				kayt.save()
 		else:
 			instance.kisiler.save()
+
+			
 
 
 

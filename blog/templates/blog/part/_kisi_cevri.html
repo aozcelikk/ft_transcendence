@@ -1,0 +1,64 @@
+{% load static %}
+{% load i18n %}
+<style>
+	.resim
+	{
+		max-width:100%;
+		height:auto;
+		border: 1px solid #ddd;
+		border-radius: 10%;
+	}
+
+</style>
+
+<div class="card mb-3">
+	<div class="row">
+		<div class="col-md-3">
+			<h6 class="card-title" style="text-align: center;">
+				<div class="d-inline-flex alert alert-primary" role="alert">
+					<a style="color:#7a1b0c;" href={% url "kisiler_detay" user|lower %}> {{ user }} </a>
+				</div>
+				<img class ="resim" src="{{ user.resim.url }}" alt="">
+			</h6>
+		</div>
+		<div class="col-md-9">
+			<p class="card-title">
+				<div class="col-9">
+					<h5 class="card-title" style="text-align: center;">{% trans "İstatik Veriler" %}</h5>
+					<br>
+					<div class="alert alert-secondary" role="alert">
+						<small style="color:green;">{% trans "Kazandığı Maçlar" %} | {{ user.zafer_mac }}</small>
+						<br>
+						<hr>
+						<small style="color:red;">{% trans "Kaybettiği Maçlar" %} | {{ user.bozgun_mac }}</small>
+						<br>
+						<hr>
+						<small style="color:blue;">{% trans "Toplam Oynadığı Maçlar" %} | {{ user.toplam_mac }}</small	>
+					</div>
+				</div>
+			</p>
+			<div class="float-md-end mb-3 ms-md-3">
+			{% comment %} {% if user.user in engeliler and user.user.pk == engell.diger_users.pk %}
+				<a href="{% url "engel_sistem" opsiyon='kaldir' pk=user.pk %}" type="button" class="btn btn-dark">{% trans "Engeli Kaldır" %}</a>
+			{% endif %} {% endcomment %}
+			{% for eng in engel %}
+			{{eng.users.engel_id}}
+			{% endfor %}
+			{% if not user.user in engelliler %}
+				<a href="{% url "engel_sistem" opsiyon='engelle' pk=user.pk %}" type="button" class="btn btn-primary">{% trans "Engelle" %}</a>
+			{% if not user.user in arkadaslar %}
+			<a href="{% url "arkadas_sistem" alternatif='ekle' pk=user.pk %}" type="button" class="btn btn-success">{% trans "Arkadaşlara Ekle" %}</a>
+			{% else %}
+			<a href="{% url "arkadaslar" %}" type="button" class="btn btn-primary" aria-current="true">{% trans "Arkadaşsın" %}</a>
+			{% endif%}
+			<a href="#" type="button" class="btn btn-warning">{% trans "Müsabaka Tertip et" %}</a>
+			<a href="#" type="button" class="btn btn-info">{% trans "Mesaj Gönder" %}</a>
+			{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+
+
+  
+

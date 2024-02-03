@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'account/css/styles.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "Resim Ayarları" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+	<div class="row">
+
+		<div class="col-3">
+			<h2>{% trans "Resim Ayarları" %}</h2>
+			<div class="p-3">
+				<div class="list-group">
+					<a href="{% url 'sifre' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Şifre Değiştir" %}</a>
+					<a href="{% url 'kullan' %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Kullanıcı Ayarlar Değiştir" %}</a>
+					<a href="{% url 'resim' %}" class="list-group-item list-group-item-action active" aria-current="true"  style="background-color: #7a1b0c;">{% trans "Resmi Değiştir" %}</a>
+				</div>
+			</div>
+		</div>
+		
+		<div class="card mb-3" style="max-width: 980px;">
+			<div class="row g-0">
+				<div class="col-md-4">
+					<img src="{{user.kisiler.resim.url}}" style="width:100%; height:auto%; border: 1px solid #ddd; border-radius: 15%;">
+				</div>
+				<div class="col-md-8">
+					<div class="card-body">
+						<form action=" " method="post" enctype="multipart/form-data">
+							{% csrf_token %}
+							{{form.as_p}}
+						<button class="btn btn-outline-primary" type="submit">{% trans "Resmi Değiştir" %}</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block js_files %}
+	<script src="{% static 'account/js/script.js' %}"></script>
+{% endblock %}
