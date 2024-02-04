@@ -1,5 +1,5 @@
 from django import forms
-from blog.models import Kisiler,Kategori
+from blog.models import Kisiler
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
 from django.contrib.auth.models import User
 
@@ -14,7 +14,3 @@ class KullaniciAyarForm(forms.ModelForm):
 		model = User
 		fields = ('username', 'first_name', 'last_name', 'email')
 
-class KategoriSecme(forms.ModelForm):
-	class Meta:
-		model = Kisiler
-		fields =['kategoriler']

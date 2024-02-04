@@ -4,12 +4,12 @@ from django.contrib.auth.models import User
 from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
 from django.db import models
-from blog.models import Kisiler,Kategori
+from blog.models import Kisiler
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.messages import constants as messages
-from .forms import ResimForm,KullaniciAyarForm,KategoriSecme
+from .forms import ResimForm,KullaniciAyarForm
 
 def login_request(request):
 	if request.user.is_authenticated:

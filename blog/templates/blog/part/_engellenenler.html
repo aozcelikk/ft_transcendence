@@ -25,17 +25,11 @@
 			<h1>{% trans "Engellenenler" %}</h1>
 			<hr>
 			{% if kisiler|length > 0 %}
-			{% for kisi in kisiler %}
-				{% for engel in engelliler %}
-					{% for user in users %}
-						{% if kisi.user.is_staff == False and kisi.user.is_superuser == False %}
-							{% if kisi.user.username == engel.username and kisi.user.username == user.username %}
-								{% include "blog/part/_kisi_engel.html" %}
-							{% endif %}
-						{% endif %}
-					{% endfor %}
-				{% endfor %} 
-			{% endfor %}
+				{% for kisi in kisiler %}
+					{% if kisi.user.is_staff == False and kisi.user.is_superuser == False %}
+						{% include "blog/part/_kisi.html" %}
+					{% endif %}
+				{% endfor %}
 			{% else %}
 				<div class="alert alert-warning">{% trans "Kimse Bulunmamakta" %}</div>
 			{% endif %}

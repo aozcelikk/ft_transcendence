@@ -15,18 +15,18 @@
 <div class="container mt-3">
 	<div class="row">
 		<div class="col-3">
-			{% include "blog/part/_kategori.html" %}
+			<div class="list-group">
+				<a href="{% url "arkadaslar" %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Arkadaşlar" %}</a>
+				<a href="{% url "engellenenler" %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Engellenenler" %}</a>
+				<a href="{% url "cevrimici" %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Çevrimiçi" %}</a>
+				</div>
 		</div>
 		<div class="col-9">
-			{% for kategori in kategoriler %}
-				{% if kategori.slug == secilen %}
-					<h1>{% blocktranslate %}{{kategori}}{% endblocktranslate %}</h1>
-				{% endif %}
-			{% endfor %}
+			<h1>{% trans "Tüm Kişiler" %}</h1>
 			<hr>
 			{% if kisiler|length > 0 %}
 				{% for kisi in kisiler %}
-					{% if kisi.kullanici != user.get_username %}
+					{% if kisi.user.is_staff == False and kisi.user.is_superuser == False %}
 						{% include "blog/part/_kisi.html" %}
 					{% endif %}
 				{% endfor %}
