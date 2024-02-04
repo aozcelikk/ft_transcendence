@@ -5,7 +5,7 @@ from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
 from django.db import models
 from blog.models import Kisiler
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm, PasswordChangeForm
 from django.urls import reverse_lazy
 from django.views import generic
 from .forms import ResimForm,KullaniciAyarForm
@@ -18,6 +18,7 @@ def login_request(request):
 			user.kisiler.cevrimici = True
 			user.kisiler.save()
 		return redirect("anasayfa")
+
 	if request.method == "POST":
 		username = request.POST["username"]
 		password = request.POST["password"]
@@ -34,6 +35,7 @@ def login_request(request):
 				})
 
 	return render(request, "account/login.html")
+
 
 def register_request(request):
 	if request.user.is_authenticated:
@@ -96,6 +98,7 @@ def password_change(request):
 		return render(request, "registration/password_change_form.html")
 	return redirect("anasayfa")
 
+
 def resim(request):
 	if request.user.is_authenticated:
 		if request.method=="POST":
@@ -110,6 +113,7 @@ def resim(request):
 		return render(request, 'registration/resim.html', {'form': form})
 	return redirect("anasayfa")
 
+
 def kullan(request):
 	if request.user.is_authenticated:
 		if request.method=="POST":
@@ -123,6 +127,7 @@ def kullan(request):
 			form=KullaniciAyarForm()
 		return render(request, 'registration/kullan.html', {'form': form})
 	return redirect("anasayfa")
+
 
 def logout_request(request):
 	user = request.user

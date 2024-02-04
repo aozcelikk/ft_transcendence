@@ -16,6 +16,7 @@ def index(request):
 	return render(request, "blog/index.html")
 
 def indexOO(request):
+	user = request.user
 	if request.user.is_authenticated:
 		kullanici_veri = {
 			"kisiler":Kisiler.objects.all(),
