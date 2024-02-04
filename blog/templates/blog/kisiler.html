@@ -26,9 +26,13 @@
 			<hr>
 			{% if kisiler|length > 0 %}
 				{% for kisi in kisiler %}
-					{% if kisi.user.is_staff == False and kisi.user.is_superuser == False %}
-						{% include "blog/part/_kisi.html" %}
-					{% endif %}
+					{% for user in users %}
+						{% if kisi.user.is_staff == False and kisi.user.is_superuser == False %}
+							{% if kisi.user.username == user.username %}
+								{% include "blog/part/_kisi.html" %}
+							{% endif %}
+						{% endif %}
+					{% endfor %} 
 				{% endfor %}
 			{% else %}
 				<div class="alert alert-warning">{% trans "Kimse Bulunmamakta" %}</div>

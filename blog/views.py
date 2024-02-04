@@ -30,21 +30,21 @@ def pingpong(request):
 		return render(request, "blog/pingpong.html")
 	return render(request, "blog/index.html")
 
-def kisiler(request):
-	if request.user.is_authenticated:
-		kullanici_veri = {
-			"kisiler":Kisiler.objects.all(),
-		}
-		return render(request, "blog/kisiler.html", kullanici_veri)
-	return render(request, "blog/index.html")
+# def kisiler(request):
+# 	if request.user.is_authenticated:
+# 		kullanici_veri = {
+# 			"kisiler":Kisiler.objects.all(),
+# 		}
+# 		return render(request, "blog/kisiler.html", kullanici_veri)
+# 	return render(request, "blog/index.html")
 
-def cevrimici(request):
-	if request.user.is_authenticated:
-		kullanici_veri = {
-			"kisiler":Kisiler.objects.all(),
-		}
-		return render(request, "blog/part/_cevrimici.html", kullanici_veri)
-	return render(request, "blog/index.html")
+# def cevrimici(request):
+# 	if request.user.is_authenticated:
+# 		kullanici_veri = {
+# 			"kisiler":Kisiler.objects.all(),
+# 		}
+# 		return render(request, "blog/part/_cevrimici.html", kullanici_veri)
+# 	return render(request, "blog/index.html")
 
 def engellenenler(request):
 	if request.user.is_authenticated:
@@ -64,17 +64,69 @@ def kisiler_detay(request, slug):
 		})
 	return render(request, "blog/index.html")
 
+# def arkadaslar(request):
+# 	if request.user.is_authenticated:
+# 		kullanici_veri = {
+# 			"kisiler":Kisiler.objects.all(),
+# 			"arkadaslar":Kisiler.objects.get(user=request.user)
+# 		}
+# 		return render(request, "blog/part/_arkadas.html", kullanici_veri)
+# 	return render(request, "blog/index.html")
 
 
 
 def arkadaslar(request):
 	if request.user.is_authenticated:
-		kullanici_veri = {
-			"kisiler":Kisiler.objects.all(),
-			"arkadaslar":Kisiler.objects.get(user=request.user)
-		}
-		return render(request, "blog/part/_arkadas.html", kullanici_veri)
+		users=User.objects.exclude(id=request.user.id)
+		veri_depo = {}
+		veri_depo['users']=users
+		veri_depo['kisiler']=Kisiler.objects.all()
+		ark=Arkadas.objects.filter(diger_users=request.user)
+		if len(ark)>0:
+			arkadas=Arkadas.objects.get(diger_users=request.user)
+			arkadaslar = arkadas.users.all()
+			veri_depo['arkadaslar']=arkadaslar
+		return render(request, "blog/part/_arkadas.html", veri_depo)
 	return render(request, "blog/index.html")
+
+
+def kisiler(request):
+	if request.user.is_authenticated:
+		users=User.objects.exclude(id=request.user.id)
+		veri_depo = {}
+		veri_depo['users']=users
+		veri_depo['kisiler']=Kisiler.objects.all()
+		ark=Arkadas.objects.filter(diger_users=request.user)
+		if len(ark)>0:
+			arkadas=Arkadas.objects.get(diger_users=request.user)
+			arkadaslar = arkadas.users.all()
+			veri_depo['arkadaslar']=arkadaslar
+		return render(request, "blog/kisiler.html", veri_depo)
+	return render(request, "blog/index.html")
+
+
+def cevrimici(request):
+	if request.user.is_authenticated:
+		users=User.objects.exclude(id=request.user.id)
+		veri_depo = {}
+		veri_depo['users']=users
+		veri_depo['kisiler']=Kisiler.objects.all()
+		ark=Arkadas.objects.filter(diger_users=request.user)
+		if len(ark)>0:
+			arkadas=Arkadas.objects.get(diger_users=request.user)
+			arkadaslar = arkadas.users.all()
+			veri_depo['arkadaslar']=arkadaslar
+		return render(request, "blog/part/_cevrimici.html", veri_depo)
+	return render(request, "blog/index.html")
+
+
+
+
+
+
+
+
+
 
 
 # def pingpong(request):
@@ -94,5 +146,5 @@ def arkadas_sistem(request, alternatif, pk):
 		Arkadas.arkadas_ekle(request.user, arkadas)
 	elif alternatif == 'sil':
 		Arkadas.arkadas_sil(request.user, arkadas)
-	return redirect('arkadaslar')
+	return redirect('kisiler')
 

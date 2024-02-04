@@ -20,21 +20,22 @@
 			<a href={% url "kisiler_detay" kisi.slug %}> {{ kisi.tam_adi }} </a>
 			</h5>
 			<p class="card-title">{% lorem 1 b %}</p>
-			<form method="get" action="">
 			<div class="float-md-end mb-3 ms-md-3">
 				{% if kisi.engel == False %}
 					<a href="#" type="button" class="btn btn-warning">{% trans "Engeli Kaldır" %}</a>
 				{% else %}
-					{% if kisi.cevrimici and kisi.kullanici != user.username %}
-						{% comment %} <a href="post_save_add_to_friends" name="ekle" type="button" class="btn btn-dark">{% trans "Arkadaşlardaşı Kabul et" %}</a> {% endcomment %}
-						<input type="submit" class="btn btn-dark" value="Click" name="ekle">
-						<a href="#" type="button" class="btn btn-warning">{% trans "Arkadaşlara Ekle" %}</a>
-						<a href="#" type="button" class="btn btn-danger">{% trans "Müsabaka Tertip et" %}</a>
+					{% if kisi.cevrimici and kisi.kullanici == user.username %}
+						{% if not user in arkadaslar %}
+							<a href="{% url "arkadas_sistem" alternatif='ekle' pk=user.pk %}" type="button" class="btn btn-success">{% trans "Arkadaşlara Ekle" %}</a>
+						{% endif %}
+						{% for arkadas in arkadaslar %}
+							<a href="{% url "arkadas_sistem" alternatif="sil" pk=arkadas.pk %}" type="button" class="btn btn-danger">{% trans "Arkadaşlardan Çıkar" %}</a>
+						{% endfor %}
+						<a href="#" type="button" class="btn btn-warning">{% trans "Müsabaka Tertip et" %}</a>
 						<a href="#" type="button" class="btn btn-info">{% trans "Mesaj Gönder" %}</a>
 					{% endif %}
 				{% endif %}
 			</div>
-			</form>  
 		</div>
 	</div>
 </div>

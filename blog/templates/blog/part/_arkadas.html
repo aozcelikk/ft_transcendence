@@ -22,47 +22,21 @@
 			</div>
 		</div>
 		
-
-
-
-		<div class="col-9">
-			<h3>Tüm Kisiler</h3>
-			{% for user in users %}
-				<h4>{{ user.username }}</h4>
-				{% if not user in arkadaslar %}
-					<a href="{% url "arkadas_sistem" alternatif='ekle' pk=user.pk %}" type="button" class="btn btn-success">{% trans "Arkadaşlara Ekle" %}</a>
-				{% endif %}
-			{% endfor %} 
-		</div>
-		<div class="col-9">
-			<h3>Arkadaslar</h3>
-			{% for arkadas in arkadaslar %}
-				<h3>{{ arkadas.username }}</h3>
-				<a href="{% url "arkadas_sistem" alternatif="sil" pk=arkadas.pk %}" type="button" class="btn btn-danger">{% trans "Arkadaşlardan Çıkar" %}</a>
-			{% endfor %}
-		</div>
-
-
-
-
-
-
-
-
-
 		<div class="col-9">
 			<h1>{% trans "Arkadaşlar" %}</h1>
 			<hr>
 			{% if kisiler|length > 0 %}
-				{% for kisi in kisiler %}
-					{% for arkadas in arkadaslar.get_friends %}
+			{% for kisi in kisiler %}
+				{% for arkadas in arkadaslar %}
+					{% for user in users %}
 						{% if kisi.user.is_staff == False and kisi.user.is_superuser == False %}
-							{% if kisi.user == arkadas %}
+							{% if kisi.user.username == arkadas.username and kisi.user.username == user.username %}
 								{% include "blog/part/_kisi.html" %}
 							{% endif %}
 						{% endif %}
 					{% endfor %}
-				{% endfor %}
+				{% endfor %} 
+			{% endfor %}
 			{% else %}
 				<div class="alert alert-warning">{% trans "Kimse Bulunmamakta" %}</div>
 			{% endif %}
