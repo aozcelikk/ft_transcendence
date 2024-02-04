@@ -21,35 +21,6 @@
 				<a href="{% url "cevrimici" %}" class="list-group-item list-group-item-action" aria-current="true">{% trans "Çevrimiçi" %}</a>
 			</div>
 		</div>
-		
-
-
-
-		<div class="col-9">
-			<h3>Tüm Kisiler</h3>
-			{% for user in users %}
-				<h4>{{ user.username }}</h4>
-				{% if not user in arkadaslar %}
-					<a href="{% url "arkadas_sistem" alternatif='ekle' pk=user.pk %}" type="button" class="btn btn-success">{% trans "Arkadaşlara Ekle" %}</a>
-				{% endif %}
-			{% endfor %} 
-		</div>
-		<div class="col-9">
-			<h3>Arkadaslar</h3>
-			{% for arkadas in arkadaslar %}
-				<h3>{{ arkadas.username }}</h3>
-				<a href="{% url "arkadas_sistem" alternatif="sil" pk=arkadas.pk %}" type="button" class="btn btn-danger">{% trans "Arkadaşlardan Çıkar" %}</a>
-			{% endfor %}
-		</div>
-
-
-
-
-
-
-
-
-
 		<div class="col-9">
 			<h1>{% trans "Arkadaşlar" %}</h1>
 			<hr>

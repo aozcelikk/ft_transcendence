@@ -4,8 +4,9 @@ from django.utils.translation import gettext as _
 from django.utils import translation
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from blog.models import Kisiler
+from blog.models import Kisiler,Arkadas
 from account.forms import ResimForm,KullaniciAyarForm
+
 
 def error_404(request, exception):
     return render(request, '404.html', status=404)
@@ -24,10 +25,10 @@ def indexOO(request):
 		return render(request, "blog/indexOO.html", kullanici_veri)
 	return render(request, "blog/index.html")
 
-# def pingpong(request):
-# 	if request.user.is_authenticated:
-# 		return render(request, "blog/pingpong.html")
-# 	return render(request, "blog/index.html")
+def pingpong(request):
+	if request.user.is_authenticated:
+		return render(request, "blog/pingpong.html")
+	return render(request, "blog/index.html")
 
 def kisiler(request):
 	if request.user.is_authenticated:
@@ -64,6 +65,8 @@ def kisiler_detay(request, slug):
 	return render(request, "blog/index.html")
 
 
+
+
 def arkadaslar(request):
 	if request.user.is_authenticated:
 		kullanici_veri = {
@@ -74,8 +77,22 @@ def arkadaslar(request):
 	return render(request, "blog/index.html")
 
 
-def arkadas_sistem(request):
-	kullanici=Kisiler.objects.get(user=request.user)
+# def pingpong(request):
+# 	users=User.objects.exclude(id=request.user.id)
+# 	veri_depo = {}
+# 	veri_depo['users']=users
+# 	ark=Arkadas.objects.filter(diger_users=request.user)
+# 	if len(ark)>0:
+# 		arkadas=Arkadas.objects.get(diger_users=request.user)
+# 		arkadaslar = arkadas.users.all()
+# 		veri_depo['arkadaslar']=arkadaslar
+# 	return render(request, "blog/pingpong.html", veri_depo)
+	
+def arkadas_sistem(request, alternatif, pk):
+	arkadas = User.objects.get(pk=pk)
+	if alternatif == 'ekle':
+		Arkadas.arkadas_ekle(request.user, arkadas)
+	elif alternatif == 'sil':
+		Arkadas.arkadas_sil(request.user, arkadas)
+	return redirect('arkadaslar')
 
-	context = {'kullanici':kullanici}
-	return render(request, "blog/pingpong.html", context)

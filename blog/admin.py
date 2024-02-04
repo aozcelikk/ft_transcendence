@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Kisiler,Relationship
+from .models import Kisiler
 
 
 class KisilerAdmin(admin.ModelAdmin):
@@ -11,5 +11,3 @@ class KisilerAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Kisiler, KisilerAdmin)
-admin.site.register(Relationship)
-
