@@ -8,18 +8,22 @@ from blog.models import Kisiler
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.urls import reverse_lazy
 from django.views import generic
-from django.contrib.messages import constants as messages
 from .forms import ResimForm,KullaniciAyarForm
+
 
 def login_request(request):
 	if request.user.is_authenticated:
+		user = request.user
+		if not user.kisiler.cevrimici:
+			user.kisiler.cevrimici = True
+			user.kisiler.save()
 		return redirect("anasayfa")
 	if request.method == "POST":
 		username = request.POST["username"]
 		password = request.POST["password"]
 
 		user = authenticate(request, username = username, password = password)
-		
+
 		if user is not None:
 			login(request, user)
 			return redirect("giris")
@@ -121,5 +125,9 @@ def kullan(request):
 	return redirect("anasayfa")
 
 def logout_request(request):
+	user = request.user
 	logout(request)
+	if user.kisiler.cevrimici:
+		user.kisiler.cevrimici = False
+		user.kisiler.save()
 	return redirect("giris")
