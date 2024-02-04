@@ -24,10 +24,10 @@ def indexOO(request):
 		return render(request, "blog/indexOO.html", kullanici_veri)
 	return render(request, "blog/index.html")
 
-def pingpong(request):
-	if request.user.is_authenticated:
-		return render(request, "blog/pingpong.html")
-	return render(request, "blog/index.html")
+# def pingpong(request):
+# 	if request.user.is_authenticated:
+# 		return render(request, "blog/pingpong.html")
+# 	return render(request, "blog/index.html")
 
 def kisiler(request):
 	if request.user.is_authenticated:
@@ -43,14 +43,6 @@ def cevrimici(request):
 			"kisiler":Kisiler.objects.all(),
 		}
 		return render(request, "blog/part/_cevrimici.html", kullanici_veri)
-	return render(request, "blog/index.html")
-
-def arkadaslar(request):
-	if request.user.is_authenticated:
-		kullanici_veri = {
-			"kisiler":Kisiler.objects.all(),
-		}
-		return render(request, "blog/part/_arkadas.html", kullanici_veri)
 	return render(request, "blog/index.html")
 
 def engellenenler(request):
@@ -70,3 +62,20 @@ def kisiler_detay(request, slug):
 			"slug": kullanici_veri["kisiler"],
 		})
 	return render(request, "blog/index.html")
+
+
+def arkadaslar(request):
+	if request.user.is_authenticated:
+		kullanici_veri = {
+			"kisiler":Kisiler.objects.all(),
+			"arkadaslar":Kisiler.objects.get(user=request.user)
+		}
+		return render(request, "blog/part/_arkadas.html", kullanici_veri)
+	return render(request, "blog/index.html")
+
+
+def arkadas_sistem(request):
+	kullanici=Kisiler.objects.get(user=request.user)
+
+	context = {'kullanici':kullanici}
+	return render(request, "blog/pingpong.html", context)

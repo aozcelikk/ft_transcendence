@@ -9,7 +9,7 @@ urlpatterns = [
 	path("", views.indexOO),
 	path("index", views.index, name="ilksayfa"),
 	path(_("anasayfa"), views.indexOO, name="anasayfa"),
-	path(_("pingpong"), views.pingpong, name="pingpong"),
+	path(_("pingpong"), views.arkadas_sistem, name="pingpong"),
 	path(_("kisiler"), views.kisiler, name="kisiler"),
 	path(_("kisiler/cevrimici"), views.cevrimici, name="cevrimici"),
 	path(_("kisiler/arkadaslar"), views.arkadaslar, name="arkadaslar"),

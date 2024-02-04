@@ -25,11 +25,11 @@
 					<a href="#" type="button" class="btn btn-warning">{% trans "Engeli Kaldır" %}</a>
 				{% else %}
 					{% if kisi.cevrimici and kisi.kullanici != user.username %}
+						<a href="#" type="button" class="btn btn-dark">{% trans "Arkadaşlardaşı Kabul et" %}</a>
 						<a href="#" type="button" class="btn btn-warning">{% trans "Arkadaşlara Ekle" %}</a>
 						<a href="#" type="button" class="btn btn-danger">{% trans "Müsabaka Tertip et" %}</a>
 						<a href="#" type="button" class="btn btn-info">{% trans "Mesaj Gönder" %}</a>
 					{% endif %}
-
 				{% endif %}
 			</div>	  
 		</div>
