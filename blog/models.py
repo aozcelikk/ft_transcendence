@@ -57,5 +57,3 @@ class Arkadas(models.Model):
 		arkadas.users.remove(yeni_arkadas)
 		arkadas2.users.remove(diger_users)
 
-
-	
