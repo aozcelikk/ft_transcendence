@@ -23,17 +23,22 @@
 			<div class="float-md-end mb-3 ms-md-3">
 				{% if kisi.engel == False %}
 					<a href="#" type="button" class="btn btn-warning">{% trans "Engeli Kaldır" %}</a>
-				{% else %}
-					{% if kisi.cevrimici and kisi.kullanici == user.username %}
+				{% elif kisi.cevrimici %}
+					{% if kisi.kullanici == user.username %}
 						{% if not user in arkadaslar %}
 							<a href="{% url "arkadas_sistem" alternatif='ekle' pk=user.pk %}" type="button" class="btn btn-success">{% trans "Arkadaşlara Ekle" %}</a>
-						{% endif %}
+						{% endif%}
 						{% for arkadas in arkadaslar %}
-							<a href="{% url "arkadas_sistem" alternatif="sil" pk=arkadas.pk %}" type="button" class="btn btn-danger">{% trans "Arkadaşlardan Çıkar" %}</a>
+						<a href="{% url "arkadas_sistem" alternatif="sil" pk=arkadas.pk %}" type="button" class="btn btn-danger">{% trans "Arkadaşlardan Çıkar" %}</a>
 						{% endfor %}
 						<a href="#" type="button" class="btn btn-warning">{% trans "Müsabaka Tertip et" %}</a>
 						<a href="#" type="button" class="btn btn-info">{% trans "Mesaj Gönder" %}</a>
 					{% endif %}
+				{% endif %}
+				{% if kisi.cevrimici == 0 and user in arkadaslar %}
+					{% for arkadas in arkadaslar %}
+					<a href="{% url "arkadas_sistem" alternatif="sil" pk=arkadas.pk %}" type="button" class="btn btn-danger">{% trans "Arkadaşlardan Çıkar" %}</a>
+					{% endfor %}
 				{% endif %}
 			</div>
 		</div>
