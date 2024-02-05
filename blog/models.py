@@ -15,7 +15,6 @@ class Kisiler(models.Model):
 	toplam_mac = models.IntegerField(default=0)
 	zafer_mac = models.IntegerField(default=0)
 	bozgun_mac = models.IntegerField(default=0)
-	engel = models.BooleanField(default=True)
 	cevrimici = models.BooleanField(default=False)
 	slug = models.SlugField(null=False,blank=True, unique=True, db_index=True, editable=False)
 	user = models.OneToOneField(User, on_delete= models.CASCADE)
@@ -41,6 +40,7 @@ class Kisiler(models.Model):
 class Arkadas(models.Model):
 	users = models.ManyToManyField(User)
 	diger_users = models.ForeignKey(User, related_name='sahip', null=True, on_delete= models.CASCADE)
+	engel = models.BooleanField(default=False)
 
 	@classmethod
 	def arkadas_ekle(cls, diger_users, yeni_arkadas):
@@ -56,4 +56,16 @@ class Arkadas(models.Model):
 		arkadas2, created =cls.objects.get_or_create(diger_users=yeni_arkadas)
 		arkadas.users.remove(yeni_arkadas)
 		arkadas2.users.remove(diger_users)
+
+	@classmethod
+	def	arkadas_engelle(cls, diger_users, yeni_arkadas, engel):
+		arkadas, created =cls.objects.get_or_create(diger_users=yeni_arkadas)
+		arkadas.users.add(diger_users)
+		arkadas.engel = True
+
+	@classmethod
+	def	arkadas_kaldir(cls, diger_users, yeni_arkadas, engel):
+		arkadas, created =cls.objects.get_or_create(diger_users=yeni_arkadas)
+		arkadas.users.remove(diger_users)
+		arkadas.engel = False
 

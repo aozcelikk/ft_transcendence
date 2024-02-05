@@ -13,33 +13,54 @@
 <div class="card mb-3">
 	<div class="row">
 		<div class="col-md-3">
+			<br>
 			<img class ="resim" src="{{ kisi.resim.url }}" alt="">
+			<h6 class="card-title" style="text-align: center;">
+			<br>
+			<div class="d-inline-flex alert alert-primary" role="alert">
+				<a style="color:#7a1b0c;" href={% url "kisiler_detay" kisi.slug %}> {{ kisi.tam_adi }} </a>
+			</div>
+			</h6>
 		</div>
 		<div class="col-md-9">
-			<h5 class="card-title">
-			<a href={% url "kisiler_detay" kisi.slug %}> {{ kisi.tam_adi }} </a>
-			</h5>
-			<p class="card-title">{% lorem 1 b %}</p>
+			<p class="card-title">
+				<div class="col-9">
+					<h5>{% trans "İstatik Veriler" %}</h5>
+					<div class="alert alert-secondary" role="alert">
+						<small style="color:green;">{% trans "Kazandığı Maçlar" %} | {{ kisi.zafer_mac }}</small>
+						<br>
+						<hr>
+						<small style="color:red;">{% trans "Kaybettiği Maçlar" %} | {{ kisi.bozgun_mac }}</small>
+						<br>
+						<hr>
+						<small style="color:blue;">{% trans "Toplam Oynadığı Maçlar" %} | {{ kisi.toplam_mac }}</small	>
+					</div>
+				</div>
+			</p>
 			<div class="float-md-end mb-3 ms-md-3">
-				{% if kisi.engel == False %}
-					<a href="#" type="button" class="btn btn-warning">{% trans "Engeli Kaldır" %}</a>
-				{% elif kisi.cevrimici %}
-					{% if kisi.kullanici == user.username %}
-						{% if not user in arkadaslar %}
-							<a href="{% url "arkadas_sistem" alternatif='ekle' pk=user.pk %}" type="button" class="btn btn-success">{% trans "Arkadaşlara Ekle" %}</a>
-						{% endif%}
-						{% for arkadas in arkadaslar %}
-						<a href="{% url "arkadas_sistem" alternatif="sil" pk=arkadas.pk %}" type="button" class="btn btn-danger">{% trans "Arkadaşlardan Çıkar" %}</a>
-						{% endfor %}
-						<a href="#" type="button" class="btn btn-warning">{% trans "Müsabaka Tertip et" %}</a>
-						<a href="#" type="button" class="btn btn-info">{% trans "Mesaj Gönder" %}</a>
-					{% endif %}
+
+				{% if en.engel == True %}	
+					<a href="#" type="button" class="btn btn-dark">{% trans "Engeli Kaldır" %}</a>
+				{% elif en.engel == False %}
+					<a href="#" type="button" class="btn btn-primary">{% trans "Engelle" %}</a>
+				{% endif %}
+
+				{% if kisi.cevrimici %}
+					{% if not user in arkadaslar %}
+						<a href="{% url "arkadas_sistem" alternatif='ekle' pk=user.pk %}" type="button" class="btn btn-success">{% trans "Arkadaşlara Ekle" %}</a>
+					{% endif%}
+					{% for arkadas in arkadaslar %}
+					<a href="{% url "arkadas_sistem" alternatif="sil" pk=arkadas.pk %}" type="button" class="btn btn-danger">{% trans "Arkadaşlardan Çıkar" %}</a>
+					{% endfor %}
+					<a href="#" type="button" class="btn btn-warning">{% trans "Müsabaka Tertip et" %}</a>
+					<a href="#" type="button" class="btn btn-info">{% trans "Mesaj Gönder" %}</a>
 				{% endif %}
 				{% if kisi.cevrimici == 0 and user in arkadaslar %}
 					{% for arkadas in arkadaslar %}
 					<a href="{% url "arkadas_sistem" alternatif="sil" pk=arkadas.pk %}" type="button" class="btn btn-danger">{% trans "Arkadaşlardan Çıkar" %}</a>
 					{% endfor %}
 				{% endif %}
+
 			</div>
 		</div>
 	</div>

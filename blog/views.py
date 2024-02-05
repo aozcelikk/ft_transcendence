@@ -55,6 +55,7 @@ def arkadaslar(request):
 		veri_depo = {}
 		veri_depo['users']=users
 		veri_depo['kisiler']=Kisiler.objects.all()
+		veri_depo['engel']=Arkadas.objects.all()
 		ark=Arkadas.objects.filter(diger_users=request.user)
 		if len(ark)>0:
 			arkadas=Arkadas.objects.get(diger_users=request.user)
@@ -70,6 +71,7 @@ def kisiler(request):
 		veri_depo = {}
 		veri_depo['users']=users
 		veri_depo['kisiler']=Kisiler.objects.all()
+		veri_depo['engel']=Arkadas.objects.all()
 		ark=Arkadas.objects.filter(diger_users=request.user)
 		if len(ark)>0:
 			arkadas=Arkadas.objects.get(diger_users=request.user)
@@ -85,6 +87,7 @@ def cevrimici(request):
 		veri_depo = {}
 		veri_depo['users']=users
 		veri_depo['kisiler']=Kisiler.objects.all()
+		veri_depo['engel']=Arkadas.objects.all()
 		ark=Arkadas.objects.filter(diger_users=request.user)
 		if len(ark)>0:
 			arkadas=Arkadas.objects.get(diger_users=request.user)
@@ -100,5 +103,9 @@ def arkadas_sistem(request, alternatif, pk):
 		Arkadas.arkadas_ekle(request.user, arkadas)
 	elif alternatif == 'sil':
 		Arkadas.arkadas_sil(request.user, arkadas)
+	elif alternatif == 'engelle':
+		Arkadas.arkadas_engelle(request.user,arkadas)
+	elif alternatif == 'kaldir':
+		Arkadas.arkadas_kaldir(request.user,arkadas)
 	return redirect('kisiler')
 
