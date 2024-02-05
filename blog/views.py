@@ -95,6 +95,7 @@ def cevrimici(request):
 
 def arkadas_sistem(request, alternatif, pk):
 	arkadas = User.objects.get(pk=pk)
+	users=request.user
 	if alternatif == 'ekle':
 		Arkadas.arkadas_ekle(request.user, arkadas)
 	elif alternatif == 'sil':

@@ -45,10 +45,17 @@ class Arkadas(models.Model):
 	@classmethod
 	def arkadas_ekle(cls, diger_users, yeni_arkadas):
 		arkadas, created =cls.objects.get_or_create(diger_users=diger_users)
+		arkadas2, created =cls.objects.get_or_create(diger_users=yeni_arkadas)
 		arkadas.users.add(yeni_arkadas)
-	
+		arkadas2.users.add(diger_users)
+
+
 	@classmethod
 	def	arkadas_sil(cls, diger_users, yeni_arkadas):
 		arkadas, created =cls.objects.get_or_create(diger_users=diger_users)
+		arkadas2, created =cls.objects.get_or_create(diger_users=yeni_arkadas)
 		arkadas.users.remove(yeni_arkadas)
+		arkadas2.users.remove(diger_users)
+
+
 	
