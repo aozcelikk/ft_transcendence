@@ -67,45 +67,34 @@ def arkadaslar(request):
 
 def kisiler(request):
 	if request.user.is_authenticated:
-		users=User.objects.exclude(id=request.user.id)
+		users=Kisiler.objects.exclude(id=request.user.id)
 		veri_depo = {}
 		veri_depo['users']=users
-		veri_depo['kisiler']=Kisiler.objects.all()
-		veri_depo['engel']=Arkadas.objects.all()
-		ark=Arkadas.objects.filter(diger_users=request.user)
-		if len(ark)>0:
-			arkadas=Arkadas.objects.get(diger_users=request.user)
-			arkadaslar = arkadas.users.all()
-			veri_depo['arkadaslar']=arkadaslar
 		return render(request, "blog/kisiler.html", veri_depo)
 	return render(request, "blog/index.html")
 
 
 def cevrimici(request):
 	if request.user.is_authenticated:
-		users=User.objects.exclude(id=request.user.id)
+		users=Kisiler.objects.exclude(id=request.user.id)
 		veri_depo = {}
 		veri_depo['users']=users
-		veri_depo['kisiler']=Kisiler.objects.all()
-		veri_depo['engel']=Arkadas.objects.all()
-		ark=Arkadas.objects.filter(diger_users=request.user)
-		if len(ark)>0:
-			arkadas=Arkadas.objects.get(diger_users=request.user)
-			arkadaslar = arkadas.users.all()
-			veri_depo['arkadaslar']=arkadaslar
+		ark=Arkadas.objects.get(diger_users=request.user)
+		arkadaslar = ark.users.all()
+		veri_depo['arkadaslar']=arkadaslar
 		return render(request, "blog/part/_cevrimici.html", veri_depo)
 	return render(request, "blog/index.html")
 
-def arkadas_sistem(request, alternatif, pk):
+def arkadas_sistem(request, alternatif, pk, engel):
 	arkadas = User.objects.get(pk=pk)
 	users=request.user
 	if alternatif == 'ekle':
-		Arkadas.arkadas_ekle(request.user, arkadas)
+		Arkadas.arkadas_ekle(request.user, arkadas, engel)
 	elif alternatif == 'sil':
-		Arkadas.arkadas_sil(request.user, arkadas)
+		Arkadas.arkadas_sil(request.user, arkadas, engel)
 	elif alternatif == 'engelle':
-		Arkadas.arkadas_engelle(request.user,arkadas)
+		Arkadas.arkadas_engelle(request.user,arkadas, engel)
 	elif alternatif == 'kaldir':
-		Arkadas.arkadas_kaldir(request.user,arkadas)
+		Arkadas.arkadas_kaldir(request.user,arkadas, engel)
 	return redirect('kisiler')
 

@@ -16,5 +16,5 @@ urlpatterns = [
 	path(_("kisiler/arkadaslar"), views.arkadaslar, name="arkadaslar"),
 	path(_("kisiler/engellenenler"), views.engellenenler, name="engellenenler"),
 	path(_("kisiler/<slug:slug>"), views.kisiler_detay, name="kisiler_detay"),
-	re_path(r'^kisiler/arkadaslar/(?P<alternatif>.+)/(?P<pk>\d+)/$', views.arkadas_sistem, name="arkadas_sistem"),
+	re_path(r'^kisiler/arkadaslar/(?P<alternatif>.+)/(?P<pk>\d+)/(?P<engel>\d+)/$', views.arkadas_sistem, name="arkadas_sistem"),
 ]

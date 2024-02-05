@@ -40,17 +40,29 @@
 				</div>
 			</p>
 			<div class="float-md-end mb-3 ms-md-3">
-			{% for engell in engeliler %}
-			{{engell}}
-			{{kisi.user.pk}}
-			{{engell.diger_users.pk}}
-			{% if kisi.cevrimici and user in engelliler and kisi.user.pk == engell.diger_users.pk %}
-				<a href="{% url "engel_sistem" opsiyon='kaldir' pk=engel.pk %}" type="button" class="btn btn-dark">{% trans "Engeli Kaldır" %}</a>
-			{% endif %}
-			{% if kisi.cevrimici == 0 and user in engelliler and kisi.user.pk == engell.diger_users.pk %}
-			<a href="{% url "engel_sistem" opsiyon='kaldir' pk=engel.pk %}" type="button" class="btn btn-dark">{% trans "Engeli Kaldır" %}</a>
-			{% endif %}
-			{% endfor %}
+				{% comment %} {% for en in engel %} {% endcomment %}
+				{% if en.engel == True %}	
+					<a href="{% url "arkadas_sistem" alternatif="kaldir" pk=user.pk engel=0 %}" type="button" class="btn btn-dark">{% trans "Engeli Kaldır" %}</a>
+				{% elif en.engel == False %}
+					<a href="{% url "arkadas_sistem" alternatif="engelle" pk=user.pk engel=1 %}" type="button" class="btn btn-primary">{% trans "Engelle" %}</a>
+				{% endif %}
+				{% comment %} {% endfor %} {% endcomment %}
+				{% if kisi.cevrimici %}
+					{% if not user in arkadaslar %}
+						<a href="{% url "arkadas_sistem" alternatif='ekle' pk=user.pk engel=0 %}" type="button" class="btn btn-success">{% trans "Arkadaşlara Ekle" %}</a>
+					{% endif%}
+					{% for arkadas in arkadaslar %}
+					<a href="{% url "arkadas_sistem" alternatif="sil" pk=arkadas.pk engel=0 %}" type="button" class="btn btn-danger">{% trans "Arkadaşlardan Çıkar" %}</a>
+					{% endfor %}
+					<a href="#" type="button" class="btn btn-warning">{% trans "Müsabaka Tertip et" %}</a>
+					<a href="#" type="button" class="btn btn-info">{% trans "Mesaj Gönder" %}</a>
+				{% endif %}
+				{% if kisi.cevrimici == 0 and user in arkadaslar %}
+					{% for arkadas in arkadaslar %}
+					<a href="{% url "arkadas_sistem" alternatif="sil" pk=arkadas.pk %}" type="button" class="btn btn-danger">{% trans "Arkadaşlardan Çıkar" %}</a>
+					{% endfor %}
+				{% endif %}
+
 			</div>
 		</div>
 	</div>

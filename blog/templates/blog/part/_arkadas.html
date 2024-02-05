@@ -31,7 +31,7 @@
 					{% for user in users %}
 						{% if kisi.user.is_staff == False and kisi.user.is_superuser == False %}
 							{% if kisi.user.username == arkadas.username and kisi.user.username == user.username %}
-								{% include "blog/part/_kisi.html" %}
+								{% include "blog/part/_kisi_ark.html" %}
 							{% endif %}
 						{% endif %}
 					{% endfor %}

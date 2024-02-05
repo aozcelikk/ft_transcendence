@@ -6,7 +6,47 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.shortcuts import render
 
+class Arkadas(models.Model):
+	users = models.ManyToManyField(User)
+	diger_users = models.ForeignKey(User, related_name='sahip', null=True, on_delete= models.CASCADE)
+	engel = models.BooleanField(default=False)
 
+	@classmethod
+	def arkadas_ekle(cls, diger_users, yeni_arkadas, engel):
+		arkadas, created =cls.objects.get_or_create(diger_users=diger_users)
+		arkadas2, created =cls.objects.get_or_create(diger_users=yeni_arkadas)
+		arkadas.users.add(yeni_arkadas)
+		arkadas2.users.add(diger_users)
+		arkadas.engel = False
+		arkadas2.engel = False
+
+
+	@classmethod
+	def	arkadas_sil(cls, diger_users, yeni_arkadas, engel):
+		arkadas, created =cls.objects.get_or_create(diger_users=diger_users)
+		arkadas2, created =cls.objects.get_or_create(diger_users=yeni_arkadas)
+		arkadas.users.remove(yeni_arkadas)
+		arkadas2.users.remove(diger_users)
+		arkadas.engel = False
+		arkadas2.engel = False
+
+	@classmethod
+	def	arkadas_engelle(cls, diger_users, yeni_arkadas, engel):
+		arkadas, created =cls.objects.get_or_create(diger_users=diger_users)
+		arkadas2, created =cls.objects.get_or_create(diger_users=yeni_arkadas)
+		arkadas.users.add(yeni_arkadas)
+		arkadas2.users.add(diger_users)
+		arkadas2.engel = True
+		arkadas.engel = False
+
+	@classmethod
+	def	arkadas_kaldir(cls, diger_users, yeni_arkadas, engel):
+		arkadas, created =cls.objects.get_or_create(diger_users=diger_users)
+		arkadas2, created =cls.objects.get_or_create(diger_users=yeni_arkadas)
+		arkadas.users.remove(yeni_arkadas)
+		arkadas2.users.remove(diger_users)
+		arkadas2.engel = False
+		arkadas.engel = False
 
 class Kisiler(models.Model):
 	kullanici = models.CharField(max_length=150, null=False)
@@ -17,8 +57,8 @@ class Kisiler(models.Model):
 	bozgun_mac = models.IntegerField(default=0)
 	cevrimici = models.BooleanField(default=False)
 	slug = models.SlugField(null=False,blank=True, unique=True, db_index=True, editable=False)
-	user = models.OneToOneField(User, on_delete= models.CASCADE)
-
+	user = models.OneToOneField(User, on_delete = models.CASCADE)
+	arkadas = models.OneToOneField(Arkadas, on_delete = models.CASCADE)
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.user)
@@ -36,36 +76,3 @@ class Kisiler(models.Model):
 
 	def __str__(self):
 		return "{0}".format(self.user)
-
-class Arkadas(models.Model):
-	users = models.ManyToManyField(User)
-	diger_users = models.ForeignKey(User, related_name='sahip', null=True, on_delete= models.CASCADE)
-	engel = models.BooleanField(default=False)
-
-	@classmethod
-	def arkadas_ekle(cls, diger_users, yeni_arkadas):
-		arkadas, created =cls.objects.get_or_create(diger_users=diger_users)
-		arkadas2, created =cls.objects.get_or_create(diger_users=yeni_arkadas)
-		arkadas.users.add(yeni_arkadas)
-		arkadas2.users.add(diger_users)
-
-
-	@classmethod
-	def	arkadas_sil(cls, diger_users, yeni_arkadas):
-		arkadas, created =cls.objects.get_or_create(diger_users=diger_users)
-		arkadas2, created =cls.objects.get_or_create(diger_users=yeni_arkadas)
-		arkadas.users.remove(yeni_arkadas)
-		arkadas2.users.remove(diger_users)
-
-	@classmethod
-	def	arkadas_engelle(cls, diger_users, yeni_arkadas, engel):
-		arkadas, created =cls.objects.get_or_create(diger_users=yeni_arkadas)
-		arkadas.users.add(diger_users)
-		arkadas.engel = True
-
-	@classmethod
-	def	arkadas_kaldir(cls, diger_users, yeni_arkadas, engel):
-		arkadas, created =cls.objects.get_or_create(diger_users=yeni_arkadas)
-		arkadas.users.remove(diger_users)
-		arkadas.engel = False
-

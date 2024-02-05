@@ -24,19 +24,15 @@
 		<div class="col-9">
 			<h1>{% trans "Çevrimiçi Olanlar" %}</h1>
 			<hr>
-			{% if kisiler|length > 0 %}
-			{% for kisi in kisiler %}
+			{% if users|length > 0 %}
 				{% for user in users %}
-					{% if kisi.user.is_staff == False and kisi.user.is_superuser == False and kisi.cevrimici == True %}
-						{% if kisi.user.username == user.username %}
-							{% include "blog/part/_kisi.html" %}
-						{% endif %}
+					{% if user.user.is_staff == False and user.user.is_superuser == False and user.cevrimici %}								
+						{% include "blog/part/_kisi_cevri.html" %}
 					{% endif %}
-				{% endfor %} 
-			{% endfor %}
-		{% else %}
-			<div class="alert alert-warning">{% trans "Kimse Bulunmamakta" %}</div>
-		{% endif %}
+				{% endfor %}
+			{% else %}
+				<div class="alert alert-warning">{% trans "Kimse Bulunmamakta" %}</div>
+			{% endif %}
 	</div>
 		</div>
 	</div>
