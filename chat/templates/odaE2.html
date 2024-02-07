@@ -133,23 +133,40 @@
 
     function keyDownHandler(e) {
       if (e.key === "ArrowUp") {
-        pong2Y -= 20;
+		pong1Y -= 10;
       } else if (e.key === "ArrowDown") {
-        pong2Y += 20;
+        pong1Y += 10;
       }
     }
 
-    function handleMessage(message) {
-      if (message === "up") {
-        pong1Y -= 20;
-      } else if (message === "down") {
-        pong1Y += 20;
-      }
+    function startGame() {
+      document.removeEventListener("keydown", startGame);
+
+      let count = 3;
+      const countInterval = setInterval(() => {
+        if (count === 0) {
+          clearInterval(countInterval);
+          document.addEventListener("keydown", keyDownHandler, false);
+        } else {
+          drawCountdown(count);
+          count--;
+        }
+      }, 1000);
     }
+
+    function drawCountdown(count) {
+      context.clearRect(0, 0, pongCanvas.width, pongCanvas.height);
+      drawPong(pongMargin, pong1Y);
+      drawPong(pongCanvas.width - pongMargin - pongWidth, pong2Y);
+      drawBall();
+      context.font = "50px Arial";
+      context.fillStyle = "#fff";
+      context.fillText(count, pongCanvas.width / 2 - 10, pongCanvas.height / 2 + 10);
+    }
+
+    document.addEventListener("keydown", startGame, false);
 
     setInterval(update, 1000 / 60);
-
-    document.addEventListener("keydown", keyDownHandler, false);
   </script>
 </body>
 </html>

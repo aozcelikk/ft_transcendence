@@ -12,71 +12,29 @@
 
 {% block content %}
 
-<div class="container mt-5 pt-5">
-	<h2 class="text-center">Ping Pong</h2>
-	<h3 class="text-center"> Merhaba, {{ request.user.username }}</h3>
-	{% if messages %}
-	{% for messages in messages %}
-		<div class="alert alert-dark">
-			{{ messages }}
-		</div>
-	{% endfor %}
-	{% endif %}
-
-	<form method="post" action="{% url 'sohbet_anasayfa' %}">
-		{% csrf_token %}
-		<div class="col-md-6 mx-auto mt-4">
-			<div class="row">
-				<div class="col-12 col-md-8 col-lg-6 col-xl-5">
-					<label>Seçenek Seçiniz</label>
-					<select class="form-control" name="option">
-						<option value="1">Oda Oluştur</option>
-					</select>
-				</div>
-				<div class="col-12 col-md-8 col-lg-6 col-xl-5">
-					<label>Oda Adı</label>
-					<input type="text" id="oda_ismi" name="oda_ismi" class="form-control">
-				</div>
+<div class="container mt-3">
+	<div class="container py-5 h-200">
+		<div class="row d-flex justify-content-center align-items-center h-200">
+		<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+			<div class="card shadow-2-strong" style="border-radius: 1rem;">
+			<div class="card-body p-5 text-center">
+				<h3 class="mb-5">{% trans "Sohbet Odası" %}</h3>
 				<div class="mb-3">
-					<br>
-					<button type="submit" id="submit" class="btn btn-primary" style="background-color:#7a1b0c;">Oyunu Başlat</button>
-					<a href="{% url 'oyun_gecmis' %}" class="btn btn-dark">Oyun Geçmiş Tablosu</a>
+					<input type="button" id="submit" class="btn btn-primary" value="{% trans "Sohbete Katıl" %}" style="background-color:#7a1b0c;">
 				</div>
 			</div>
 		</div>
-	</form>
-
-	<div class="col-xs-12 text-center">
-		<h1 class ="col-sm-9">Açık Odalar</h1>
 	</div>
-	
-	<form method="post" action="{% url 'sohbet_anasayfa' %}">
-	{% for oda in odalar %}
-	{% if oda.is_over == 0 %}
-		{% csrf_token %}
-		<div class="card-body">
-			<div class="alert alert-success">
-				<input type="hidden" id="option" name="option" value='2'>
-				<input type="hidden" id="oda_ismi" name="oda_ismi" value='{{ oda.room_name }}'>
-				<p>Oyun Odası Adı = {{ oda.room_name }}
-					<button type="submit" id="submit" class="btn btn-primary">Oyuna Katıl</button>
-				</p>
-			</div>
-		</div>
-		{% endif %}
-		{% endfor %}
-	</form>
 </div>
+
 {% endblock %}
 
 {% block js_files %}
-	{% comment %} <script src="{% static 'chat/js/script.js' %}"></script>
+	<script src="{% static 'chat/js/script.js' %}"></script>
 	<script>
-		document.querySelector('#oda_ismi').focus();
-		document.querySelector("#submit").onclick = function(e){
-			var odaismi=document.querySelector('#oda_ismi').value;
-			window.location.replace("/sohbet/" + odaismi + "/");
+		document.getElementById("submit").onclick = function(e){
+			window.location.pathname = "/sohbet/" + 1 + "/";
 		};
-	</script> {% endcomment %}
+	</script>
 {% endblock %}
 

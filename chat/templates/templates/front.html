@@ -1,0 +1,36 @@
+{% extends 'tbase.html' %}
+{% block title %} Tic Tac Toe {% endblock %}
+
+{% block content %}
+	<div class="container mt-5 pt-5">
+        <h2 class="text-center">PLAY TIC TAC</h2>
+		<h3 class="text-center"> Hello, {{ request.user.username }}</h3>
+		<div class="col-md-6 mx-auto mt-4">
+			{% if messages %}
+				{% for messages in messages %}
+					<div class="alert alert-dark">
+						{{ messages }}
+					</div>
+				{% endfor %}
+			{% endif %}
+		<form method="post" action="{% url 'tictac:tictac_create' %}">
+    		{% csrf_token %}
+			<div class="row">
+				<div class="col-md-12 form-group">
+					<label>Choose Option</label>
+					<select class="form-control" name="option">
+						<option>Choose</option>
+						<option value="1">Have Room Code</option>
+						<option value="2">Create Room Code</option>
+					</select>
+        			<div class="col-md-12 form-group">
+        			    <label>Enter Room Code</label>
+        			    <input type="text" name="room_code" class="form-control">
+        			</div>
+    				<button type="submit" class="my-2 btn btn-light">Start Game</button>
+				</div>
+			</div>
+		</form>
+		</div>
+	</div>
+{% endblock %}

@@ -8,7 +8,6 @@ from channels.generic.websocket import WebsocketConsumer
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import async_to_sync
 
-
 import asyncio
 
 from channels.consumer import AsyncConsumer
@@ -17,12 +16,16 @@ from django.contrib.auth.models import User
 from .models import Room, Message
 
 class GameConsumer(AsyncConsumer):
+    room = None
 
     async def websocket_connect(self, event):
+        """
+        Called when the websocket connection is established.
+        """
         print("Websocket connected.")
 
         # Get the room name from the path
-        room_name = self.scope['url_route']['kwargs']['room']
+        room_name = self.scope['url_route']['kwargs']['room_name']
 
         # Get the room object from the database
         self.room = await database_sync_to_async(Room.objects.get)(room_name=room_name)
@@ -127,6 +130,9 @@ class GameConsumer(AsyncConsumer):
             )
 
     async def websocket_disconnect(self, event):
+        """
+        Called when the websocket connection is closed.
+        """
         print("Websocket disconnected.")
 
         # Remove the consumer from the room's group
@@ -135,58 +141,30 @@ class GameConsumer(AsyncConsumer):
             self.channel_name
         )
 
-from channels.generic.websocket import WebsocketConsumer
-from asgiref.sync import async_to_sync
-import json
-
-
-class GameConsumer(WebsocketConsumer):
+class Chating(WebsocketConsumer):
     def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_code']
-        self.room_group_name = 'room_%s' % self.room_name
+        self.room_name = self.scope['url_route']['kwargs']['room_name']
         async_to_sync(self.channel_layer.group_add)(
-            self.room_group_name,
-            self.channel_name
+            self.room_name,self.channel_name
         )
-
         self.accept()
-
-    def disconnect(self, close_code):
-        if close_code == 1006:
-            print("Bağlantı beklenmeyen bir şekilde kapandı.")
-        elif close_code == 1000:
-            print("Bağlantı başarıyla kapatıldı.")
-        elif close_code == 4000:
-            print("Özel bir durum: Bağlantı kapandı. Kod: 4000")
-        else:
-            print(f"Bağlantı kapatıldı. Kod: {close_code}")
+    
+    def disconnect(self, code):
         async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name,
-            self.channel_name
+            self.room_name,self.channel_name
         )
-
+    
     def receive(self, text_data=None, bytes_data=None):
+        data = json.loads(text_data)
+        msg = data["message"]
         async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
+            self.room_name,
             {
-                'type': 'run_game',
-                'payload': text_data
+                "type":"chat_messages",
+                "messages":msg ,
+                "user": str(self.scope['user'])
             }
         )
-
-    def send_message(self, text_data):
-        self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'run_game',
-                'payload': text_data
-            }
-        )
-
-    def run_game(self, event):
-        data = event['payload']
-        data = json.loads(data)
-
-        self.send(text_data=json.dumps({
-            'payload': data['data']
-        }))
+    def chat_messages(self,event):
+        msg = event["messages"]
+        self.send(text_data=json.dumps({"message": msg,"user":event["user"]}))

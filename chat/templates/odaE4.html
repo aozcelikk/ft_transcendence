@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Sohbet Odası</title>
+	<style>
+		* {
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+		}
+
+		canvas {
+			background: #000;
+			display: block;
+			margin: 20px auto;
+		}
+
+		.paddle {
+			background: #fff;
+		}
+		  
+		.ball {
+			background: #fff;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="pongCanvas" width="800" height="400"></canvas>
+
+	<div class="container">
+		<div class="form-floating mb-3">
+			<textarea readonly autofocus id="chatarea" cols="50" rows="15"></textarea>
+		</div>
+		<div class="input-group">
+			<input type="text" class="form-control" id="chatinput" placeholder="İletinizi buraya yazınız">
+			<button id="chatbtn" class="btn btn-primary">Gönder</button>
+			<button id="chatext" class="btn btn-primary" style="background-color:#7a1b0c;">Odadan Çık</button>
+		</div>
+	</div>
+
+	<script>
+		// Oyuncunun skorunu tutar
+		let score = 0;
+
+		// Oyuncunun rakibinin skorunu tutar
+		let opponentScore = 0;
+
+		// Oyuncunun topu vurup vurmadığını tutar
+		let hitBall = false;
+
+		// Oyuncunun rakibinin topu vurup vurmadığını tutar
+		let opponentHitBall = false;
+
+		// Oyunun bittiğini tutar
+		let gameOver = false;
+
+		// Oyuncunun sopasının konumunu tutar
+		let paddlePosition = 0;
+
+		// Oyuncunun rakibinin sopasının konumunu tutar
+		let opponentPaddlePosition = 0;
+
+		// Topun konumunu tutar
+		let ballPosition = {
+			x: 0,
+			y: 0
+		};
+
+		// Topun hızını tutar
+		let ballSpeed = {
+			x: 0,
+			y: 0
+		};
+
+		// Oyun alanının boyutlarını tutar
+		let courtDimensions = {
+			width: 800,
+			height: 400
+		};
+
+		// Oyuncunun sopasının boyutlarını tutar
+		let paddleDimensions = {
+			width: 20,
+			height: 100
+		};
+
+		// Oyuncunun rakibinin sopasının boyutlarını tutar
+		let opponentPaddleDimensions = {
+			width: 20,
+			height: 100
+		};
+
+		// Topun boyutlarını tutar
+		let ballDimensions = {
+			width: 10,
+			height: 10
+		};
+
+		// Oyuncunun sopasını hareket ettirmek için kullanılan fonksiyon
+		function movePaddle(e) {
+			// Oyuncunun sopasının konumunu günceller
+			if (e.key === "ArrowUp") {
+				paddlePosition -= 10;
+			} else if (e.key === "ArrowDown") {
+				paddlePosition += 10;
+			}
+
+			// Oyuncunun sopasının oyun alanının dışına çıkmasını önler
+			if (paddlePosition < 0) {
+				paddlePosition = 0;
+			} else if (paddlePosition > courtDimensions.height - paddleDimensions.height) {
+				paddlePosition = courtDimensions.height - paddleDimensions.height;
+			}
+		}
+
+		// Oyuncunun rakibinin sopasını hareket ettirmek için kullanılan fonksiyon
+		function moveOpponentPaddle(e) {
+			// Oyuncunun rakibinin sopasının konumunu günceller
+			if (e.key === "w") {
+				opponentPaddlePosition -= 10;
+			} else if (e.key === "s") {
+				opponentPaddlePosition += 10;
+			}
+
+			// Oyuncunun rakibinin sopasının oyun alanının dışına çıkmasını önler
+			if (opponentPaddlePosition < 0) {
+				opponentPaddlePosition = 0;
+			} else if (opponentPaddlePosition > courtDimensions.height - opponentPaddleDimensions.height) {
+				opponentPaddlePosition = courtDimensions.height - opponentPaddleDimensions.height;
+			}
+		}
+
+		// Topu hareket ettirmek için kullanılan fonksiyon
+		function moveBall() {
+			// Topun konumunu günceller
+			ballPosition.x += ballSpeed.x;
+			ballPosition.y += ballSpeed.y;
+
+			// Topun oyun alanının duvarlarına çarpmasını kontrol eder
+			if (ballPosition.x < 0 || ballPosition.x > courtDimensions.width) {
+				ballSpeed.x = -ballSpeed.x;
+			}
+
+			if (ballPosition.y < 0 || ballPosition.y > courtDimensions.height) {
+				ballSpeed.y = -ballSpeed.y;
+			}
+
+			// Topun oyuncuların sopalarına çarpmasını kontrol eder
+			if (ballPosition.x < paddlePosition + paddleDimensions.width &&
+					ballPosition.x > paddlePosition &&
+					ballPosition.y < paddlePosition + paddleDimensions.height &&
+					ballPosition.y > paddlePosition) {
+				ballSpeed.x = -ballSpeed.x;
+				hitBall = true;
+			}
+
+			if (ballPosition.x < opponentPaddlePosition + opponentPaddleDimensions.width &&
+					ballPosition.x > opponentPaddlePosition &&
+					ballPosition.y < opponentPaddlePosition + opponentPaddleDimensions.height &&
+					ballPosition.y > opponentPaddlePosition) {
+				ballSpeed.x = -ballSpeed.x;
+				opponentHitBall = true;
+			}
+
+			// Oyunun bitmesini kontrol eder
+			if (score >= 11 || opponentScore >= 11) {
+				gameOver = true;
+			}
+		}
+
+		// Oyunu başlatmak için kullanılan fonksiyon
+		function startGame() {
+			// Topun başlangıç hızını ayarlar
+			ballSpeed.x = 5;
+			ballSpeed.y = 5;
+
+			// Oyun döngüsünü başlatır
+			setInterval(moveBall, 10);
+		}
+
+		// Oyuncu 1'in sopasını hareket ettirmek için kullanılan olay dinleyicisi
+		document.addEventListener('keydown', movePaddle);
+
+		// Oyuncu 2'nin sopasını hareket ettirmek için kullanılan olay dinleyicisi
+		document.addEventListener('keydown', moveOpponentPaddle);
+
+		// Oyunu başlatmak için kullanılan olay dinleyicisi
+		document.addEventListener('click', startGame);
+
+		// Oyuncuların sopalarının ve topun konumlarını diğer oyuncuya göndermek için kullanılan WebSocket bağlantısı
+		const socket = new WebSocket('ws://' + window.location.host + '/ws/sohbet/' + 2 + '/');
+
+		// WebSocket bağlantısı açıldığında tetiklenen olay işleyicisi
+		socket.onopen = function() {
+			console.log('WebSocket bağlantısı açıldı.');
+		};
+
+		// WebSocket bağlantısı kapandığında tetiklenen olay işleyicisi
+		socket.onclose = function() {
+			console.log('WebSocket bağlantısı kapandı.');
+		};
+
+		// WebSocket bağlantısı üzerinden mesaj alındığında tetiklenen olay işleyicisi
+		socket.onmessage = function(event) {
+			const data = JSON.parse(event.data);
+
+			// Mesajın türüne göre işlem yap
+			switch (data.type) {
+				case 'paddlePosition':
+					// Diğer oyuncunun sopasının konumunu güncelle
+					opponentPaddlePosition = data.position;
+					break;
+
+				case 'ballPosition':
+					// Topun konumunu güncelle
+					ballPosition = data.position;
+					break;
+			}
+		};
+
+		// Oyuncunun sopasının konumunu diğer oyuncuya göndermek için kullanılan fonksiyon
+		function sendPaddlePosition() {
+			const data = {
+				type: 'paddlePosition',
+				position: paddlePosition
+			};
+
+			socket.send(JSON.stringify(data));
+		}
+
+		// Topun konumunu diğer oyuncuya göndermek için kullanılan fonksiyon
+		function sendBallPosition() {
+			const data = {
+				type: 'ballPosition',
+				position: ballPosition
+			};
+
+			socket.send(JSON.stringify(data));
+		}
+
+		// Oyuncu 1'in sopasını hareket ettirdiğinde tetiklenen olay işleyicisi
+		document.addEventListener('keydown', sendPaddlePosition);
+
+		// Top hareket ettiğinde tetiklenen olay işleyicisi
+		setInterval(sendBallPosition, 10);
+
+		// Sohbet kısmı
+		var chatsocket = new WebSocket(
+			'ws://' + window.location.host + '/ws/sohbet/' + 1 + '/'
+		);
+
+		chatsocket.onmessage = function (e) {
+			const message = JSON.parse(e.data);
+			handleMessage(message);
+		};
+
+		chatsocket.onmessage = function (e) {
+			const data = JSON.parse(e.data);
+			document.querySelector("#chatarea").value += (data.user + ":" + data.message + '\n');
+			console.log(data.message);
+		};
+
+		document.getElementById("chatbtn").onclick = function (e) {
+			const msg = document.getElementById("chatinput").value;
+			chatsocket.send(JSON.stringify({ type: msg }));
+			document.querySelector("#chatinput").value = '';
+		};
+
+		document.querySelector("#chatinput").focus();
+		document.querySelector("#chatinput").onkeydown = function (e) {
+			if (e.keyCode === 13) {
+				document.querySelector("#chatbtn").click();
+			}
+		};
+
+		var chatextt = document.querySelector("#chatext");
+		var text = "Sohbet Odasında Çıkıldı";
+		chatextt.onclick = function () {
+			window.alert(text);
+			document.location.href = '{% url "sohbet_anasayfa" %}';
+		};
+	</script>
+</body>
+</html>
