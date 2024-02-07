@@ -1,13 +1,9 @@
-from channels.routing import ProtocolTypeRouter, URLRouter
-from channels.auth import AuthMiddlewareStack
-from channels.security.websocket import AllowedHostsOriginValidator
-from chat.consumer import Chating
-from django.utils.translation import gettext as _
-from django.conf.urls.i18n import i18n_patterns
-from django.utils import translation
-from django.urls import re_path
-
+from django.urls import path,re_path
+from .consumer import GameConsumer
 
 websocket_urlpatterns = [
-	re_path(r"ws/sohbet/(?P<room_name>\w+)/$", Chating.as_asgi()),
+#    path('ws/game/<room_code>', GameConsumer.as_asgi()),
+#	re_path(r"ws/sohbet/(?P<room_name>\w+)/$", GameConsumer.as_asgi()),
+# 	re_path(r'ws/sohbet/(?P<player_id>\d+)/$', GameConsumer.as_asgi()),
+	path('ws/sohbet/<str:room_name>/', GameConsumer.as_asgi()),
 ]

@@ -3,6 +3,14 @@
 const chatsocket = new WebSocket(
 	'ws://' + window.location.host + '/ws/sohbet/' + 1 + '/'
 )
+
+	
+chatsocket.onmessage = function (e) {
+  const message = JSON.parse(e.data);
+  handleMessage(message);
+};
+
+
 //karakter alanından mesajları alıyor javascript dizisine dönüştürme
 chatsocket.onmessage = function(e){
 	const data = JSON.parse(e.data);
