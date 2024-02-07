@@ -124,6 +124,7 @@ def cevrimici(request):
 		users=Kisiler.objects.exclude(id=request.user.id)
 		veri_depo = {}
 		veri_depo['users']=users
+		veri_depo['engel']=Engel.objects.all()
 		ark=Arkadas.objects.filter(diger_users=request.user)
 		eng=Engel.objects.filter(diger_users=request.user)
 		if len(ark)>0:

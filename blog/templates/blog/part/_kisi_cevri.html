@@ -38,22 +38,22 @@
 				</div>
 			</p>
 			<div class="float-md-end mb-3 ms-md-3">
-				{% comment %} {% if user.user in engeliler %} {% endcomment %}
-				{% comment %} {% if eng.engelkarsi == True and eng.diger_users.pk != user.pk and user.user.pk == user.pk%}	 {% endcomment %}
-					<a href="{% url "engel_sistem" opsiyon='kaldir' pk=user.pk %}" type="button" class="btn btn-dark">{% trans "Engeli Kaldır" %}</a>
-				{% comment %} {% endif %} {% endcomment %}
-				{% comment %} {% if user.pk == eng.diger_users.pk %} {% endcomment %}
-				{% if not user.user in engeliler %}
-				{% comment %} {% if eng.engelbiz == False and eng.engelkarsi == False and eng.diger_users.pk == user.pk %} {% endcomment %}
-					<a href="{% url "engel_sistem" opsiyon='engelle' pk=user.pk %}" type="button" class="btn btn-primary">{% trans "Engelle" %}</a>
-				{% endif %}
-				{% if not user.user in arkadaslar %}
-				<a href="{% url "arkadas_sistem" alternatif='ekle' pk=user.pk %}" type="button" class="btn btn-success">{% trans "Arkadaşlara Ekle" %}</a>
-				{% else %}
-				<a href="{% url "arkadaslar" %}" type="button" class="btn btn-primary" aria-current="true">{% trans "Arkadaşsın" %}</a>
-				{% endif%}
-				<a href="#" type="button" class="btn btn-warning">{% trans "Müsabaka Tertip et" %}</a>
-				<a href="#" type="button" class="btn btn-info">{% trans "Mesaj Gönder" %}</a>
+			{% comment %} {% if user.user in engeliler and user.user.pk == engell.diger_users.pk %}
+				<a href="{% url "engel_sistem" opsiyon='kaldir' pk=user.pk %}" type="button" class="btn btn-dark">{% trans "Engeli Kaldır" %}</a>
+			{% endif %} {% endcomment %}
+			{% for eng in engel %}
+			{{eng.users.engel_id}}
+			{% endfor %}
+			{% if not user.user in engelliler %}
+				<a href="{% url "engel_sistem" opsiyon='engelle' pk=user.pk %}" type="button" class="btn btn-primary">{% trans "Engelle" %}</a>
+			{% if not user.user in arkadaslar %}
+			<a href="{% url "arkadas_sistem" alternatif='ekle' pk=user.pk %}" type="button" class="btn btn-success">{% trans "Arkadaşlara Ekle" %}</a>
+			{% else %}
+			<a href="{% url "arkadaslar" %}" type="button" class="btn btn-primary" aria-current="true">{% trans "Arkadaşsın" %}</a>
+			{% endif%}
+			<a href="#" type="button" class="btn btn-warning">{% trans "Müsabaka Tertip et" %}</a>
+			<a href="#" type="button" class="btn btn-info">{% trans "Mesaj Gönder" %}</a>
+			{% endif %}
 			</div>
 		</div>
 	</div>

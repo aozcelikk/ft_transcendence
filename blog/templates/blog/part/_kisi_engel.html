@@ -41,10 +41,13 @@
 			</p>
 			<div class="float-md-end mb-3 ms-md-3">
 			{% for engell in engeliler %}
-			{% if kisi.cevrimici and user in engelliler and engell.engel == True and kisi.user.username == user.username %}
+			{{engell}}
+			{{kisi.user.pk}}
+			{{engell.diger_users.pk}}
+			{% if kisi.cevrimici and user in engelliler and kisi.user.pk == engell.diger_users.pk %}
 				<a href="{% url "engel_sistem" opsiyon='kaldir' pk=engel.pk %}" type="button" class="btn btn-dark">{% trans "Engeli Kaldır" %}</a>
 			{% endif %}
-			{% if kisi.cevrimici == 0 and user in engelliler %}
+			{% if kisi.cevrimici == 0 and user in engelliler and kisi.user.pk == engell.diger_users.pk %}
 			<a href="{% url "engel_sistem" opsiyon='kaldir' pk=engel.pk %}" type="button" class="btn btn-dark">{% trans "Engeli Kaldır" %}</a>
 			{% endif %}
 			{% endfor %}

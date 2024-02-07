@@ -10,22 +10,27 @@ from django.shortcuts import render
 class Engel(models.Model):
 	users = models.ManyToManyField(User)
 	diger_users = models.ForeignKey(User, related_name='kisiengel', null=True, on_delete= models.CASCADE)
-	engel = models.BooleanField(default=False)
+
 
 	@classmethod
 	def	engel_engelle(cls, diger_users, yeni_arkadas):
 		engel, created = cls.objects.get_or_create(diger_users=diger_users)
+		# engel2, created = cls.objects.get_or_create(diger_users=yeni_arkadas)
 		engel.users.add(yeni_arkadas)
-		engel.engel= True
-		# engel.save()
+		# engel2.users.add(diger_users)
 
 
 	@classmethod
 	def	engel_kaldir(cls, diger_users, yeni_arkadas):
 		engel, created = cls.objects.get_or_create(diger_users=diger_users)
+		# engel2, created = cls.objects.get_or_create(diger_users=yeni_arkadas)
 		engel.users.remove(yeni_arkadas)
-		engel.engel = False
-		# engel.save()
+		# engel2.users.remove(diger_users)
+
+
+	def __str__(self):
+		return "{0}".format(self.diger_users)
+
 
 
 
