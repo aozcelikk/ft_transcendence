@@ -79,9 +79,11 @@ def cevrimici(request):
 		users=Kisiler.objects.exclude(id=request.user.id)
 		veri_depo = {}
 		veri_depo['users']=users
-		ark=Arkadas.objects.get(diger_users=request.user)
-		arkadaslar = ark.users.all()
-		veri_depo['arkadaslar']=arkadaslar
+		ark=Kisiler.objects.filter(diger_users=request.user)
+		if len(ark)>0:
+			arkadas=Kisiler.objects.get(diger_users=request.user)
+			arkadaslar = arkadas.users.all()
+			veri_depo['arkadaslar']=arkadaslar
 		return render(request, "blog/part/_cevrimici.html", veri_depo)
 	return render(request, "blog/index.html")
 

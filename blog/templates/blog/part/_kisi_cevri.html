@@ -38,7 +38,7 @@
 				</div>
 			</p>
 			<div class="float-md-end mb-3 ms-md-3">
-				{{user.user.engel}}
+				{{user.arkadas}}
 				{% if user.engel == True %}	
 				<a href="{% url "arkadas_sistem" alternatif="kaldir" pk=user.pk engel=0 %}" type="button" class="btn btn-dark">{% trans "Engeli Kaldır" %}</a>
 				{% elif user.user.engel == False %}
