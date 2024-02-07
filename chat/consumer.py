@@ -3,20 +3,23 @@
 #soketinin Ip adresi, kullanıcı gibi tek bir gelen bağlantı hakkında bir dizi ayrıntıdır
 # events - bağlanma, bağlantıyı kesme, mesaj alma olayı
 
-import json
 # from channels.generic.websocket import WebsocketConsumer
+import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
+from asgiref.sync import sync_to_async
+from .models import Room
 
 class GameConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         # Get the room name from the URL
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
+        self.player_id = self.scope['url_route']['kwargs']['room_name']
+        self.room_name = 'player_%s' % self.player_id
 
         # Join the room group
         await self.channel_layer.group_add(
             self.room_name,
-            self.channel_name
+            self.channel_name,
         )
 
         await self.accept()
@@ -25,8 +28,22 @@ class GameConsumer(AsyncWebsocketConsumer):
         # Leave the room group
         await self.channel_layer.group_discard(
             self.room_name,
-            self.channel_name
+            self.channel_name,
         )
+
+        # channel_layer = get_channel_layer()
+        # num_players = await channel_layer.group_send(self.room_name)
+        # if num_players == 1:
+        #     # Send a game over message to the remaining player
+        #     await self.channel_layer.group_send(
+        #         self.room_name,
+        #         {
+        #             'type': 'gameOver',
+        #         }
+        #     )
+
+        #     # Save the game over status to the database
+        #     await sync_to_async(self.save_game_over_status)()
 
     # Receive message from WebSocket
     async def receive(self, text_data):
@@ -36,13 +53,14 @@ class GameConsumer(AsyncWebsocketConsumer):
         if message_type == 'paddlePosition':
             # Update the paddle position
             self.paddle_position = data['position']
+            self.player = data['player']
 
             # Send the updated paddle position to other users in the room
             await self.channel_layer.group_send(
                 self.room_name,
                 {
                     'type': 'paddlePosition',
-                    'player': self.channel_name,
+                    'player': self.player,
                     'position': self.paddle_position
                 }
             )
@@ -62,13 +80,13 @@ class GameConsumer(AsyncWebsocketConsumer):
         elif message_type == 'playerScore':
             # Update the player score
             self.player_score = data['score']
-            print(data['score'])
+            self.player = data['player']
             # Send the updated player score to other users in the room
             await self.channel_layer.group_send(
                 self.room_name,
                 {
                     'type': 'playerScore',
-                    'player': self.channel_name,
+                    'player': self.player,
                     'score': self.player_score
                 }
             )
@@ -78,7 +96,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 self.room_name,
                 {
-                    'type': 'gameOver'
+                    'type': 'gameOver',
                 }
             )
 
@@ -133,7 +151,16 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     # Handle game over messages from other users
     async def gameOver(self, event):
+        self.is_over = True
         # Send the game over message to the client
         await self.send_message({
-            'type': 'gameOver'
+            'type': 'gameOver',
         })
+        #await sync_to_async(self.save_game_over_status)()
+        await self.save_game_over_status()
+
+    @sync_to_async
+    def save_game_over_status(self):
+        room = Room.objects.get(room_name=self.room_name)
+        room.is_over = True
+        room.save()
