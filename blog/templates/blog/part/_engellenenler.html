@@ -26,11 +26,11 @@
 			<hr>
 			{% if kisiler|length > 0 %}
 			{% for kisi in kisiler %}
-				{% for arkadas in arkadaslar %}
+				{% for engel in engelliler %}
 					{% for user in users %}
 						{% if kisi.user.is_staff == False and kisi.user.is_superuser == False %}
-							{% if kisi.user.username == arkadas.username and kisi.user.username == user.username %}
-								{% include "blog/part/_kisi.html" %}
+							{% if kisi.user.username == engel.username and kisi.user.username == user.username %}
+								{% include "blog/part/_kisi_engel.html" %}
 							{% endif %}
 						{% endif %}
 					{% endfor %}

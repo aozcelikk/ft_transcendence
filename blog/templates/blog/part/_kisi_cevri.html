@@ -38,14 +38,17 @@
 				</div>
 			</p>
 			<div class="float-md-end mb-3 ms-md-3">
-				{{user.arkadas}}
-				{% if user.engel == True %}	
-				<a href="{% url "arkadas_sistem" alternatif="kaldir" pk=user.pk engel=0 %}" type="button" class="btn btn-dark">{% trans "Engeli Kaldır" %}</a>
-				{% elif user.user.engel == False %}
-				<a href="{% url "arkadas_sistem" alternatif="engelle" pk=user.pk engel=1 %}" type="button" class="btn btn-primary">{% trans "Engelle" %}</a>
+				{% comment %} {% if user.user in engeliler %} {% endcomment %}
+				{% comment %} {% if eng.engelkarsi == True and eng.diger_users.pk != user.pk and user.user.pk == user.pk%}	 {% endcomment %}
+					<a href="{% url "engel_sistem" opsiyon='kaldir' pk=user.pk %}" type="button" class="btn btn-dark">{% trans "Engeli Kaldır" %}</a>
+				{% comment %} {% endif %} {% endcomment %}
+				{% comment %} {% if user.pk == eng.diger_users.pk %} {% endcomment %}
+				{% if not user.user in engeliler %}
+				{% comment %} {% if eng.engelbiz == False and eng.engelkarsi == False and eng.diger_users.pk == user.pk %} {% endcomment %}
+					<a href="{% url "engel_sistem" opsiyon='engelle' pk=user.pk %}" type="button" class="btn btn-primary">{% trans "Engelle" %}</a>
 				{% endif %}
 				{% if not user.user in arkadaslar %}
-					<a href="{% url "arkadas_sistem" alternatif='ekle' pk=user.pk engel=0 %}" type="button" class="btn btn-success">{% trans "Arkadaşlara Ekle" %}</a>
+				<a href="{% url "arkadas_sistem" alternatif='ekle' pk=user.pk %}" type="button" class="btn btn-success">{% trans "Arkadaşlara Ekle" %}</a>
 				{% else %}
 				<a href="{% url "arkadaslar" %}" type="button" class="btn btn-primary" aria-current="true">{% trans "Arkadaşsın" %}</a>
 				{% endif%}
