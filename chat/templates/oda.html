@@ -6,40 +6,41 @@
 	<title>Ping Pong Oyunu</title>
 <style>
 	body {
-	margin: 0;
-	padding: 200px;
-	overflow: hidden;
-	background-color: #111;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
-	font-family: Arial, sans-serif;
+		margin: 0;
+		padding: 200px;
+		overflow: hidden;
+		background-color: #111;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+		font-family: Arial, sans-serif;
 	}
 		
 	#pong {
-	background-color: #222;
-	display: block;
-	margin: auto;
-	border: 2px solid #fff;
-	box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-	border-radius: 5px;
+		background-color: #222;
+		display: block;
+		margin: auto;
+		border: 2px solid #fff;
+		box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+		border-radius: 5px;
+		font-size : 32px;
 	}
 
 	#scoreboard {
-	color: #fff;
-	font-size: 24px;
-	text-align: center;
-	margin-top: 20px;
+		color: #fff;
+		font-size: 24px;
+		text-align: center;
+		margin-top: 20px;
 	}
 		
 	button {
-	padding: 10px 20px;
-	font-size: 16px;
-	background-color: #fff;
-	border: none;
-	border-radius: 4px;
-	cursor: pointer;
-	margin: 0 10px;
+		padding: 10px 20px;
+		font-size: 16px;
+		background-color: #fff;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		margin: 0 10px;
 	}
 
 	#message {
@@ -90,9 +91,11 @@
 				ballSpeed.y = 8;
 				// Oyun döngüsünü başlatır
 				gameLoop();
+			}else{
+				setTimeout(function() {
+					window.location.reload();
+				  }, 1000);
 			}
-			else
-				window.location.reload();
 		}
 	};
 
@@ -408,7 +411,7 @@
 		}
 	}
 	// Top Hareketi
-	setInterval(moveBall, 60);
+	setInterval(moveBall, 30);
 </script>
 </body>
 </html>

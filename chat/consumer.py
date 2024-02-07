@@ -32,7 +32,7 @@ class GameConsumer(AsyncWebsocketConsumer):
         )
 
         channel_layer = get_channel_layer()
-        num_players = await channel_layer.group_count(self.room_name)
+        num_players = await channel_layer.group_send(self.room_name)
         if num_players == 1:
             # Send a game over message to the remaining player
             await self.channel_layer.group_send(
