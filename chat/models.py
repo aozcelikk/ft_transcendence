@@ -1,11 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
-class Message(models.Model):
-    content = models.TextField()
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-
 class Room(models.Model):
     name = models.CharField(max_length=255, unique=True)
     room_name = models.CharField(max_length=255, unique=True, default='')

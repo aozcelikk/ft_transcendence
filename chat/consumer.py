@@ -4,189 +4,136 @@
 # events - bağlanma, bağlantıyı kesme, mesaj alma olayı
 
 import json
-from channels.generic.websocket import WebsocketConsumer
+# from channels.generic.websocket import WebsocketConsumer
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import async_to_sync
 
+class GameConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        # Get the room name from the URL
+        self.room_name = self.scope['url_route']['kwargs']['room_name']
 
-import asyncio
-
-from channels.consumer import AsyncConsumer
-from channels.db import database_sync_to_async
-from django.contrib.auth.models import User
-from .models import Room, Message
-
-class GameConsumer(AsyncConsumer):
-
-    async def websocket_connect(self, event):
-        print("Websocket connected.")
-
-        # Get the room name from the path
-        room_name = self.scope['url_route']['kwargs']['room']
-
-        # Get the room object from the database
-        self.room = await database_sync_to_async(Room.objects.get)(room_name=room_name)
-
-        # Add the consumer to the room's group
+        # Join the room group
         await self.channel_layer.group_add(
-            self.room.group_name,
+            self.room_name,
             self.channel_name
         )
 
-        # Accept the websocket connection
-        await self.send({
-            "type": "websocket.accept"
-        })
+        await self.accept()
 
-    async def websocket_receive(self, event):
-        """
-        Called when a message is received from the websocket.
-        """
-        print("Websocket message received.")
+    async def disconnect(self, close_code):
+        # Leave the room group
+        await self.channel_layer.group_discard(
+            self.room_name,
+            self.channel_name
+        )
 
-        # Get the data from the message
-        data = event['text']
-
-        # Parse the data as JSON
-        data = json.loads(data)
-
-        # Get the message type
+    # Receive message from WebSocket
+    async def receive(self, text_data):
+        data = json.loads(text_data)
         message_type = data['type']
-
-        # Handle the message based on the type
+        # Handle different message types
         if message_type == 'paddlePosition':
-            # Get the player number and paddle position from the data
-            player_number = data['player']
-            paddle_position = data['position']
+            # Update the paddle position
+            self.paddle_position = data['position']
 
-            # Update the paddle position in the database
-            if player_number == 1:
-                self.room.player1_paddle_position = paddle_position
-            else:
-                self.room.player2_paddle_position = paddle_position
-
-            await database_sync_to_async(self.room.save)()
-
-            # Send the paddle position to the other player
+            # Send the updated paddle position to other users in the room
             await self.channel_layer.group_send(
-                self.room.group_name,
+                self.room_name,
                 {
                     'type': 'paddlePosition',
-                    'player': player_number,
-                    'position': paddle_position
+                    'player': self.channel_name,
+                    'position': self.paddle_position
                 }
             )
 
         elif message_type == 'ballPosition':
-            # Get the ball position from the data
-            ball_position = data['position']
-
-            # Update the ball position in the database
-            self.room.ball_position = ball_position
-            await database_sync_to_async(self.room.save)()
-
-            # Send the ball position to both players
+            # Update the ball position
+            self.ball_position = data['position']
+            # Send the updated ball position to other users in the room
             await self.channel_layer.group_send(
-                self.room.group_name,
+                self.room_name,
                 {
                     'type': 'ballPosition',
-                    'position': ball_position
+                    'position': self.ball_position
                 }
             )
 
         elif message_type == 'playerScore':
-            # Get the player number and score from the data
-            player_number = data['player']
-            score = data['score']
-
-            # Update the player's score in the database
-            if player_number == 1:
-                self.room.player1_score = score
-            else:
-                self.room.player2_score = score
-
-            await database_sync_to_async(self.room.save)()
-
-            # Send the player's score to both players
+            # Update the player score
+            self.player_score = data['score']
+            print(data['score'])
+            # Send the updated player score to other users in the room
             await self.channel_layer.group_send(
-                self.room.group_name,
+                self.room_name,
                 {
                     'type': 'playerScore',
-                    'player': player_number,
-                    'score': score
+                    'player': self.channel_name,
+                    'score': self.player_score
                 }
             )
 
         elif message_type == 'gameOver':
-            # Send the game over message to both players
+            # The game is over
             await self.channel_layer.group_send(
-                self.room.group_name,
+                self.room_name,
                 {
                     'type': 'gameOver'
                 }
             )
 
-    async def websocket_disconnect(self, event):
-        print("Websocket disconnected.")
+    # Send message to WebSocket
+    async def send_message(self, data):
+        await self.send(json.dumps(data))
 
-        # Remove the consumer from the room's group
-        await self.channel_layer.group_discard(
-            self.room.group_name,
-            self.channel_name
-        )
+    # Handle paddle position updates from other users
+    async def paddlePosition(self, event):
+        player = event['player']
+        position = event['position']
 
-from channels.generic.websocket import WebsocketConsumer
-from asgiref.sync import async_to_sync
-import json
+        # Update the paddle position
+        if player != self.channel_name:
+            self.paddle_position = position
 
+        # Send the updated paddle position to the client
+        await self.send_message({
+            'type': 'paddlePosition',
+            'player': player,
+            'position': position
+        })
 
-class GameConsumer(WebsocketConsumer):
-    def connect(self):
-        self.room_name = self.scope['url_route']['kwargs']['room_code']
-        self.room_group_name = 'room_%s' % self.room_name
-        async_to_sync(self.channel_layer.group_add)(
-            self.room_group_name,
-            self.channel_name
-        )
+    # Handle ball position updates from other users
+    async def ballPosition(self, event):
+        position = event['position']
 
-        self.accept()
+        # Update the ball position
+        self.ball_position = position
 
-    def disconnect(self, close_code):
-        if close_code == 1006:
-            print("Bağlantı beklenmeyen bir şekilde kapandı.")
-        elif close_code == 1000:
-            print("Bağlantı başarıyla kapatıldı.")
-        elif close_code == 4000:
-            print("Özel bir durum: Bağlantı kapandı. Kod: 4000")
-        else:
-            print(f"Bağlantı kapatıldı. Kod: {close_code}")
-        async_to_sync(self.channel_layer.group_discard)(
-            self.room_group_name,
-            self.channel_name
-        )
+        # Send the updated ball position to the client
+        await self.send_message({
+            'type': 'ballPosition',
+            'position': position
+        })
 
-    def receive(self, text_data=None, bytes_data=None):
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
-            {
-                'type': 'run_game',
-                'payload': text_data
-            }
-        )
+    # Handle player score updates from other users
+    async def playerScore(self, event):
+        player = event['player']
+        score = event['score']
 
-    def send_message(self, text_data):
-        self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                'type': 'run_game',
-                'payload': text_data
-            }
-        )
+        # Update the player score
+        if player != self.channel_name:
+            self.player_score = score
 
-    def run_game(self, event):
-        data = event['payload']
-        data = json.loads(data)
+        # Send the updated player score to the client
+        await self.send_message({
+            'type': 'playerScore',
+            'player': player,
+            'score': score
+        })
 
-        self.send(text_data=json.dumps({
-            'payload': data['data']
-        }))
+    # Handle game over messages from other users
+    async def gameOver(self, event):
+        # Send the game over message to the client
+        await self.send_message({
+            'type': 'gameOver'
+        })

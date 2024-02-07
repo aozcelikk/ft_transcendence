@@ -190,7 +190,7 @@
 		document.addEventListener('click', startGame);
 
 		// Oyuncuların sopalarının ve topun konumlarını diğer oyuncuya göndermek için kullanılan WebSocket bağlantısı
-		const socket = new WebSocket('ws://' + window.location.host + '/ws/sohbet/' + 2 + '/');
+		const socket = new WebSocket('ws://' + window.location.host + '/ws/sohbet/' + 1 + '/');
 
 		// WebSocket bağlantısı açıldığında tetiklenen olay işleyicisi
 		socket.onopen = function() {
@@ -202,23 +202,6 @@
 			console.log('WebSocket bağlantısı kapandı.');
 		};
 
-		// WebSocket bağlantısı üzerinden mesaj alındığında tetiklenen olay işleyicisi
-		socket.onmessage = function(event) {
-			const data = JSON.parse(event.data);
-
-			// Mesajın türüne göre işlem yap
-			switch (data.type) {
-				case 'paddlePosition':
-					// Diğer oyuncunun sopasının konumunu güncelle
-					opponentPaddlePosition = data.position;
-					break;
-
-				case 'ballPosition':
-					// Topun konumunu güncelle
-					ballPosition = data.position;
-					break;
-			}
-		};
 
 		// Oyuncunun sopasının konumunu diğer oyuncuya göndermek için kullanılan fonksiyon
 		function sendPaddlePosition() {
@@ -246,6 +229,23 @@
 		// Top hareket ettiğinde tetiklenen olay işleyicisi
 		setInterval(sendBallPosition, 10);
 
+		// WebSocket bağlantısı üzerinden mesaj alındığında tetiklenen olay işleyicisi
+		socket.onmessage = function(event) {
+			const data = JSON.parse(event.data);
+
+			// Mesajın türüne göre işlem yap
+			switch (data.type) {
+				case 'paddlePosition':
+					// Diğer oyuncunun sopasının konumunu güncelle
+					opponentPaddlePosition = data.position;
+					break;
+
+				case 'ballPosition':
+					// Topun konumunu güncelle
+					ballPosition = data.position;
+					break;
+			}
+		};
 		// Sohbet kısmı
 		var chatsocket = new WebSocket(
 			'ws://' + window.location.host + '/ws/sohbet/' + 1 + '/'
