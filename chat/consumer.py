@@ -31,19 +31,19 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.channel_name,
         )
 
-        # channel_layer = get_channel_layer()
-        # num_players = await channel_layer.group_send(self.room_name)
-        # if num_players == 1:
-        #     # Send a game over message to the remaining player
-        #     await self.channel_layer.group_send(
-        #         self.room_name,
-        #         {
-        #             'type': 'gameOver',
-        #         }
-        #     )
+        channel_layer = get_channel_layer()
+        num_players = await channel_layer.group_send(self.room_name)
+        if num_players == 1:
+            # Send a game over message to the remaining player
+            await self.channel_layer.group_send(
+                self.room_name,
+                {
+                    'type': 'gameOver',
+                }
+            )
 
-        #     # Save the game over status to the database
-        #     await sync_to_async(self.save_game_over_status)()
+            # Save the game over status to the database
+            await sync_to_async(self.save_game_over_status)()
 
     # Receive message from WebSocket
     async def receive(self, text_data):
@@ -151,13 +151,16 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     # Handle game over messages from other users
     async def gameOver(self, event):
-        self.is_over = True
+
         # Send the game over message to the client
         await self.send_message({
             'type': 'gameOver',
         })
 
-        room = await sync_to_async(Room.objects.get)(room_name=self.player_id)
+        await sync_to_async(self.save_game_over_status)()
+
+    @sync_to_async
+    def save_game_over_status(self):
+        room = Room.objects.get(room_name=self.player_id)
         room.is_over = True
         room.save()
-
