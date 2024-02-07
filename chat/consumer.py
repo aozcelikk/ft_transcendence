@@ -156,11 +156,8 @@ class GameConsumer(AsyncWebsocketConsumer):
         await self.send_message({
             'type': 'gameOver',
         })
-        #await sync_to_async(self.save_game_over_status)()
-        await self.save_game_over_status()
 
-    @sync_to_async
-    def save_game_over_status(self):
-        room = Room.objects.get(room_name=self.room_name)
+        room = await sync_to_async(Room.objects.get)(room_name=self.player_id)
         room.is_over = True
         room.save()
+

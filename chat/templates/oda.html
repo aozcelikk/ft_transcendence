@@ -193,6 +193,12 @@
 
 	// WebSocket bağlantısı üzerinden mesaj alındığında tetiklenen olay işleyicisi
 	s.onmessage = function(event) {
+		// Ekran boyutunu değiştirdiğinde tetiklenen olay
+		window.onresize = function() {
+			// Canvas boyutlarını ekran boyutlarına göre ayarlar
+			canvas.width = 800;
+			canvas.height = 400;
+		};
 		const data = JSON.parse(event.data);
 		// Mesajın türüne göre işlem yap
 		switch (data.type) {
