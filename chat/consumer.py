@@ -2,6 +2,11 @@
 # scope- (django'nun request'ine benzer), bir web isteğinin yapıldığı yol, bir web 
 #soketinin Ip adresi, kullanıcı gibi tek bir gelen bağlantı hakkında bir dizi ayrıntıdır
 # events - bağlanma, bağlantıyı kesme, mesaj alma olayı
+import os
+import django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rest.settings')
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+django.setup()
 
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
