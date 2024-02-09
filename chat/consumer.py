@@ -145,6 +145,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     @sync_to_async
     def save_game_over_status(self):
+        print(self.player_id)
         room = Room.objects.get(room_name=self.player_id)
         room.is_over = True
         room.save()
+
