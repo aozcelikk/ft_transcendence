@@ -2,11 +2,6 @@
 # scope- (django'nun request'ine benzer), bir web isteğinin yapıldığı yol, bir web 
 #soketinin Ip adresi, kullanıcı gibi tek bir gelen bağlantı hakkında bir dizi ayrıntıdır
 # events - bağlanma, bağlantıyı kesme, mesaj alma olayı
-import os
-import django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'rest.settings')
-os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
-django.setup()
 
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
@@ -140,18 +135,24 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     # Handle game over messages from other users
     async def gameOver(self, event):
-
         # Send the game over message to the client
         await self.send_message({
             'type': 'gameOver',
         })
 
-        await sync_to_async(self.save_game_over_status)()
+        await self.save_game_over_status()
 
-    @sync_to_async
-    def save_game_over_status(self):
-        print(self.player_id)
-        room = Room.objects.get(room_name=self.player_id)
+    async def save_game_over_status(self):
+        room = await self.get_room(self)
         room.is_over = True
-        room.save()
+        await self.save_room(room)
 
+    @staticmethod
+    @sync_to_async
+    def get_room(self):
+        return Room.objects.get(room_name=self.player_id)
+
+    @staticmethod
+    @sync_to_async
+    def save_room(room):
+        room.save()
