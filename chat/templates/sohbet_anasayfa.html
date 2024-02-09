@@ -70,13 +70,6 @@
 {% endblock %}
 
 {% block js_files %}
-	{% comment %} <script src="{% static 'chat/js/script.js' %}"></script>
-	<script>
-		document.querySelector('#oda_ismi').focus();
-		document.querySelector("#submit").onclick = function(e){
-			var odaismi=document.querySelector('#oda_ismi').value;
-			window.location.replace("/sohbet/" + odaismi + "/");
-		};
-	</script> {% endcomment %}
+	<script src="{% static 'chat/js/script.js' %}"></script>
 {% endblock %}
 

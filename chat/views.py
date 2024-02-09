@@ -13,17 +13,6 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 import json
 
-# def sohbet_anasayfa(request):
-#     odalar = Room.objects.all()
-#     if request.user.is_authenticated:
-#         return render(request, "sohbet_anasayfa.html", {'odalar':odalar})
-#     return redirect("ilksayfa")
-
-# def sohbet_oda(request,room_name):
-#     oda = Room.objects.filter(room_name=room_name)
-#     if request.user.is_authenticated:
-#         return render(request,"oda.html",{"room_name":room_name})
-#     return redirect("ilksayfa")
 
 @login_required
 def sohbet_anasayfa(request):
@@ -76,3 +65,16 @@ def sohbet_oda(request,room_name):
 def game_history(request):
     return render(request, "game_history.html", {'game_history': Room.objects.all()})
 
+
+@login_required
+def guncelleme(request, room_name):
+    if request.method == 'POST':
+        winner = json.loads(request.body).get('winner')
+        if not winner:
+            return JsonResponse({'success': False, 'error': 'Invalid request method'})
+        game = get_object_or_404(Room, room_name=room_name)
+        game.winner = winner
+        game.save()
+        return JsonResponse({'success': True})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})

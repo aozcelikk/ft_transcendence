@@ -193,12 +193,6 @@
 
 	// WebSocket bağlantısı üzerinden mesaj alındığında tetiklenen olay işleyicisi
 	s.onmessage = function(event) {
-		// Ekran boyutunu değiştirdiğinde tetiklenen olay
-		window.onresize = function() {
-			// Canvas boyutlarını ekran boyutlarına göre ayarlar
-			canvas.width = 800;
-			canvas.height = 400;
-		};
 		const data = JSON.parse(event.data);
 		// Mesajın türüne göre işlem yap
 		switch (data.type) {
@@ -232,9 +226,35 @@
 					winner = p1Socket}
 				else{
 					winner = p2Socket}
+				sendWinnerToServer(winner)
 				break;
 		}
 	};
+
+	async function sendWinnerToServer(winner) {
+		if (winner) {
+			const url = "{% url 'guncelleme' room_name %}"
+			await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': '{{ csrf_token }}',
+				},
+				body: JSON.stringify({
+					'winner': winner,
+				}),
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					console.log('Winner updated successfully.');
+				} else {
+					console.error('Failed to update winner:', data.error);
+				}
+			})
+			.catch(error => console.error('Error updating winner:', error));
+		}
+	}
 
 	// Oyuncu 1'in sopasının konumunu diğer oyuncuya göndermek için kullanılan fonksiyon
 	function sendPlayer1PaddlePosition() {
