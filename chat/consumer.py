@@ -3,16 +3,8 @@
 #soketinin Ip adresi, kullanıcı gibi tek bir gelen bağlantı hakkında bir dizi ayrıntıdır
 # events - bağlanma, bağlantıyı kesme, mesaj alma olayı
 
-# from channels.generic.websocket import WebsocketConsumer
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.layers import get_channel_layer
-from asgiref.sync import sync_to_async
-from .models import Room
-
-import json
-from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.layers import get_channel_layer
 from asgiref.sync import sync_to_async
 from .models import Room
 
@@ -36,20 +28,6 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.room_name,
             self.channel_name,
         )
-
-        # channel_layer = get_channel_layer()
-        # num_players = await channel_layer.group_send(self.room_name)
-        # if num_players == 1:
-        #     # Send a game over message to the remaining player
-        #     await self.channel_layer.group_send(
-        #         self.room_name,
-        #         {
-        #             'type': 'gameOver',
-        #         }
-        #     )
-
-        #     # Save the game over status to the database
-        #     await sync_to_async(self.save_game_over_status)()
 
     # Receive message from WebSocket
     async def receive(self, text_data):
