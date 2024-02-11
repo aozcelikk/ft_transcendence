@@ -5,6 +5,7 @@
 
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.generic.websocket import AsyncConsumer
 from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from .models import Room
@@ -90,6 +91,7 @@ class GameConsumer(AsyncWebsocketConsumer):
     async def send_message(self, data):
         await self.send(json.dumps(data))
 
+
     # Handle paddle position updates from other users
     async def paddlePosition(self, event):
         player = event['player']
@@ -113,13 +115,16 @@ class GameConsumer(AsyncWebsocketConsumer):
         # Update the ball position
         self.ball_position = position
 
-        await self.channel_layer.group_send(
-        self.player_id,
-        {
+        # await self.channel_layer.group_send(self.player_id, {
+        #         'type': 'ballPosition',
+        #         'position': position
+        # })
+
+        print(position)
+        await self.send_message({
             'type': 'ballPosition',
-            'position': position
-        }
-        )
+            'position': self.ball_position
+        })
 
 
     # Handle player score updates from other users
@@ -161,3 +166,4 @@ class GameConsumer(AsyncWebsocketConsumer):
     @sync_to_async
     def save_room(room):
         room.save()
+

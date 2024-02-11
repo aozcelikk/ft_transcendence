@@ -7,3 +7,4 @@ websocket_urlpatterns = [
 # 	re_path(r'ws/sohbet/(?P<player_id>\d+)/$', GameConsumer.as_asgi()),
 	path('ws/sohbet/<str:room_name>/', GameConsumer.as_asgi()),
 ]
+

@@ -146,6 +146,7 @@
 	let downArrowPressed = false;
 
 
+
 	// Topu hareket ettirmek için kullanılan fonksiyon
 	function moveBall() {
 		// Topun konumunu günceller
@@ -168,7 +169,7 @@
 			ballSpeed.x = -ballSpeed.x;
 		}
 		// Topun konumunu diğer oyuncuya gönderir
-		sendBallPosition();
+		//sendBallPosition();
 	}
 
 	function scorecont(){
@@ -207,7 +208,7 @@
 			case 'ballPosition':
 				// Topun konumunu güncelle
 				ballPosition = data.position;
-				moveBall();
+				
 				break;
 
 			case 'playerScore':
@@ -283,6 +284,7 @@
 	// Topun konumunu diğer oyuncuya göndermek için kullanılan fonksiyon
 	function sendBallPosition() {
 	if (s.readyState === WebSocket.OPEN) {
+		moveBall();
 		const data = {
 			type: 'ballPosition',
 			position: ballPosition
@@ -437,7 +439,7 @@
 		}
 	}
 	// Top Hareketi
-	setInterval(moveBall, 30);
+	setInterval(sendBallPosition, 30);
 </script>
 </body>
 </html>
