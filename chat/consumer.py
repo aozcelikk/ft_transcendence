@@ -120,10 +120,9 @@ class GameConsumer(AsyncWebsocketConsumer):
         #         'position': position
         # })
 
-        print(position)
         await self.send_message({
             'type': 'ballPosition',
-            'position': self.ball_position
+            'position': position
         })
 
 

@@ -87,8 +87,8 @@
 			{
 				message.innerText = " "
 				// Topun başlangıç hızını ayarlar
-				ballSpeed.x = 8;
-				ballSpeed.y = 8;
+				ballSpeed.x = 5;
+				ballSpeed.y = 5;
 				// Oyun döngüsünü başlatır
 				gameLoop();
 			}else{
@@ -124,8 +124,8 @@
 	};
 	//top Hızı
 	let ballSpeed = {
-		x: 8,
-		y: 8
+		x: 5,
+		y: 5
 	};
 	//Topun yuvarlıklıgı
 	const ballRadius = 10;
@@ -363,7 +363,7 @@
 		ballPosition.x = canvas.width / 2;
 		ballPosition.y = canvas.height / 2;
 		ballSpeed.x = -ballSpeed.x;
-		ballSpeed.y = 8;
+		ballSpeed.y = 7;
 	}
 
 
@@ -396,19 +396,19 @@
 
 		// Raket hareketi
 		if (wPressed && player1Y > 0) {
-			player1Y -= 5;
+			player1Y -= 3;
 			sendPlayer1PaddlePosition();
 		}
 		if (sPressed && player1Y < canvas.height - paddleHeight) {
-			player1Y += 5;
+			player1Y += 3;
 			sendPlayer1PaddlePosition();
 		}
 		if (upArrowPressed && player2Y > 0) {
-			player2Y -= 5;
+			player2Y -= 3;
 			sendPlayer2PaddlePosition();
 		}
 		if (downArrowPressed && player2Y < canvas.height - paddleHeight) {
-			player2Y += 5;
+			player2Y += 3;
 			sendPlayer2PaddlePosition();
 		}
 		//Puan Kontrol
