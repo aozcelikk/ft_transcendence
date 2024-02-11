@@ -107,31 +107,47 @@ class GameConsumer(AsyncWebsocketConsumer):
         })
 
     # Handle ball position updates from other users
+    # async def ballPosition(self, event):
+    #     position = event['position']
+
+    #     # Update the ball position
+    #     self.ball_position = position
+
+    #     await self.channel_layer.group_send(
+    #     self.player_id,
+    #     {
+    #         'type': 'ballPosition',
+    #         'position': position
+    #     }
+    #     )
+
+        # await self.send_message({
+        #     'type': 'ballPosition',
+        #     'position': position
+        # })
+
     async def ballPosition(self, event):
         position = event['position']
 
         # Update the ball position
         self.ball_position = position
 
-        # Send the updated ball position to the client
-    #     await self.channel_layer.group_send_sync(
-    #     self.room_name,
-    #     {
-    #         'type': 'ballPosition',
-    #         'position': position
-    #     }
-    # )
         await self.channel_layer.group_send(
-        self.room_name,
-        {
+            self.player_id,
+            {
+                'type': 'sendBallPosition',
+                'position': position
+            }
+        )
+
+    async def sendBallPosition(self, event):
+        position = event['position']
+
+        # Send the ball position to the client
+        await self.send_json({
             'type': 'ballPosition',
             'position': position
-        }
-        )
-        # await self.send_message({
-        #     'type': 'ballPosition',
-        #     'position': position
-        # })
+        })
 
     # Handle player score updates from other users
     async def playerScore(self, event):
