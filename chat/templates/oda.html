@@ -91,14 +91,11 @@
 				ballSpeed.y = 8;
 				// Oyun döngüsünü başlatır
 				gameLoop();
-			}else
-				if(p1Socket == user)
-					window.location.reload();
-			/*else{
+			}else{
 				setTimeout(function() {
 					window.location.reload();
 				  }, 1000);
-			}*/
+			}
 		}
 	};
 
@@ -170,9 +167,8 @@
 		} else if (ballPosition.x  + ballRadius > canvas.width - paddleWidth && ballPosition.y > player2Y && ballPosition.y < player2Y + paddleHeight) {
 			ballSpeed.x = -ballSpeed.x;
 		}
-
 		// Topun konumunu diğer oyuncuya gönderir
-		//sendBallPosition();
+		sendBallPosition();
 	}
 
 	function scorecont(){
@@ -211,7 +207,7 @@
 			case 'ballPosition':
 				// Topun konumunu güncelle
 				ballPosition = data.position;
-				moveBall(ballPosition);
+				moveBall();
 				break;
 
 			case 'playerScore':
@@ -441,7 +437,7 @@
 		}
 	}
 	// Top Hareketi
-	setInterval(sendBallPosition, 30);
+	setInterval(moveBall, 30);
 </script>
 </body>
 </html>
