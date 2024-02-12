@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'chat/css/styles.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "{{oda}}" %}
+{% endblock %}
+{% block content %}
+{{roomname|json_script:"roomname"}}
+
+	<div class="col-xs-12 text-center">
+		<h1 class ="col-sm-9">{{oda}}</h1>
+	</div>
+
+{% endblock %}
+
+{% block js_files %}
+	<script src="{% static 'chat/js/script.js' %}"></script>
+	<script>
+		const roomName = JSON.parse(document.getElementById("roomname").textContent);
+		document.getElementById("submit").onclick = function(e){
+			window.location.pathname = "/sohbet/" + roomName + "/";
+		};
+	</script>
+{% endblock %}
+

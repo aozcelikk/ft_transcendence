@@ -7,6 +7,11 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from .models import Room
+from channels.db import database_sync_to_async
+import time
+import asyncio
+import json
+
 
 class GameConsumer(AsyncWebsocketConsumer):
     is_active = True  # Oyuncunun sekmede olup olmadığını belirleyen özellik
@@ -97,7 +102,8 @@ class GameConsumer(AsyncWebsocketConsumer):
         # Update the paddle position
         if player != self.channel_name:
             self.paddle_position = position
-
+            
+        await asyncio.sleep(0.01)
         # Send the updated paddle position to the client
         await self.send_message({
             'type': 'paddlePosition',
@@ -118,7 +124,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             #         'type': 'ballPosition',
             #         'position': position
             # })
-
+            await asyncio.sleep(0.01)
             await self.send_message({
                 'type': 'ballPosition',
                 'position': position
@@ -166,3 +172,4 @@ class GameConsumer(AsyncWebsocketConsumer):
     def save_room(room):
         room.save()
 
+ 

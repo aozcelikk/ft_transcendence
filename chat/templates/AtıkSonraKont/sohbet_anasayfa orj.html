@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'chat/css/styles.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "Sohbet Anasayfası" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+	<div class="container py-5 h-200">
+		<div class="row d-flex justify-content-center align-items-center h-200">
+		<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+			<div class="card shadow-2-strong" style="border-radius: 1rem;">
+			<div class="card-body p-5 text-center">
+				<h3 class="mb-5">{% trans "Sohbet Odası" %}</h3>
+				<div class="mb-3">
+					<input type="button" id="submit" class="btn btn-primary" value="{% trans "Sohbete Katıl" %}" style="background-color:#7a1b0c;">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+{% block js_files %}
+	<script src="{% static 'chat/js/script.js' %}"></script>
+	<script>
+		document.getElementById("submit").onclick = function(e){
+			window.location.pathname = "/sohbet/" + player_id + "/";
+		};
+	</script>
+{% endblock %}
+

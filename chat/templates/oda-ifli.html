@@ -91,7 +91,7 @@
 			}else{
 				setTimeout(function() {
 					window.location.reload();
-				  }, 300);
+				  }, 100);
 			}
 		}
 	};
@@ -121,8 +121,8 @@
 	};
 	//top Hızı
 	let ballSpeed = {
-		x: 7,
-		y: 7
+		x: 5,
+		y: 5
 	};
 	//Topun yuvarlıklıgı
 	const ballRadius = 7;
@@ -194,39 +194,32 @@
 	s.onmessage = function(event) {
 		const data = JSON.parse(event.data);
 		// Mesajın türüne göre işlem yap
-		switch (data.type) {
-			case 'paddlePosition':
-				// Diğer oyuncunun sopasının konumunu güncelle
-				if (data.player === 1) {
-					player1Y = data.position;
-				} else if (data.player === 2) {
-					player2Y = data.position;
-				}
-				break;
-
-			case 'ballPosition':
-				// Topun konumunu güncelle
-				ballPosition = data.position;
-				break;
-
-			case 'playerScore':
-				// Oyuncu skorunu güncelle
-				if (data.player === 1) {
-					player1Score = data.score;
-				} else if (data.player === 2) {
-					player2Score = data.score;
-				}
-				break;
-
-			case 'gameOver':
-				// Oyunu bitir
-				gameOver = true;
-				if(player1Score > player2Score){
-					winner = p1Socket}
-				else{
-					winner = p2Socket}
-				sendWinnerToServer(winner)
-				break;
+		if (data.type === 'paddlePosition') {
+			// Diğer oyuncunun sopasının konumunu güncelle
+			if (data.player === 1) {
+				player1Y = data.position;
+			} else if (data.player === 2) {
+				player2Y = data.position;
+			}
+		} else if (data.type === 'ballPosition') {
+			// Topun konumunu güncelle
+			ballPosition = data.position;
+		} else if (data.type === 'playerScore') {
+			// Oyuncu skorunu güncelle
+			if (data.player === 1) {
+				player1Score = data.score;
+			} else if (data.player === 2) {
+				player2Score = data.score;
+			}
+		} else if (data.type === 'gameOver') {
+			// Oyunu bitir
+			gameOver = true;
+			if (player1Score > player2Score) {
+				winner = p1Socket;
+			} else {
+				winner = p2Socket;
+			}
+			sendWinnerToServer(winner);
 		}
 	};
 
@@ -282,6 +275,7 @@
 	// Topun konumunu diğer oyuncuya göndermek için kullanılan fonksiyon
 	function sendBallPosition() {
 	if (s.readyState === WebSocket.OPEN) {
+		//moveBall();
 		const data = {
 			type: 'ballPosition',
 			position: ballPosition
@@ -360,16 +354,16 @@
 		ballPosition.x = canvas.width / 2;
 		ballPosition.y = canvas.height / 2;
 		ballSpeed.x = -ballSpeed.x;
-		ballSpeed.y = 7;
+		ballSpeed.y = 5;
 	}
 
 
 	// Raketleri çizer
 	function drawPaddles() {
-		context.fillStyle = paddleColor1;
-		context.fillRect(10, player1Y, paddleWidth, paddleHeight);
-		context.fillStyle = paddleColor2;
-		context.fillRect(canvas.width - paddleWidth - 10, player2Y, paddleWidth, paddleHeight);
+	context.fillStyle = paddleColor1;
+	context.fillRect(10, player1Y, paddleWidth, paddleHeight);
+	context.fillStyle = paddleColor2;
+	context.fillRect(canvas.width - paddleWidth - 10, player2Y, paddleWidth, paddleHeight);
 	}
 
 	// Topu çizer
@@ -433,14 +427,13 @@
 			file();
 			//Top hareketi
 			moveBall();
-			sendBallPosition();
 			// Oyun döngüsünü tekrar başlatır
 			requestAnimationFrame(gameLoop);
 		}
 	}
 	// Top Hareketi
-	//setInterval(gameLoop, 30);
-	setInterval(sendBallPosition, 30);
+	//setInterval(sendBallPosition, 30);
+	setInterval(sendBallPosition, 100);
 </script>
 </body>
 </html>

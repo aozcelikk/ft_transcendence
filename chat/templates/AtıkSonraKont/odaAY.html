@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'chat/css/oda.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "Sohbet Odası" %}
+{% endblock %}
+
+{% block content %}
+
+<style>
+	* {
+	  padding: 0;
+	  margin: 0;
+	  box-sizing: border-box;
+	}
+
+	canvas {
+	  background: #000;
+	  display: block;
+	  margin: 20px auto;
+	}
+  </style>
+
+<canvas id="pongCanvas" width="800" height="400"></canvas>
+
+<div class="container">
+	<div class="form-floating mb-3">
+	<textarea readonly autofocus id="chatarea" cols="50" rows="15" ></textarea>
+	</div>
+	<div class="input-group">
+		<input type="text" class="form-control" id="chatinput" placeholder="{% trans "İletinizi buraya yazınız" %}">
+		<button id="chatbtn" class="btn btn-primary">{% trans "Gönder" %}</button>
+		<button id="chatext" class="btn btn-primary"style="background-color:#7a1b0c;">{% trans "Odadan Çık" %}</button>
+	</div>
+</div>
+
+
+
+{{roomname|json_script:"roomname"}}  
+
+{% endblock %}
+
+{% block js_files %}
+	<script src="{% static 'chat/js/oda.js' %}"></script>
+	<script src="{% static 'chat/js/script.js' %}"></script>
+	<script>
+	var chatextt=document.querySelector("#chatext");
+	var text = "{% trans 'Sohbet Odasında Çıkıldı' %}";
+	chatextt.onclick = function(){
+		window.alert(text);
+		document.location.href = '{% url "sohbet_anasayfa" %}';
+	};
+	</script>
+
+	<script>
+		const pongCanvas = document.getElementById("pongCanvas");
+		const context = pongCanvas.getContext("2d");
+		
+		const pongWidth = 10;
+		const pongHeight = 100;
+		const pongMargin = 50;
+		
+		let pong1Y = pongCanvas.height / 2 - pongHeight / 2;
+		let pong2Y = pongCanvas.height / 2 - pongHeight / 2;
+		
+		let ballX = pongCanvas.width / 2;
+		let ballY = pongCanvas.height / 2;
+		let ballSpeedX = 5;
+		let ballSpeedY = 5;
+		
+		// Pongları çizmek için fonksiyon
+		function drawPong(x, y) {
+		  context.fillStyle = "#fff";
+		  context.fillRect(x, y, pongWidth, pongHeight);
+		}
+		
+		// Topu çizmek için fonksiyon
+		function drawBall() {
+		  context.fillStyle = "#fff";
+		  context.beginPath();
+		  context.arc(ballX, ballY, 10, 0, Math.PI * 2, false);
+		  context.closePath();
+		  context.fill();
+		}
+		
+		// Oyun alanını güncellemek için fonksiyon
+		function update() {
+		  context.clearRect(0, 0, pongCanvas.width, pongCanvas.height);
+		
+		  drawPong(pongMargin, pong1Y);
+		  drawPong(pongCanvas.width - pongMargin - pongWidth, pong2Y);
+		
+		  drawBall();
+		
+		  ballX += ballSpeedX;
+		  ballY += ballSpeedY;
+		
+		  // Topun duvarlara çarpmasını kontrol etmek
+		  if (ballY < 0 || ballY > pongCanvas.height) {
+			ballSpeedY *= -1;
+		  }
+		
+		  // Topun ponglara çarpmasını kontrol etmek
+		  if (
+			ballX < pongMargin + pongWidth &&
+			ballY > pong1Y &&
+			ballY < pong1Y + pongHeight
+		  ) {
+			ballSpeedX *= -1;
+		  }
+		
+		  if (
+			ballX > pongCanvas.width - pongMargin - pongWidth &&
+			ballY > pong2Y &&
+			ballY < pong2Y + pongHeight
+		  ) {
+			ballSpeedX *= -1;
+		  }
+		}
+		
+		// Klavye olaylarını dinlemek için fonksiyon
+		function keyDownHandler(e) {
+			if (e.key === "ArrowUp") {
+			pong2Y -= 20;
+			} else if (e.key === "ArrowDown") {
+			pong2Y += 20;
+			}
+			if (e.key === "w") {
+			pong1Y -= 20;
+			} else if (e.key === "s") {
+				pong1Y += 20;
+			}
+		}
+		
+
+		setInterval(update, 1000 / 60);
+
+		// Klavye olaylarını dinlemek
+		document.addEventListener("keydown", keyDownHandler, false);
+	</script>
+{% endblock %}
+
+

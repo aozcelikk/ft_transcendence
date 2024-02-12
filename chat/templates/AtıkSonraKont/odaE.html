@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sohbet Odası</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    canvas {
+      background: #000;
+      display: block;
+      margin: 20px auto;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="pongCanvas" width="800" height="400"></canvas>
+
+  <div class="container">
+    <div class="form-floating mb-3">
+      <textarea readonly autofocus id="chatarea" cols="50" rows="15"></textarea>
+    </div>
+    <div class="input-group">
+      <input type="text" class="form-control" id="chatinput" placeholder="İletinizi buraya yazınız">
+      <button id="chatbtn" class="btn btn-primary">Gönder</button>
+      <button id="chatext" class="btn btn-primary" style="background-color:#7a1b0c;">Odadan Çık</button>
+    </div>
+  </div>
+
+  <script>
+    var chatsocket = new WebSocket(
+      'ws://' + window.location.host + '/ws/sohbet/' + 1 + '/'
+    );
+
+    chatsocket.onmessage = function (e) {
+      const message = JSON.parse(e.data);
+      handleMessage(message);
+    };
+
+    chatsocket.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+      document.querySelector("#chatarea").value += (data.user + ":" + data.message + '\n');
+      console.log(data.message);
+    };
+
+    document.getElementById("chatbtn").onclick = function (e) {
+      const msg = document.getElementById("chatinput").value;
+      chatsocket.send(JSON.stringify({ 'message': msg }));
+      document.querySelector("#chatinput").value = '';
+    };
+
+    document.querySelector("#chatinput").focus();
+    document.querySelector("#chatinput").onkeydown = function (e) {
+      if (e.keyCode === 13) {
+        document.querySelector("#chatbtn").click();
+      }
+    };
+
+    var chatextt = document.querySelector("#chatext");
+    var text = "Sohbet Odasında Çıkıldı";
+    chatextt.onclick = function () {
+      window.alert(text);
+      document.location.href = '{% url "sohbet_anasayfa" %}';
+    };
+
+    const pongCanvas = document.getElementById("pongCanvas");
+    const context = pongCanvas.getContext("2d");
+
+    const pongWidth = 10;
+    const pongHeight = 100;
+    const pongMargin = 50;
+
+    let pong1Y = pongCanvas.height / 2 - pongHeight / 2;
+    let pong2Y = pongCanvas.height / 2 - pongHeight / 2;
+
+    let ballX = pongCanvas.width / 2;
+    let ballY = pongCanvas.height / 2;
+    let ballSpeedX = 5;
+    let ballSpeedY = 5;
+
+    function drawPong(x, y) {
+      context.fillStyle = "#fff";
+      context.fillRect(x, y, pongWidth, pongHeight);
+    }
+
+    function drawBall() {
+      context.fillStyle = "#fff";
+      context.beginPath();
+      context.arc(ballX, ballY, 10, 0, Math.PI * 2, false);
+      context.closePath();
+      context.fill();
+    }
+
+    function update() {
+      context.clearRect(0, 0, pongCanvas.width, pongCanvas.height);
+
+      drawPong(pongMargin, pong1Y);
+      drawPong(pongCanvas.width - pongMargin - pongWidth, pong2Y);
+
+      drawBall();
+
+      ballX += ballSpeedX;
+      ballY += ballSpeedY;
+
+      if (ballY < 0 || ballY > pongCanvas.height) {
+        ballSpeedY *= -1;
+      }
+
+      if (
+        ballX < pongMargin + pongWidth &&
+        ballY > pong1Y &&
+        ballY < pong1Y + pongHeight
+      ) {
+        ballSpeedX *= -1;
+      }
+
+      if (
+        ballX > pongCanvas.width - pongMargin - pongWidth &&
+        ballY > pong2Y &&
+        ballY < pong2Y + pongHeight
+      ) {
+        ballSpeedX *= -1;
+      }
+    }
+
+    function keyDownHandler(e) {
+      if (e.key === "ArrowUp") {
+		pong1Y -= 10;
+      } else if (e.key === "ArrowDown") {
+        pong1Y += 10;
+      }
+    }
+
+    function startGame() {
+      document.removeEventListener("keydown", startGame);
+
+      let count = 3;
+      const countInterval = setInterval(() => {
+        if (count === 0) {
+          clearInterval(countInterval);
+          document.addEventListener("keydown", keyDownHandler, false);
+        } else {
+          drawCountdown(count);
+          count--;
+        }
+      }, 1000);
+    }
+
+    function drawCountdown(count) {
+      context.clearRect(0, 0, pongCanvas.width, pongCanvas.height);
+      drawPong(pongMargin, pong1Y);
+      drawPong(pongCanvas.width - pongMargin - pongWidth, pong2Y);
+      drawBall();
+      context.font = "50px Arial";
+      context.fillStyle = "#fff";
+      context.fillText(count, pongCanvas.width / 2 - 10, pongCanvas.height / 2 + 10);
+    }
+
+    document.addEventListener("keydown", startGame, false);
+
+    setInterval(update, 1000 / 60);
+  </script>
+</body>
+</html>
