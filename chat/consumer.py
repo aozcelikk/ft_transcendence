@@ -110,6 +110,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     # Handle ball position updates from other users
     async def ballPosition(self, event):
+        room = await self.get_rom(self)
+
         if self.is_active:
             position = event['position']
 
@@ -125,11 +127,17 @@ class GameConsumer(AsyncWebsocketConsumer):
                 'type': 'ballPosition',
                 'position': position
             })
+        ball_position = json.loads(room.ball_position)
 
+    async def get_rom(self):
+        room = await Room.objects.get(room_name=self.player_id)
+        return room
+    
     async def save_ball_position(self):
-        room = await self.get_room(self)
+        room = await self.get_rom(self)
         room.ball_position = self.ball_position
         await self.save_room(room)
+
 
 
     # Handle player score updates from other users

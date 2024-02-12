@@ -12,6 +12,7 @@ class Room(models.Model):
     game_opponent = models.CharField(max_length=100, blank=True, null=True)
     is_over = models.BooleanField(default=False)
     winner = models.CharField(max_length=100, blank=True, null=True)
+    ball_position = models.CharField(max_length=255)
 
     def player_count(self):
         count = 0
