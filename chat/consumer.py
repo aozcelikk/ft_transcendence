@@ -11,11 +11,11 @@ from channels.db import database_sync_to_async
 from .models import Room
 
 class GameConsumer(AsyncWebsocketConsumer):
+    is_active = True  # Oyuncunun sekmede olup olmadığını belirleyen özellik
     async def connect(self):
         # Get the room name from the URL
         self.player_id = self.scope['url_route']['kwargs']['room_name']
         self.room_name = 'player_%s' % self.player_id
-
         # Join the room group
         await self.channel_layer.group_add(
             self.room_name,
@@ -30,7 +30,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             self.room_name,
             self.channel_name,
         )
-
+        await self.save_ball_position()
 
     # Receive message from WebSocket
     async def receive(self, text_data):
@@ -110,20 +110,26 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     # Handle ball position updates from other users
     async def ballPosition(self, event):
-        position = event['position']
+        if self.is_active:
+            position = event['position']
 
-        # Update the ball position
-        self.ball_position = position
+            # Update the ball position
+            self.ball_position = position
 
-        # await self.channel_layer.group_send(self.player_id, {
-        #         'type': 'ballPosition',
-        #         'position': position
-        # })
+            # await self.channel_layer.group_send(self.player_id, {
+            #         'type': 'ballPosition',
+            #         'position': position
+            # })
 
-        await self.send_message({
-            'type': 'ballPosition',
-            'position': event['position']
-        })
+            await self.send_message({
+                'type': 'ballPosition',
+                'position': position
+            })
+
+    async def save_ball_position(self):
+        room = await self.get_room(self)
+        room.ball_position = self.ball_position
+        await self.save_room(room)
 
 
     # Handle player score updates from other users
@@ -141,6 +147,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             'player': player,
             'score': score
         })
+    
 
     # Handle game over messages from other users
     async def gameOver(self, event):

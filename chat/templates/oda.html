@@ -22,7 +22,7 @@
 		margin: auto;
 		border: 2px solid #fff;
 		box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-		border-radius: 5px;
+		border-radius: 10px;
 		font-size : 32px;
 	}
 
@@ -86,15 +86,12 @@
 			if(playerCount === 2)
 			{
 				message.innerText = " "
-				// Topun başlangıç hızını ayarlar
-				//*ballSpeed.x = 5;
-				//ballSpeed.y = 5;
 				// Oyun döngüsünü başlatır
 				gameLoop();
 			}else{
 				setTimeout(function() {
 					window.location.reload();
-				  }, 300);
+				  }, 100);
 			}
 		}
 	};
@@ -128,7 +125,7 @@
 		y: 5
 	};
 	//Topun yuvarlıklıgı
-	const ballRadius = 10;
+	const ballRadius = 5;
 	//Topun Rengi
 	let ballColor = "#fff";
 
@@ -171,7 +168,7 @@
 			ballSpeed.x = -Math.abs(ballSpeed.x);
 		}
 		// Topun konumunu diğer oyuncuya gönderir
-		sendBallPosition();
+		//sendBallPosition();
 	}
 
 	function scorecont(){
@@ -436,13 +433,15 @@
 			drawBall();
 			// File çizer
 			file();
+			//Top hareketi
+			moveBall();
 			// Oyun döngüsünü tekrar başlatır
 			requestAnimationFrame(gameLoop);
 		}
 	}
 	// Top Hareketi
 	//setInterval(sendBallPosition, 30);
-	setInterval(moveBall, 30);
+	setInterval(sendBallPosition, 60);
 </script>
 </body>
 </html>
