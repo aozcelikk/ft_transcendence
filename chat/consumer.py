@@ -5,9 +5,7 @@
 
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.generic.websocket import AsyncConsumer
 from asgiref.sync import sync_to_async
-from channels.db import database_sync_to_async
 from .models import Room
 
 class GameConsumer(AsyncWebsocketConsumer):
