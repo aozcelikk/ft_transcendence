@@ -8,7 +8,6 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from .models import Room
 from channels.db import database_sync_to_async
-import time
 import asyncio
 import json
 
@@ -95,8 +94,8 @@ class GameConsumer(AsyncWebsocketConsumer):
 
     # Send message to WebSocket
     async def send_message(self, data):
-        await self.send(json.dumps(data))
-
+        if self.is_active:  # Check if the player is active
+            await self.send(json.dumps(data))
 
     # Handle paddle position updates from other users
     async def paddlePosition(self, event):

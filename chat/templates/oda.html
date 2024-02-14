@@ -92,10 +92,10 @@
 				gameLoop();
 			}
 			else{
-				location.reload();
-				/*setTimeout(function() {
+				//location.reload();
+				setTimeout(function() {
 					window.location.reload();
-				  }, 300);*/
+				  }, 500);
 			}
 		}
 
@@ -103,6 +103,11 @@
 	// WebSocket bağlantısı kapandığında tetiklenen olay işleyicisi
 	s.onclose = function() {
 		console.log('WebSocket bağlantısı kapandı.');
+		gameOver = true;
+		sendGameOver();
+		setTimeout(function() {
+			window.location.href = '{% url "sohbet_anasayfa" %}';
+		}, 1500);
 	};
 
 
