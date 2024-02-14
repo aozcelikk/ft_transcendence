@@ -46,8 +46,6 @@ def sohbet_anasayfa(request):
             return redirect('/sohbet/' + room_name)
     return render(request, 'sohbet_anasayfa.html', {'odalar':odalar})
 
-
-
 @login_required
 def sohbet_oda(request,room_name):
     game = get_object_or_404(Room, room_name=room_name)
@@ -78,3 +76,4 @@ def guncelleme(request, room_name):
         return JsonResponse({'success': True})
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
