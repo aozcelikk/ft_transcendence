@@ -69,10 +69,10 @@
 	let message = document.getElementById('message');
 	// Oyuncu Ayarı
 	var playerCount = 0;
-	var yeniGelen = false;
 	let user = '{{user}}';
 	var p1Socket = '{{ creator }}';
 	var p2Socket = '{{ opponent }}';
+	var bak = true;
 
 	// WebSocket bağlantısı açıldığında tetiklenen olay işleyicisi
 	s.onopen = function() {
@@ -80,7 +80,6 @@
 		if (p1Socket && p2Socket){
 			if (p1Socket != '' ){
 				playerCount++;
-				yeniGelen = true;
 			}
 			if (p1Socket != '' && p2Socket != '')
 				playerCount++;
@@ -92,22 +91,15 @@
 				// Oyun döngüsünü başlatır
 				gameLoop();
 			}
-		/*	else{
-				if (playerCount == 2 && yeniGelen) {
-					if (p1Socket === user)
-						location.reload();
-					yeniGelen = false;
-				} 
-			/*
-				setTimeout(function() {
+			else{
+				location.reload();
+				/*setTimeout(function() {
 					window.location.reload();
-				  }, 300);
+				  }, 300);*/
 			}
-			*/
 		}
 
 	};
-
 	// WebSocket bağlantısı kapandığında tetiklenen olay işleyicisi
 	s.onclose = function() {
 		console.log('WebSocket bağlantısı kapandı.');
@@ -189,17 +181,22 @@
 	}
 
 	function puankont(){
+		if (p1Socket === user){
 		if (ballPosition.x - ballRadius < 0) {
-			player2Score++;
+			player2Score++;	
+			document.getElementById("player2-score").textContent = player2Score;
 			scorecont();
 			resetBall();
 		} else if (ballPosition.x + ballRadius > canvas.width) {
 			player1Score++;
+			document.getElementById("player1-score").textContent = player1Score;
 			scorecont();
 			resetBall();
 		}
+		}
 		document.getElementById("player1-score").textContent = player1Score;
 		document.getElementById("player2-score").textContent = player2Score;
+
 	}
 
 	// WebSocket bağlantısı üzerinden mesaj alındığında tetiklenen olay işleyicisi
@@ -218,7 +215,10 @@
 
 			case 'ballPosition':
 				// Topun konumunu güncelle
-				ballPosition = data.position;
+				if (p2Socket === user){
+					ballPosition = data.position;
+				}
+					//ballPosition = data.position;
 				break;
 
 			case 'playerScore':
@@ -293,7 +293,7 @@
 	
 	// Topun konumunu diğer oyuncuya göndermek için kullanılan fonksiyon
 	function sendBallPosition() {
-	if (s.readyState === WebSocket.OPEN) {
+	if (s.readyState === WebSocket.OPEN && p1Socket === user) {
 		const data = {
 			type: 'ballPosition',
 			position: ballPosition
@@ -398,11 +398,7 @@
 		context.fillRect(canvas.width / 2 - 2, 0, 4, canvas.height);
 	}
 
-	// Oyun döngüsü
-	function gameLoop() {
-		// Canvas'ı temizler
-		context.clearRect(0, 0, canvas.width, canvas.height);
-
+	function updatePaddleAndScore(){
 		// Raket hareketi
 		if (wPressed && player1Y > 0) {
 			player1Y -= 3;
@@ -420,14 +416,21 @@
 			player2Y += 3;
 			sendPlayer2PaddlePosition();
 		}
+
 		//Puan Kontrol
 		if (player1Score === 11 || player2Score === 11) {
-			gameOver = true;
+			gameOver = true;	
 			sendGameOver();
 			setTimeout(function() {
 				window.location.href = '{% url "sohbet_anasayfa" %}';
-			  }, 2000);
+				}, 1500);
 		}
+	}
+
+	// Oyun döngüsü
+	function gameLoop() {
+		// Canvas'ı temizler
+		context.clearRect(0, 0, canvas.width, canvas.height);
 		if (gameOver) {
 			context.clearRect(0, 0, canvas.width, canvas.height);
 			context.font = "30px Arial";
@@ -441,18 +444,20 @@
 			drawPaddles();
 			// Topu çizer
 			drawBall();
+			//Raket Hareketi
+			updatePaddleAndScore();
 			// File çizer
 			file();
 			//Top hareketi
-			moveBall();
-			sendBallPosition();
+			if(p1Socket === user)
+				moveBall();
 			// Oyun döngüsünü tekrar başlatır
 			requestAnimationFrame(gameLoop);
 		}
 	}
 	// Top Hareketi
 	//setInterval(gameLoop, 30);
-	setInterval(sendBallPosition, 30);
+	setInterval(sendBallPosition, 10);
 </script>
 </body>
 </html>

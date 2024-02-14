@@ -196,6 +196,7 @@
 		}
 		document.getElementById("player1-score").textContent = player1Score;
 		document.getElementById("player2-score").textContent = player2Score;
+
 	}
 
 	// WebSocket bağlantısı üzerinden mesaj alındığında tetiklenen olay işleyicisi
@@ -216,10 +217,6 @@
 				// Topun konumunu güncelle
 				if (p2Socket === user){
 					ballPosition = data.position;
-					if(ballPosition === data.position){
-						ballPosition.x == ballSpeed.x;
-						ballPosition.y == ballSpeed.y;
-					}
 				}
 					//ballPosition = data.position;
 				break;
@@ -296,7 +293,7 @@
 	
 	// Topun konumunu diğer oyuncuya göndermek için kullanılan fonksiyon
 	function sendBallPosition() {
-	if (s.readyState === WebSocket.OPEN) {
+	if (s.readyState === WebSocket.OPEN && p1Socket === user) {
 		const data = {
 			type: 'ballPosition',
 			position: ballPosition
@@ -401,11 +398,7 @@
 		context.fillRect(canvas.width / 2 - 2, 0, 4, canvas.height);
 	}
 
-	// Oyun döngüsü
-	function gameLoop() {
-		// Canvas'ı temizler
-		context.clearRect(0, 0, canvas.width, canvas.height);
-
+	function updatePaddleAndScore(){
 		// Raket hareketi
 		if (wPressed && player1Y > 0) {
 			player1Y -= 3;
@@ -423,14 +416,21 @@
 			player2Y += 3;
 			sendPlayer2PaddlePosition();
 		}
+
 		//Puan Kontrol
 		if (player1Score === 11 || player2Score === 11) {
-			gameOver = true;
+			gameOver = true;	
 			sendGameOver();
 			setTimeout(function() {
 				window.location.href = '{% url "sohbet_anasayfa" %}';
-			  }, 1000);
+				}, 1500);
 		}
+	}
+
+	// Oyun döngüsü
+	function gameLoop() {
+		// Canvas'ı temizler
+		context.clearRect(0, 0, canvas.width, canvas.height);
 		if (gameOver) {
 			context.clearRect(0, 0, canvas.width, canvas.height);
 			context.font = "30px Arial";
@@ -444,6 +444,8 @@
 			drawPaddles();
 			// Topu çizer
 			drawBall();
+			//Raket Hareketi
+			updatePaddleAndScore();
 			// File çizer
 			file();
 			//Top hareketi
@@ -454,7 +456,7 @@
 		}
 	}
 	// Top Hareketi
-	//setInterval(gameLoop, 25);
+	//setInterval(gameLoop, 30);
 	setInterval(sendBallPosition, 10);
 </script>
 </body>
