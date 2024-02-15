@@ -93,9 +93,18 @@ class GameConsumer(AsyncWebsocketConsumer):
             )
 
     # Send message to WebSocket
+    # async def send_message(self, data):
+    #     if data:
+    #         if data != 'gameOver':
+    #             if self.is_active:  # Check if the player is active
+    #                 await self.send(json.dumps(data))
     async def send_message(self, data):
-        if self.is_active:  # Check if the player is active
-            await self.send(json.dumps(data))
+        if data:
+            if self.is_active:  # Check if the player is active
+                try:
+                    await self.send(json.dumps(data))
+                except Exception as e:
+                    print(f"Error while sending message: {str(e)}")
 
     # Handle paddle position updates from other users
     async def paddlePosition(self, event):
