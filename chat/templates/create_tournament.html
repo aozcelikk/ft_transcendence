@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'chat/css/styles.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "Turnuva Oluşturma Sayfası" %}
+{% endblock %}
+
+{% block content %}
+<h1>Turnuva Oluştur</h1>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Oluştur</button>
+    <a href="{% url 'home' %}" class="btn btn-success">Turnuva Sayfası</a>
+</form>
+{% endblock %}

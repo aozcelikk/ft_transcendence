@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'chat/css/styles.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "Turnuvaya Katıl" %}
+{% endblock %}
+
+{% block content %}
+<h1>Turnuvaya Katıl</h1>
+{% if tournament.players.count() < 3 %}
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Katıl</button>
+</form>
+{% else %}
+<p>Turnuva dolu.</p>
+{% endif %}
+{% endblock %}

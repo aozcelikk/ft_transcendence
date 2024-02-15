@@ -1,13 +1,17 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
-from django.shortcuts import render
-from .models import Tournament, Player
 
-def leaderboard(request):
-    players = Player.objects.all().order_by('-won_tournaments__count', '-runner_up_tournaments__count', '-third_place_tournaments__count')
-    context = {'players': players}
-    return render(request, 'leaderboard.html', context)
+
+
+class Player(models.Model):
+    name = models.CharField(max_length=255)
+
+class Tournament(models.Model):
+    name = models.CharField(max_length=255)
+    players = models.ManyToManyField(Player)
+
+
 
 
 class Room(models.Model):

@@ -77,3 +77,32 @@ def guncelleme(request, room_name):
     else:
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
+
+
+from django.shortcuts import render, redirect
+from .models import Tournament, Player
+from django.contrib import messages
+
+def create_tournament(request):
+    if request.method == "POST":
+        tournament = Tournament()
+        tournament.save()
+        messages.success(request, "Turnuva oluşturuldu.")
+        return redirect('home')
+    return render(request, 'create_tournament.html')
+
+def home(request):
+    tournaments = Tournament.objects.all()
+    return render(request, 'home.html', {'tournaments': tournaments})
+
+def join_tournament(request, tournament_id):
+    tournament = Tournament.objects.get(id=tournament_id)
+    if tournament.players.count() < 3:
+        player = Player()
+        player.save()
+        tournament.players.add(player)
+        tournament.save()
+        messages.success(request, "Turnuvaya katıldınız.")
+    else:
+        messages.error(request, "Turnuva dolu.")
+    return redirect('home')

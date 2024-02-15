@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'chat/css/styles.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "Turnuva Anasayfası" %}
+{% endblock %}
+
+{% block content %}
+<h1>Turnuvalar</h1>
+<ul>
+    {% for tournament in tournaments %}
+    <li>{{ tournament.name }} <a href="{% url 'join_tournament' tournament.id %}">Katıl</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}
