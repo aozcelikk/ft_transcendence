@@ -329,7 +329,9 @@
 	}
 
 	// Klavye girişi Dinleme  ve Oyuncu raket hareket tetiklenen olay işleyicisi
+	document.addEventListener("keyup", sendPlayer1PaddlePosition);
 	document.addEventListener('keydown', sendPlayer1PaddlePosition);
+	document.addEventListener("keyup", sendPlayer2PaddlePosition);
 	document.addEventListener('keydown', sendPlayer2PaddlePosition);
 	document.addEventListener("keydown", handleKeyDown);
 	document.addEventListener("keyup", handleKeyUp);

@@ -11,10 +11,20 @@
 {% endblock %}
 
 {% block content %}
-<h1>Turnuvalar</h1>
+<div class="col-md-2 mx-auto mt-2">	
+	<h1>Turnuvalar</h1>
+	<a href="{% url 'sohbet_anasayfa' %}" class="btn btn-danger">Oyun Anasayfası</a>
+</div>
+<div class="col-md-6 mx-auto mt-4">
+	<div class="row">
+
 <ul>
-    {% for tournament in tournaments %}
-    <li>{{ tournament.name }} <a href="{% url 'join_tournament' tournament.id %}">Katıl</a></li>
-    {% endfor %}
+		{% for tournament in tournaments %}
+		<div class="alert alert-success">
+			<li>{{ tournament.name }} <a href="{% url 'join_tournament' tournament.id %}" class="btn btn-dark">Katıl</a></li>
+		</div>
+		{% endfor %}
 </ul>
+	</div>
+</div>
 {% endblock %}

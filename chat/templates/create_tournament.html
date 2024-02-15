@@ -11,10 +11,22 @@
 {% endblock %}
 
 {% block content %}
-<h1>Turnuva Oluştur</h1>
-<form method="post">
-    {% csrf_token %}
-    <button type="submit">Oluştur</button>
-    <a href="{% url 'home' %}" class="btn btn-success">Turnuva Sayfası</a>
-</form>
+<div class="container mt-5 pt-5">
+	<div class="col-md-6 mx-auto mt-4">
+		<div class="row">
+			<div class="col-md-6 mx-auto mt-4">
+				<h1>Turnuva Oluştur</h1>
+			</div>
+			<hr>
+			<div class="col-md-5 mx-auto mt-2">
+			<form method="post">
+					{% csrf_token %}
+					<input type="text" id="oda_ismi" name="oda_ismi">
+					<button type="submit" class="btn btn-primary">Oluştur</button>
+			</form>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}
+

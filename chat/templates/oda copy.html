@@ -92,10 +92,10 @@
 				gameLoop();
 			}
 			else{
-				location.reload();
-				/*setTimeout(function() {
+				//location.reload();
+				setTimeout(function() {
 					window.location.reload();
-				  }, 300);*/
+				  }, 500);
 			}
 		}
 
@@ -103,6 +103,11 @@
 	// WebSocket bağlantısı kapandığında tetiklenen olay işleyicisi
 	s.onclose = function() {
 		console.log('WebSocket bağlantısı kapandı.');
+		gameOver = true;
+		sendGameOver();
+		setTimeout(function() {
+			window.location.href = '{% url "sohbet_anasayfa" %}';
+		}, 1500);
 	};
 
 
@@ -196,7 +201,6 @@
 		}
 		document.getElementById("player1-score").textContent = player1Score;
 		document.getElementById("player2-score").textContent = player2Score;
-
 	}
 
 	// WebSocket bağlantısı üzerinden mesaj alındığında tetiklenen olay işleyicisi
@@ -417,8 +421,12 @@
 			sendPlayer2PaddlePosition();
 		}
 
+
 		//Puan Kontrol
 		if (player1Score === 11 || player2Score === 11) {
+			// Puan Kontrolü
+			document.getElementById("player1-score").textContent = player1Score;
+			document.getElementById("player2-score").textContent = player2Score;
 			gameOver = true;	
 			sendGameOver();
 			setTimeout(function() {
@@ -438,14 +446,14 @@
 			context.fillText("Oyun bitti!", canvas.width / 2 - 100, canvas.height / 2);
 		}
 		else {
-			// Puan Kontrolü
-			puankont();
 			// Raketleri çizer
 			drawPaddles();
 			// Topu çizer
 			drawBall();
 			//Raket Hareketi
 			updatePaddleAndScore();
+			//Puan Kontrol
+			puankont();
 			// File çizer
 			file();
 			//Top hareketi

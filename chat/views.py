@@ -85,10 +85,13 @@ from django.contrib import messages
 
 def create_tournament(request):
     if request.method == "POST":
-        tournament = Tournament()
+        room_name = request.POST.get('oda_ismi')
+        tournament = Tournament.objects.filter(name=room_name).first()
+        if tournament is None:
+            tournament = Tournament(name=room_name)
         tournament.save()
         messages.success(request, "Turnuva oluşturuldu.")
-        return redirect('home')
+        return redirect('sohbet_anasayfa')
     return render(request, 'create_tournament.html')
 
 def home(request):
