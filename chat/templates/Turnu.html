@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ping Pong Oyunu</title>
+<style>
+	body{
+		margin: 0;
+		padding: 200px;
+		overflow: hidden;
+		background-color: #111;
+		display: column ;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+		font-family: Arial, sans-serif;
+	}
+	
+	#pong {
+		background-color: #222;
+		display: block;
+		margin: auto;
+		border: 2px solid #fff;
+		box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+		border-radius: 5px;
+	}
+	
+	#scoreboard {
+		color: #fff;
+		font-size: 24px;
+		text-align: center;
+		margin-top: 20px;
+	}
+	
+	#start-stop-button {
+		margin-top: 20px;
+		text-align: center;
+	}
+
+	button {
+		padding: 10px 20px;
+		font-size: 16px;
+		background-color: #fff;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		margin: 0 10px;
+		margin-top: 20px;
+		text-align: center;
+	}
+
+	#message {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		color: white;
+		transform: translate(-50%, -50%);
+		font-size: 20px;
+	}
+
+</style>
+</head>
+<body>
+	<canvas id="pong" width="800" height="400"></canvas>
+	<p id="message"></p>
+	<div id="scoreboard">
+		{% if oyuncular %}
+			{% for oyuncu in oyuncular %}
+				<span>{{oyuncu.oyuncu1}}(<span id="player1-score">0</span>) - {{oyuncu.oyuncu2}}(<span id="player2-score">0</span>)</span>
+			{% endfor %}
+		{% endif %}
+	</div>
+	<div id="start-stop-button">
+		<div id="settings-button" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+			<button onclick="StartGame()" id="start-button">Oyunu Başlat</button>
+		</div>
+		<div id="settings-button" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+			<button onclick="StopGame()" id="stop-button" style="display: none;">Oyunu Duraklat</button>
+		</div>
+	</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+	let message = document.getElementById('message');
+	const canvas = document.getElementById("pong");
+	const context = canvas.getContext("2d");
+
+	// Paddle properties
+	const paddleWidth = 10;
+	const paddleHeight = 100;
+	let player1Y = canvas.height / 2 - paddleHeight / 2;
+	let player2Y = canvas.height / 2 - paddleHeight / 2;
+	
+	// Paddle properties
+	let paddleColor1 = "#fff";
+	let paddleColor2 = "#fff";
+
+	// Ball properties
+	let ballX = canvas.width / 2;
+	let ballY = canvas.height / 2;
+	const ballRadius = 10;
+	let ballSpeedX = 10;
+	let ballSpeedY = 10;
+	let ballColor = "#fff";
+
+	// Player scores
+	let player1Score = 0;
+	let player2Score = 0;
+	const winningScore = 11;
+	let yfinal;
+
+	// Game state
+	let gameStarted = false;
+	let gameOver = false;
+
+	// Keyboard input
+	let wPressed = false;
+	let sPressed = false;
+	let upArrowPressed = false;
+	let downArrowPressed = false;
+
+	window.addEventListener("keydown", handleKeyDown);
+	window.addEventListener("keyup", handleKeyUp);
+
+	function toggleSettings() {
+		var colorButtons = document.getElementById("color-buttons");
+		if (colorButtons.style.display === "none") {
+			colorButtons.style.display = "block";
+		} else {
+			colorButtons.style.display = "none";
+		}
+	}
+	
+	function handleKeyDown(event) {
+		if (event.key === "w") {
+			wPressed = true;
+		}
+		if (event.key === "s") {
+			sPressed = true;
+		}
+		if (event.key === "ArrowUp") {
+			upArrowPressed = true;
+		}
+		if (event.key === "ArrowDown") {
+			downArrowPressed = true;
+		}
+	}
+
+	function handleKeyUp(event) {
+		if (event.key === "w") {
+			wPressed = false;
+		}
+		if (event.key === "s") {
+			sPressed = false;
+		}
+		if (event.key === "ArrowUp") {
+			upArrowPressed = false;
+		}
+		if (event.key === "ArrowDown") {
+			downArrowPressed = false;
+		}
+	}
+
+	function render() {
+		if (!gameOver){
+			context.fillStyle = "#222";
+			context.fillRect(0, 0, canvas.width, canvas.height);
+
+			context.fillStyle = "#fff";
+			context.fillRect(canvas.width / 2 - 2, 0, 4, canvas.height);
+
+			// Raket çizimi
+			context.fillStyle = paddleColor1;
+			context.fillRect(10, player1Y, paddleWidth, paddleHeight);
+			context.fillStyle = paddleColor2;
+			context.fillRect(canvas.width - paddleWidth - 10, player2Y, paddleWidth, paddleHeight);
+
+			// Top çizimi
+			context.fillStyle = ballColor;
+			context.beginPath();
+
+			context.arc(ballX, ballY, ballRadius, 0, Math.PI * 2, false);
+			context.closePath();
+			context.fill();
+		}
+
+		// raketler çarpma
+		if (ballX - ballRadius < paddleWidth && ballY > player1Y && ballY < player1Y + paddleHeight) {
+			ballSpeedX = -ballSpeedX;
+		} else if (ballX + ballRadius > canvas.width - paddleWidth && ballY > player2Y && ballY < player2Y + paddleHeight) {
+			ballSpeedX = -ballSpeedX;
+		}
+
+		// Top yerleri
+		ballX += ballSpeedX;
+		ballY += ballSpeedY;
+
+		// Duvar kontrol
+		if (ballY - ballRadius < 0 || ballY + ballRadius > canvas.height) {
+			ballSpeedY = -ballSpeedY;
+		}
+
+		// Puan ve Top sıfırlama
+		if (ballX - ballRadius < 0) {
+			player2Score++;
+			resetBall();
+		} else if (ballX + ballRadius > canvas.width) {
+			player1Score++;
+			resetBall();
+		}
+
+		document.getElementById("player1-score").textContent = player1Score;
+		document.getElementById("player2-score").textContent = player2Score;
+
+		//if (player1Score === winningScore || player2Score === winningScore) {
+		if (player1Score === 2 || player2Score === 2) {
+			for (oyuncu in '{{oyuncular}}') {
+				if(player1Score === winningScore){
+					alert(oyuncu + " - " + '{{oyuncular}}');
+					yfinal = 1;
+				}
+				else{
+					alert(oyuncu + " - " + '{{oyuncular}}');
+					yfinal = 2;
+				}
+				}
+			console.log("Puan Tarıfındaki " + yfinal);
+			gameOver = true;
+		}
+
+		// Move paddles
+		if (wPressed && player1Y > 0) {
+			player1Y -= 2;
+		}
+		if (sPressed && player1Y < canvas.height - paddleHeight) {
+			player1Y += 2;
+		}
+		if (upArrowPressed && player2Y > 0) {
+			player2Y -= 2;
+		}
+		if (downArrowPressed && player2Y < canvas.height - paddleHeight) {
+			player2Y += 2;
+		}
+		if (!gameStarted) {
+			StopGame();
+		} else if (gameOver){
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			message.innerText = "Kazadın : " + yfinal
+		}
+		else {
+			requestAnimationFrame(render);
+		}
+	}
+
+	function resetBall() {
+		ballX = canvas.width / 2;
+		ballY = canvas.height / 2;
+		ballSpeedX = -ballSpeedX;
+		ballSpeedY = 7;
+	}
+
+	function StartGame() {
+		document.getElementById("start-button").style.display = "none";
+		document.getElementById("stop-button").style.display = "block";
+		gameStarted = true;
+		requestAnimationFrame(render);
+	}
+
+	function StopGame() {
+		document.getElementById("stop-button").style.display = "none";
+		document.getElementById("start-button").style.display = "block";
+		gameStarted = false;
+		cancelAnimationFrame(render);
+	}
+
+	$(document).ready(function() {
+		$.ajax({
+		url: "{% url 'turnuva' %}",
+		method: "PUT",
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRFToken': '{{ csrf_token }}',
+		},
+		data: {
+			yfinal: 'ben'
+		},
+			success: function(data) {
+			console.log("Basarıldı.");
+		}
+		});
+	});
+</script>
+</body>
+</html>

@@ -167,14 +167,10 @@
 
 		// Raket çarpışma olup olmadığını kontrol edin
 		if (ballPosition.x - ballRadius < paddleWidth && ballPosition.y > player1Y && ballPosition.y < player1Y + paddleHeight) {
-			//ballSpeed.x = -ballSpeed.x;
-			ballSpeed.x = Math.abs(ballSpeed.x);
+			ballSpeed.x = -ballSpeed.x;
 		} else if (ballPosition.x  + ballRadius > canvas.width - paddleWidth && ballPosition.y > player2Y && ballPosition.y < player2Y + paddleHeight) {
-			//ballSpeed.x = -ballSpeed.x;
-			ballSpeed.x = -Math.abs(ballSpeed.x);
+			ballSpeed.x = -ballSpeed.x;
 		}
-		// Topun konumunu diğer oyuncuya gönderir
-		//sendBallPosition();
 	}
 
 	function scorecont(){
@@ -400,24 +396,6 @@
 	}
 
 	function updatePaddleAndScore(event){
-		// Raket hareketi
-/*		if (wPressed && player1Y > 0) {
-			player1Y -= 3;
-			sendPlayer1PaddlePosition();
-		}
-		if (sPressed && player1Y < canvas.height - paddleHeight) {
-			player1Y += 3;
-			sendPlayer1PaddlePosition();
-		}
-		if (upArrowPressed && player2Y > 0) {
-			player2Y -= 3;
-			sendPlayer2PaddlePosition();
-		}
-		if (downArrowPressed && player2Y < canvas.height - paddleHeight) {
-			player2Y += 3;
-			sendPlayer2PaddlePosition();
-		}
-*/
 		if(p1Socket == user){
 			if (event.key === "w" && player1Y > 0) {
 				player1Y -= 3;
@@ -496,7 +474,6 @@
 		}
 	}
 	// Top Hareketi
-	//setInterval(gameLoop, 30);
 	setInterval(sendBallPosition, 10);
 </script>
 </body>
