@@ -79,6 +79,8 @@ def guncelleme(request, room_name):
 
 
 
+
+
 from django.shortcuts import render, redirect
 from .models import Tournament, Player
 from django.contrib import messages
@@ -109,3 +111,4 @@ def join_tournament(request, tournament_id):
     else:
         messages.error(request, "Turnuva dolu.")
     return redirect('home')
+
