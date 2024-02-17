@@ -297,7 +297,8 @@
 	
 	// Topun konumunu diğer oyuncuya göndermek için kullanılan fonksiyon
 	function sendBallPosition() {
-	if (s.readyState === WebSocket.OPEN && p1Socket === user) {
+	//if (s.readyState === WebSocket.OPEN && p1Socket === user) {
+	if (s.readyState === WebSocket.OPEN) {
 		const data = {
 			type: 'ballPosition',
 			position: ballPosition
@@ -329,12 +330,53 @@
 	}
 
 	// Klavye girişi Dinleme  ve Oyuncu raket hareket tetiklenen olay işleyicisi
-	document.addEventListener("keyup", sendPlayer1PaddlePosition);
+	{% comment %} document.addEventListener("keyup", sendPlayer1PaddlePosition);
 	document.addEventListener('keydown', sendPlayer1PaddlePosition);
 	document.addEventListener("keyup", sendPlayer2PaddlePosition);
 	document.addEventListener('keydown', sendPlayer2PaddlePosition);
 	document.addEventListener("keydown", handleKeyDown);
-	document.addEventListener("keyup", handleKeyUp);
+	document.addEventListener("keyup", handleKeyUp); {% endcomment %}
+
+
+	//document.addEventListener("keydown", updatePaddleAndScore)
+	{% comment %} document.addEventListener('keydown', sendPlayer1PaddlePosition);
+	document.addEventListener('keydown', sendPlayer2PaddlePosition); {% endcomment %}
+
+	document.addEventListener("keydown" ,function (event){
+		// Raket hareketi
+		if (event.key === "w" && player1Y > 0) {
+			player1Y -= 3;
+			sendPlayer1PaddlePosition();
+		}
+		if (event.key === "s" && player1Y < canvas.height - paddleHeight) {
+			player1Y += 3;
+			sendPlayer1PaddlePosition();
+		}
+		if (event.key === "ArrowUp" && player2Y > 0) {
+			player2Y -= 3;
+			sendPlayer2PaddlePosition();
+		}
+		if (event.key === "ArrowDown" && player2Y < canvas.height - paddleHeight) {
+			player2Y += 3;
+			sendPlayer2PaddlePosition();
+		}
+
+
+		//Puan Kontrol
+		if (player1Score === 11 || player2Score === 11) {
+			// Puan Kontrolü
+			document.getElementById("player1-score").textContent = player1Score;
+			document.getElementById("player2-score").textContent = player2Score;
+			gameOver = true;	
+			sendGameOver();
+			setTimeout(function() {
+				window.location.href = '{% url "sohbet_anasayfa" %}';
+				}, 1500);
+		}
+	}
+	);
+
+
 
 
 	// Klavye Giriş Takibi
@@ -403,7 +445,7 @@
 		context.fillStyle = "#fff";
 		context.fillRect(canvas.width / 2 - 2, 0, 4, canvas.height);
 	}
-
+{% comment %} 
 	function updatePaddleAndScore(){
 		// Raket hareketi
 		if (wPressed && player1Y > 0) {
@@ -436,7 +478,7 @@
 				}, 1500);
 		}
 	}
-
+ {% endcomment %}
 	// Oyun döngüsü
 	function gameLoop() {
 		// Canvas'ı temizler
@@ -453,7 +495,7 @@
 			// Topu çizer
 			drawBall();
 			//Raket Hareketi
-			updatePaddleAndScore();
+			//updatePaddleAndScore();
 			//Puan Kontrol
 			puankont();
 			// File çizer
