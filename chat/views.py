@@ -85,7 +85,6 @@ def guncelleme(request, room_name):
 from .models import Tournament
 
 
-
 def create_tournament(request):
     if request.method == "POST":
         oyuncu1 = request.POST.get('oyuncu1')
@@ -95,8 +94,5 @@ def create_tournament(request):
         if tournament is None:
             tournament = Tournament(oyuncu1=oyuncu1, oyuncu2=oyuncu2, oyuncu3=oyuncu3)
         tournament.save()
-        return redirect('turnuva')
+        return redirect('sohbet_anasayfa')
     return render(request, 'create_tournament.html')
-
-def turnuva(request):
-    return render(request,'Turnu.html', {'oyuncular':Tournament.objects.all().last()})

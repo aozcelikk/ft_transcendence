@@ -9,9 +9,6 @@ class Tournament(models.Model):
     yfinal = models.CharField(max_length=255, null=True)
     kazanan = models.CharField(max_length=255, null=True)
 
-    def __iter__(self):
-        return iter([self])
-
 
 
 

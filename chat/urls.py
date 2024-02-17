@@ -19,7 +19,6 @@ urlpatterns = [
 	path(_("anasayfa/"), views.sohbet_anasayfa, name="sohbet_anasayfa"),
 	path(_("oyun_gecmis/"), views.game_history, name="oyun_gecmis"),
     path('create_tournament/', views.create_tournament, name='create_tournament'),
-	path('turnuva/', views.turnuva, name='turnuva'),
 	path('update_winner/<room_name>', views.guncelleme, name='guncelleme'),
 	path(_("<str:room_name>/"),views.sohbet_oda, name='oda'),
 ]
