@@ -2,12 +2,14 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 
+
+
+class Player(models.Model):
+    name = models.CharField(max_length=255)
+
 class Tournament(models.Model):
-    oyuncu1 = models.CharField(max_length=255, null=True)
-    oyuncu2 = models.CharField(max_length=255, null=True)
-    oyuncu3 = models.CharField(max_length=255, null=True)
-    yfinal = models.CharField(max_length=255, null=True)
-    kazanan = models.CharField(max_length=255, null=True)
+    name = models.CharField(max_length=255)
+    players = models.ManyToManyField(Player)
 
 
 
