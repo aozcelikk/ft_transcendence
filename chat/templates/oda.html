@@ -130,8 +130,8 @@
 	};
 	//top Hızı
 	let ballSpeed = {
-		x: 7,
-		y: 7
+		x: 3,
+		y: 3
 	};
 	//Topun yuvarlıklıgı
 	const ballRadius = 7;
@@ -378,7 +378,7 @@
 		ballPosition.x = canvas.width / 2;
 		ballPosition.y = canvas.height / 2;
 		ballSpeed.x = -ballSpeed.x;
-		ballSpeed.y = 7;
+		ballSpeed.y = 3;
 	}
 
 
@@ -459,7 +459,7 @@
 			// File çizer
 			file();
 			//Top hareketi
-			if(p1Socket === user)
+			//if(p1Socket === user)
 				moveBall();
 			// Oyun döngüsünü tekrar başlatır
 			requestAnimationFrame(gameLoop);
