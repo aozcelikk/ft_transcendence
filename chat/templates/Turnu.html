@@ -83,14 +83,31 @@
 				<span>{{oyuncu.oyuncu1}}(<span id="player1-score">0</span>) - {{oyuncu.oyuncu2}}(<span id="player2-score">0</span>)</span>
 			{% endfor %}
 		{% endif %}
+		<div id="restart-button">
+			<button onclick="StartGame()">Oyunu Başlat</button>
+			<button onclick="location.reload()">Oyun Sayfasına Git</button>
+		</div>
 	</div>
 	<div id="ayar">
-		<div id="start-stop-button" style="text-align: center; margin-top: 20px;">
+		<div id="start-button" style="text-align: center; margin-top: 20px;">
 			<div id="settings-button" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
 				<button onclick="StartGame()" id="start-button">Oyunu Başlat</button>
+				<button onclick="toggleSettings()">Ayarlar</button>
 			</div>
-			<div id="settings-button" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
-				<button onclick="StopGame()" id="stop-button" style="display: none;">Oyunu Duraklat</button>
+		</div>
+		<div id="ayar2">
+			<div id="color-buttons" style="display: none;">
+				<h5 style="color : white;">
+				<label>Oyuncu 1 Raket Rengi:</label>	
+				<input type="color" id="changePaddleColor(1)">
+				<label>Oyuncu 2 Raket Rengi:</label>
+				<input type="color" id="changePaddleColor(2)">
+				<label>Topun Rengi:</label>
+				<input type="color" id="changeBallColor()">
+				<label for="ballSpeed" class="form-label">Top Hızı:</label>
+				<input type="range" id="ballSpeed" class="form-range" min="1" max="15" value="1">
+				</h5>
+			<button onclick="changePaddleColor(1), changePaddleColor(2), changeBallColor(), ballSpeed() ">Uygula</button>
 			</div>
 		</div>
 	</div>
@@ -112,8 +129,8 @@
 		let ballX = canvas.width / 2;
 		let ballY = canvas.height / 2;
 		const ballRadius = 10;
-		let ballSpeedX = 10;
-		let ballSpeedY = 10;
+		let ballSpeedX = 2;
+		let ballSpeedY = 2;
 		let ballColor = "#fff";
 
 		// Player scores
@@ -124,6 +141,7 @@
 		// Game state
 		let gameStarted = false;
 		let gameOver = false;
+		let gamePaused = false;
 
 		// Keyboard input
 		let wPressed = false;
@@ -131,6 +149,7 @@
 		let upArrowPressed = false;
 		let downArrowPressed = false;
 
+		// Event listeners for keyboard input
 		window.addEventListener("keydown", handleKeyDown);
 		window.addEventListener("keyup", handleKeyUp);
 
@@ -142,7 +161,13 @@
                 colorButtons.style.display = "none";
             }
         }
+		function ballSpeed() {
+			const ballSpeed = document.getElementById('ballSpeed').value;
+			ballSpeedX = ballSpeed;
+			ballSpeedY = ballSpeed;
+		}
 		
+		// Keyboard input handlers
 		function handleKeyDown(event) {
 			if (event.key === "w") {
 				wPressed = true;
@@ -234,47 +259,55 @@
 
 			// Move paddles
 			if (wPressed && player1Y > 0) {
-				player1Y -= 3;
+				player1Y -= 5;
 			}
 			if (sPressed && player1Y < canvas.height - paddleHeight) {
-				player1Y += 3;
+				player1Y += 5;
 			}
 			if (upArrowPressed && player2Y > 0) {
-				player2Y -= 3;
+				player2Y -= 5;
 			}
 			if (downArrowPressed && player2Y < canvas.height - paddleHeight) {
-				player2Y += 3;
+				player2Y += 5;
 			}
-			if (!gameStarted) {
-				StopGame();
+
+			// Restart game if game over
+			if (gameOver) {
+				document.getElementById("restart-button").style.display = "block";
 			} else {
 				requestAnimationFrame(gameLoop);
 			}
 		}
 
+		// Reset ball position and speed
 		function resetBall() {
 			ballX = canvas.width / 2;
 			ballY = canvas.height / 2;
 			ballSpeedX = -ballSpeedX;
-			ballSpeedY = 10;
+			ballSpeedY = 3;
 		}
 
 		function StartGame() {
 			document.getElementById("start-button").style.display = "none";
-			document.getElementById("stop-button").style.display = "block";
 			gameStarted = true;
 			requestAnimationFrame(gameLoop);
 		}
 
-		function StopGame() {
-			document.getElementById("stop-button").style.display = "none";
-			document.getElementById("start-button").style.display = "block";
-			gameStarted = false;
-			cancelAnimationFrame(gameLoop);
+		// Change ball color
+		function changeBallColor() {
+			ballColor = document.getElementById('changeBallColor()').value;
 		}
 
+		// Change paddle color
+		function changePaddleColor(player) {
+			if (player === 1) {
+				paddleColor1 = document.getElementById('changePaddleColor(1)').value;
+			} else if (player === 2) {
+				paddleColor2 = document.getElementById('changePaddleColor(2)').value;
+			}
+		}
 		// Start the game loop
-		requestAnimationFrame(gameLoop);
+		//requestAnimationFrame(gameLoop);
 	</script>
 </body>
 </html>
