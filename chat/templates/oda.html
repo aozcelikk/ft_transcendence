@@ -72,6 +72,7 @@
 	let user = '{{user}}';
 	var p1Socket = '{{ creator }}';
 	var p2Socket = '{{ opponent }}';
+	var bak = true;
 
 	// WebSocket bağlantısı açıldığında tetiklenen olay işleyicisi
 	s.onopen = function() {
@@ -80,7 +81,7 @@
 			if (p1Socket != '' ){
 				playerCount++;
 			}
-			if (p1Socket !== '' && (p2Socket !== '' || p2Socket !== "None"))
+			if (p1Socket != '' && p2Socket != '')
 				playerCount++;
 			if(p2Socket === "None")
 				playerCount--;
@@ -91,11 +92,13 @@
 				gameLoop();
 			}
 			else{
+				//location.reload();
 				setTimeout(function() {
 					window.location.reload();
 				  }, 500);
 			}
 		}
+
 	};
 	// WebSocket bağlantısı kapandığında tetiklenen olay işleyicisi
 	s.onclose = function() {
@@ -167,10 +170,14 @@
 
 		// Raket çarpışma olup olmadığını kontrol edin
 		if (ballPosition.x - ballRadius < paddleWidth && ballPosition.y > player1Y && ballPosition.y < player1Y + paddleHeight) {
-			ballSpeed.x = -ballSpeed.x;
+			//ballSpeed.x = -ballSpeed.x;
+			ballSpeed.x = Math.abs(ballSpeed.x);
 		} else if (ballPosition.x  + ballRadius > canvas.width - paddleWidth && ballPosition.y > player2Y && ballPosition.y < player2Y + paddleHeight) {
-			ballSpeed.x = -ballSpeed.x;
+			//ballSpeed.x = -ballSpeed.x;
+			ballSpeed.x = -Math.abs(ballSpeed.x);
 		}
+		// Topun konumunu diğer oyuncuya gönderir
+		//sendBallPosition();
 	}
 
 	function scorecont(){
@@ -324,7 +331,11 @@
 	// Klavye girişi Dinleme  ve Oyuncu raket hareket tetiklenen olay işleyicisi
 	document.addEventListener('keydown', sendPlayer1PaddlePosition);
 	document.addEventListener('keydown', sendPlayer2PaddlePosition);
-	//document.addEventListener("keydown", handleKeyDown);
+	document.addEventListener("keydown", handleKeyDown);
+//	document.addEventListener("keyup", handleKeyUp);
+//	document.addEventListener("keyup", sendPlayer1PaddlePosition);
+//	document.addEventListener("keyup", sendPlayer2PaddlePosition);
+
 	document.addEventListener("keydown", updatePaddleAndScore);
 
 
@@ -396,6 +407,24 @@
 	}
 
 	function updatePaddleAndScore(event){
+		// Raket hareketi
+/*		if (wPressed && player1Y > 0) {
+			player1Y -= 3;
+			sendPlayer1PaddlePosition();
+		}
+		if (sPressed && player1Y < canvas.height - paddleHeight) {
+			player1Y += 3;
+			sendPlayer1PaddlePosition();
+		}
+		if (upArrowPressed && player2Y > 0) {
+			player2Y -= 3;
+			sendPlayer2PaddlePosition();
+		}
+		if (downArrowPressed && player2Y < canvas.height - paddleHeight) {
+			player2Y += 3;
+			sendPlayer2PaddlePosition();
+		}
+*/
 		if(p1Socket == user){
 			if (event.key === "w" && player1Y > 0) {
 				player1Y -= 3;
@@ -418,7 +447,7 @@
 
 
 		//Puan Kontrol
-		if (player1Score === 2 || player2Score === 2) {
+		if (player1Score === 11 || player2Score === 11) {
 			// Puan Kontrolü
 			document.getElementById("player1-score").textContent = player1Score;
 			document.getElementById("player2-score").textContent = player2Score;
@@ -433,7 +462,7 @@
 
 	function updatePaddleAndScor(){
 		//Puan Kontrol
-		if (player1Score === 2 || player2Score === 2) {
+		if (player1Score === 11 || player2Score === 11) {
 			// Puan Kontrolü
 			document.getElementById("player1-score").textContent = player1Score;
 			document.getElementById("player2-score").textContent = player2Score;
@@ -474,6 +503,7 @@
 		}
 	}
 	// Top Hareketi
+	//setInterval(gameLoop, 30);
 	setInterval(sendBallPosition, 10);
 </script>
 </body>
