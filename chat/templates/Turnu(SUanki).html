@@ -8,6 +8,7 @@
 		padding: 200px;
 		overflow: hidden;
 		background-color: #111;
+		{% comment %} display: column ; {% endcomment %}
 		justify-content: center;
 		align-items: center;
 		height: 100vh;
@@ -52,23 +53,22 @@
 <body>
 	<canvas id="pong" width="800" height="400"></canvas>
 	<div id="scoreboard">
-		<span>{{oyuncu.oyuncu1}}(<span id="player1-score">0</span>) - {{oyuncu.oyuncu2}}(<span id="player2-score">0</span>)</span>
+		{% if oyuncular %}
+			{% for oyuncu in oyuncular %}
+				<span>{{oyuncu.oyuncu1}}(<span id="player1-score">0</span>) - {{oyuncu.oyuncu2}}(<span id="player2-score">0</span>)</span>
+			{% endfor %}
+		{% endif %}
 	</div>
 	<div id="start-stop-button">
 		<div id="settings-button" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
-			{% comment %} <button onclick="StartGame()" id="start-button">Oyunu Başlat</button> {% endcomment %}
+			<button onclick="StartGame()" id="start-button">Oyunu Başlat</button>
 		</div>
 		<div id="settings-button" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
 			<button onclick="StopGame()" id="stop-button" style="display: none;">Oyunu Duraklat</button>
 		</div>
 	</div>
-	<div id="player-input">
-		<input type="text" placeholder="Oyuncu 1 Takma Adı" id="player1-name">
-		<input type="text" placeholder="Oyuncu 2 Takma Adı" id="player2-name">
-		<input type="text" placeholder="Oyuncu 3 Takma Adı" id="player3-name">
-		<button onclick="StartGame()" id="start-game-button">Oyunu Başlat</button>
-	</div>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+{% comment %} <script> {% endcomment %}
 <script type="text/javascript">
 	const canvas = document.getElementById("pong");
 	const context = canvas.getContext("2d");
@@ -202,6 +202,17 @@
 
 		//if (player1Score === winningScore || player2Score === winningScore) {
 		if (player1Score === 2 || player2Score === 2) {
+/*			for (var '{{oyuncu}}' in '{{oyuncular}}') {
+				if(player1Score === winningScore){
+					alert('{{oyuncu}}');
+					yfinal = 1;
+				}
+				else{
+					alert('{{oyuncu}}');
+					yfinal = 2;
+				}
+				}
+			console.log("Puan Tarıfındaki " + yfinal);*/
 			gameOver = true;
 		}
 
@@ -254,26 +265,21 @@
 		cancelAnimationFrame(render);
 	}
 
-	const player1Name = document.getElementById("player1-name");
-	const player2Name = document.getElementById("player2-name");
-	const player3Name = document.getElementById("player3-name");
-
-	document.getElementById("start-game-button").addEventListener("click", () => {
-		if (player1Name.value && player2Name.value && player3Name.value) {
-			// Oyuncuların takma adlarını bir diziye ekle
-			const players = [player1Name.value, player2Name.value, player3Name.value];
-
-			// Diziden rasgele bir oyuncu seç
-			const randomPlayer = players[Math.floor(Math.random() * players.length)];
-
-			// Seçilen oyuncuyu yfinal değişkenine ata
-			yfinal = randomPlayer;
-
-			// Oyunu başlat
-			StartGame();
-		} else {
-			alert("Lütfen tüm oyuncu takma adlarını girin.");
+	$(document).ready(function() {
+		$.ajax({
+		url: "{% url 'turnuva' %}",
+		method: "POST",
+		headers: {
+			'Content-Type': 'application/json',
+			'X-CSRFToken': '{{ csrf_token }}',
+		},
+		data: {
+			yfinal: yfinal
+		},
+			success: function(data) {
+			console.log("Basarıldı.");
 		}
+		});
 	});
 </script>
 </body>

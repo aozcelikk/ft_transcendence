@@ -15,14 +15,16 @@
 	<div class="col-md-6 mx-auto mt-4">
 		<div class="row">
 			<div class="col-md-6 mx-auto mt-4">
-				<h1>Turnuva Oluştur</h1>
+				<h1>{% trans "Turnuva Oluştur" %}</h1>
 			</div>
 			<hr>
-			<div class="col-md-5 mx-auto mt-2">
+			<div class="col-md-6 mx-auto mt-2">
 			<form method="post">
 					{% csrf_token %}
-					<input type="text" id="oda_ismi" name="oda_ismi">
-					<button type="submit" class="btn btn-primary">Oluştur</button>
+					<h4> {% trans "1.Oyuncunun Takma Adı" %} : <input type="text" id="oyuncu1" name="oyuncu1" required></h4>
+					<h4> {% trans "2.Oyuncunun Takma Adı" %} : <input type="text" id="oyuncu2" name="oyuncu2" required></h4>
+					<h4> {% trans "3.Oyuncunun Takma Adı" %} : <input type="text" id="oyuncu3" name="oyuncu3" required></h4>
+					<button type="submit" class="btn btn-primary">{% trans "Oyunu Başlat" %}</button>
 			</form>
 			</div>
 		</div>

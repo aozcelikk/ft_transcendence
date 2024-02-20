@@ -2,18 +2,6 @@ from django.db import models
 from django.core.exceptions import ValidationError
 
 
-
-
-class Player(models.Model):
-    name = models.CharField(max_length=255)
-
-class Tournament(models.Model):
-    name = models.CharField(max_length=255)
-    players = models.ManyToManyField(Player)
-
-
-
-
 class Room(models.Model):
     room_name = models.CharField(max_length=255, unique=True)
     game_creator = models.CharField(max_length=100)

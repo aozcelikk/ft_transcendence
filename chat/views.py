@@ -78,34 +78,5 @@ def guncelleme(request, room_name):
         return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 
-
-from django.shortcuts import render, redirect
-from .models import Tournament, Player
-from django.contrib import messages
-
-def create_tournament(request):
-    if request.method == "POST":
-        room_name = request.POST.get('oda_ismi')
-        tournament = Tournament.objects.filter(name=room_name).first()
-        if tournament is None:
-            tournament = Tournament(name=room_name)
-        tournament.save()
-        messages.success(request, "Turnuva oluşturuldu.")
-        return redirect('sohbet_anasayfa')
-    return render(request, 'create_tournament.html')
-
-def home(request):
-    tournaments = Tournament.objects.all()
-    return render(request, 'home.html', {'tournaments': tournaments})
-
-def join_tournament(request, tournament_id):
-    tournament = Tournament.objects.get(id=tournament_id)
-    if tournament.players.count() < 3:
-        player = Player()
-        player.save()
-        tournament.players.add(player)
-        tournament.save()
-        messages.success(request, "Turnuvaya katıldınız.")
-    else:
-        messages.error(request, "Turnuva dolu.")
-    return redirect('home')
+def turnuva(request):
+    return render(request,'Turnu.html')
