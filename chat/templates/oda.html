@@ -319,8 +319,8 @@
 	});
 
 	function resetBall() {
-		ballPosition.x = Math.random() * (canvas.width / 2);
-		ballPosition.y = Math.random() * (canvas.height / 2);
+		ballPosition.x = Math.random() * canvas.width;
+		ballPosition.y = Math.random() * canvas.height;
 		ballSpeed.x = -ballSpeed.x;
 		ballSpeed.y = 3;
 	}
