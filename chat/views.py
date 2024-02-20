@@ -98,5 +98,16 @@ def create_tournament(request):
         return redirect('turnuva')
     return render(request, 'create_tournament.html')
 
+
+
 def turnuva(request):
+    if request.method == "POST":
+        yfinal = request.POST.get("yfinal")
+        tournament = Tournament.objects.last()
+        tournament.yfinal = yfinal
+        tournament.save()
+        return redirect('turnuva')
     return render(request,'Turnu.html', {'oyuncular':Tournament.objects.all().last()})
+
+# def turnuva(request):
+#     return render(request,'Turnu.html', {'oyuncular':Tournament.objects.all().last()})

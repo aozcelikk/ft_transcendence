@@ -8,7 +8,7 @@
 		padding: 200px;
 		overflow: hidden;
 		background-color: #111;
-		display: column ;
+		{% comment %} display: column ; {% endcomment %}
 		justify-content: center;
 		align-items: center;
 		height: 100vh;
@@ -48,20 +48,10 @@
 		text-align: center;
 	}
 
-	#message {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		color: white;
-		transform: translate(-50%, -50%);
-		font-size: 20px;
-	}
-
 </style>
 </head>
 <body>
 	<canvas id="pong" width="800" height="400"></canvas>
-	<p id="message"></p>
 	<div id="scoreboard">
 		{% if oyuncular %}
 			{% for oyuncu in oyuncular %}
@@ -79,13 +69,12 @@
 	</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-	let message = document.getElementById('message');
 	const canvas = document.getElementById("pong");
 	const context = canvas.getContext("2d");
 
 	// Paddle properties
 	const paddleWidth = 10;
-	const paddleHeight = 100;
+	const paddleHeight = 80;
 	let player1Y = canvas.height / 2 - paddleHeight / 2;
 	let player2Y = canvas.height / 2 - paddleHeight / 2;
 	
@@ -211,20 +200,46 @@
 		document.getElementById("player2-score").textContent = player2Score;
 
 		//if (player1Score === winningScore || player2Score === winningScore) {
-		if (player1Score === 2 || player2Score === 2) {
-			for (oyuncu in '{{oyuncular}}') {
+/*		if (player1Score === 2 || player2Score === 2) {
+			for (var '{{oyuncu}}' in '{{oyuncular}}') {
 				if(player1Score === winningScore){
-					alert(oyuncu + " - " + '{{oyuncular}}');
+					alert('{{oyuncu}}');
 					yfinal = 1;
 				}
 				else{
-					alert(oyuncu + " - " + '{{oyuncular}}');
+					alert('{{oyuncu}}');
 					yfinal = 2;
 				}
 				}
 			console.log("Puan Tarıfındaki " + yfinal);
 			gameOver = true;
 		}
+*/
+if (player1Score === 2 || player2Score === 2) {
+	const oyuncular = [{ oyuncu1: "John", oyuncu2: "Jane" }, { oyuncu1: "Bob", oyuncu2: "Alice" }];
+
+	{% if oyuncular %}
+	{% for (let oyuncu of oyuncular) %}
+	  console.log(oyuncu.oyuncu1); // John, Bob
+	  console.log(oyuncu.oyuncu2); // Jane, Alice
+	{% endfor %}
+	{% endif %}
+		//var oyuncular = '{{ oyuncular }}';
+		if (!oyuncular) {
+			oyuncular = [];
+		}
+		for (var i = 0; i < oyuncular.length; i++) {
+			var oyuncu = oyuncular[i];
+			if (player1Score === winningScore) {
+				alert(oyuncu.oyuncu1);
+				yfinal = 1;
+			}else{
+				alert(oyuncu.oyuncu2);
+				yfinal = 2;
+			}
+		}
+		gameOver = true;
+	}
 
 		// Move paddles
 		if (wPressed && player1Y > 0) {
@@ -243,7 +258,9 @@
 			StopGame();
 		} else if (gameOver){
 			context.clearRect(0, 0, canvas.width, canvas.height);
-			message.innerText = "Kazadın : " + yfinal
+			context.font = "30px Arial";
+			context.fillStyle = "White";
+			context.fillText("Kazanan " + yfinal , canvas.width / 2 - 100, canvas.height / 2);
 		}
 		else {
 			requestAnimationFrame(render);
@@ -251,8 +268,8 @@
 	}
 
 	function resetBall() {
-		ballX = canvas.width / 2;
-		ballY = canvas.height / 2;
+		ballX = Math.random() * (canvas.width / 2);
+		ballY = Math.random() * (canvas.height / 2);
 		ballSpeedX = -ballSpeedX;
 		ballSpeedY = 7;
 	}
@@ -274,13 +291,13 @@
 	$(document).ready(function() {
 		$.ajax({
 		url: "{% url 'turnuva' %}",
-		method: "PUT",
+		method: "POST",
 		headers: {
 			'Content-Type': 'application/json',
 			'X-CSRFToken': '{{ csrf_token }}',
 		},
 		data: {
-			yfinal: 'ben'
+			yfinal: yfinal
 		},
 			success: function(data) {
 			console.log("Basarıldı.");
