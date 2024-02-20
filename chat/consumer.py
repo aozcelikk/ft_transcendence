@@ -104,7 +104,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                 try:
                     await self.send(json.dumps(data))
                 except Exception as e:
-                    print(f"Error while sending message: {str(e)}")
+                    print()
 
     # Handle paddle position updates from other users
     async def paddlePosition(self, event):
