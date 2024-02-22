@@ -123,6 +123,7 @@
 	let yfinal;
 	let final = player3Name.value;
 	let kazanan;
+	let tek = true;
 
 
 	let gameOver = false;
@@ -173,7 +174,7 @@
 			downArrowPressed = false;
 		}
 	}
-	let tek = true;
+
 	let playerName1 = document.getElementById('playerName1');
 	let playerName2 = document.getElementById('playerName2');
 
@@ -271,7 +272,9 @@
 				setTimeout(function() {
 					context.clearRect(0, 0, canvas.width, canvas.height);
 					context.fillText("Sıradaki Maç: " + yfinal + " - " + final, canvas.width / 2 - 150, canvas.height / 2);
-					document.getElementById("final-button").style.display = "block";
+					setTimeout(function() {
+						document.getElementById("final-button").style.display = "block";
+					}, 2000);
 				}, 3000);
 			}else{
 				context.fillText("Kazanan: " + kazanan, canvas.width / 2 - 150, canvas.height / 2);
@@ -306,9 +309,9 @@
 		document.getElementById("player1-score").textContent = player1Score;
 		document.getElementById("player2-score").textContent = player2Score;
 		document.getElementById("final-button").style.display = "none";
-		StartGame();
 		tek = false;
 		gameOver = false;
+		StartGame();
 	}
 
 </script>
