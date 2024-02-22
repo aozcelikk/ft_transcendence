@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Ping Pong Oyunu</title>
+<style>
+	body {
+		margin: 0;
+		padding: 200px;
+		overflow: hidden;
+		background-color: #111;
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+		font-family: Arial, sans-serif;
+	}
+		
+	#pong {
+		background-color: #222;
+		display: block;
+		margin: auto;
+		border: 2px solid #fff;
+		box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+		border-radius: 10px;
+		font-size : 32px;
+	}
+
+	#scoreboard {
+		color: #fff;
+		font-size: 24px;
+		text-align: center;
+		margin-top: 20px;
+	}
+		
+	button {
+		padding: 10px 20px;
+		font-size: 16px;
+		background-color: #fff;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		margin: 0 10px;
+	}
+
+	#message {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		color: white;
+		transform: translate(-50%, -50%);
+		font-size: 20px;
+	}
+</style>
+</head>
+<body>
+	<canvas id="pong" width="800" height="400"></canvas>
+	<p id="message">"Waiting for other player..."</p>
+	<div id="scoreboard">
+		<h4>{{ creator }} <span id="player1-score">0</span> - {{ opponent }} <span id="player2-score"> 0</span></h4>
+	</div>
+	
+	{{room_name|json_script:"roomName"}}
+<script>
+	// Oyuncuların sopalarının ve topun konumlarını diğer oyuncuya göndermek için kullanılan WebSocket bağlantısı
+	const oda = JSON.parse(document.getElementById("roomName").textContent);
+	const s = new WebSocket('ws://' + window.location.host + '/ws/sohbet/'+ oda +'/');
+
+	let message = document.getElementById('message');
+	// Oyuncu Ayarı
+	var playerCount = 0;
+	let user = '{{user}}';
+	var p1Socket = '{{ creator }}';
+	var p2Socket = '{{ opponent }}';
+	var bak = true;
+
+	// WebSocket bağlantısı açıldığında tetiklenen olay işleyicisi
+	s.onopen = function() {
+		console.log('WebSocket bağlantısı açıldı.');
+		if (p1Socket && p2Socket){
+			if (p1Socket != '' ){
+				playerCount++;
+			}
+			if (p1Socket != '' && p2Socket != '')
+				playerCount++;
+			if(p2Socket === "None")
+				playerCount--;
+			if(playerCount === 2)
+			{
+				message.innerText = " "
+				// Oyun döngüsünü başlatır
+				gameLoop();
+			}
+			else{
+				//location.reload();
+				setTimeout(function() {
+					window.location.reload();
+				  }, 500);
+			}
+		}
+
+	};
+	// WebSocket bağlantısı kapandığında tetiklenen olay işleyicisi
+	s.onclose = function() {
+		console.log('WebSocket bağlantısı kapandı.');
+		gameOver = true;
+		sendGameOver();
+		setTimeout(function() {
+			window.location.href = '{% url "sohbet_anasayfa" %}';
+		}, 1500);
+	};
+
+
+	const canvas = document.getElementById("pong");
+	const context = canvas.getContext("2d");
+
+	// Raket Ayarları
+	const paddleWidth = 10;
+	const paddleHeight = 100;
+	let player1Y = canvas.height / 2 - paddleHeight / 2;
+	let player2Y = canvas.height / 2 - paddleHeight / 2;
+	// Raket Rengi
+	let paddleColor1 = "#fff";
+	let paddleColor2 = "#fff";
+
+	// Top Ayarları
+	let ballPosition = {
+		x: canvas.width / 2,
+		y: canvas.height / 2
+	};
+	//top Hızı
+	let ballSpeed = {
+		x: 7,
+		y: 7
+	};
+	//Topun yuvarlıklıgı
+	const ballRadius = 7;
+	//Topun Rengi
+	let ballColor = "#fff";
+
+	// Oyuncu  Puanı
+	var player1Score = 0;
+	var player2Score = 0;
+
+	// Oyun Durumu
+	var gameOver = false;
+
+	// Klavye Girişi
+	let wPressed = false;
+	let sPressed = false;
+	let upArrowPressed = false;
+	let downArrowPressed = false;
+
+
+
+	// Topu hareket ettirmek için kullanılan fonksiyon
+	function moveBall() {
+		// Topun konumunu günceller
+		ballPosition.x += ballSpeed.x;
+		ballPosition.y += ballSpeed.y;
+
+		// Topun oyun alanının duvarlarına çarpmasını kontrol eder
+		if (ballPosition.x < 0 || ballPosition.x > canvas.width) {
+			ballSpeed.x = -ballSpeed.x;
+		}
+
+		if (ballPosition.y < 0 || ballPosition.y > canvas.height) {
+			ballSpeed.y = -ballSpeed.y;
+		}
+
+		// Raket çarpışma olup olmadığını kontrol edin
+		if (ballPosition.x - ballRadius < paddleWidth && ballPosition.y > player1Y && ballPosition.y < player1Y + paddleHeight) {
+			//ballSpeed.x = -ballSpeed.x;
+			ballSpeed.x = Math.abs(ballSpeed.x);
+		} else if (ballPosition.x  + ballRadius > canvas.width - paddleWidth && ballPosition.y > player2Y && ballPosition.y < player2Y + paddleHeight) {
+			//ballSpeed.x = -ballSpeed.x;
+			ballSpeed.x = -Math.abs(ballSpeed.x);
+		}
+		// Topun konumunu diğer oyuncuya gönderir
+		//sendBallPosition();
+	}
+
+	function scorecont(){
+		sendPlayerScore(1,player1Score);
+		sendPlayerScore(2,player2Score);
+	}
+
+	function puankont(){
+		if (p1Socket === user){
+		if (ballPosition.x - ballRadius < 0) {
+			player2Score++;	
+			document.getElementById("player2-score").textContent = player2Score;
+			scorecont();
+			resetBall();
+		} else if (ballPosition.x + ballRadius > canvas.width) {
+			player1Score++;
+			document.getElementById("player1-score").textContent = player1Score;
+			scorecont();
+			resetBall();
+		}
+		}
+		document.getElementById("player1-score").textContent = player1Score;
+		document.getElementById("player2-score").textContent = player2Score;
+	}
+
+	// WebSocket bağlantısı üzerinden mesaj alındığında tetiklenen olay işleyicisi
+	s.onmessage = function(event) {
+		const data = JSON.parse(event.data);
+		// Mesajın türüne göre işlem yap
+		switch (data.type) {
+			case 'paddlePosition':
+				// Diğer oyuncunun sopasının konumunu güncelle
+				if (data.player === 1) {
+					player1Y = data.position;
+				} else if (data.player === 2) {
+					player2Y = data.position;
+				}
+				break;
+
+			case 'ballPosition':
+				// Topun konumunu güncelle
+				if (p2Socket === user){
+					ballPosition = data.position;
+				}
+					//ballPosition = data.position;
+				break;
+
+			case 'playerScore':
+				// Oyuncu skorunu güncelle
+				if (data.player === 1) {
+					player1Score = data.score;
+				} else if (data.player === 2) {
+					player2Score = data.score;
+				}
+				break;
+
+			case 'gameOver':
+				// Oyunu bitir
+				gameOver = true;
+				if(player1Score > player2Score){
+					winner = p1Socket}
+				else{
+					winner = p2Socket}
+				sendWinnerToServer(winner)
+				break;
+		}
+	};
+
+	async function sendWinnerToServer(winner) {
+		if (winner) {
+			const url = "{% url 'guncelleme' room_name %}"
+			await fetch(url, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': '{{ csrf_token }}',
+				},
+				body: JSON.stringify({
+					'winner': winner,
+				}),
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					console.log('Winner updated successfully.');
+				} else {
+					console.error('Failed to update winner:', data.error);
+				}
+			})
+			.catch(error => console.error('Error updating winner:', error));
+		}
+	}
+
+	// Oyuncu 1'in sopasının konumunu diğer oyuncuya göndermek için kullanılan fonksiyon
+	function sendPlayer1PaddlePosition() {
+		if (s.readyState === WebSocket.OPEN) {
+			const data = {
+				type: 'paddlePosition',
+				player: 1,
+				position: player1Y
+			};
+			if(user === p1Socket)
+				s.send(JSON.stringify(data));}	
+		}
+	
+	// Oyuncu 2'nin sopasının konumunu diğer oyuncuya göndermek için kullanılan fonksiyon
+	function sendPlayer2PaddlePosition() {
+	if (s.readyState === WebSocket.OPEN) {
+		const data = {
+			type: 'paddlePosition',
+			player: 2,
+			position: player2Y
+		};
+		if(user === p2Socket)
+			s.send(JSON.stringify(data));}
+	}
+	
+	// Topun konumunu diğer oyuncuya göndermek için kullanılan fonksiyon
+	function sendBallPosition() {
+	if (s.readyState === WebSocket.OPEN && p1Socket === user) {
+		const data = {
+			type: 'ballPosition',
+			position: ballPosition
+		};
+		s.send(JSON.stringify(data));
+		}
+	}
+	
+	// Oyuncu skorunu diğer oyuncuya göndermek için kullanılan fonksiyon
+	function sendPlayerScore(player, score) {
+	if (s.readyState === WebSocket.OPEN) {
+		const data = {
+			type: 'playerScore',
+			player: player,
+			score: score
+		};
+		s.send(JSON.stringify(data));
+		}
+	}
+	
+	// Oyunun bittiğini diğer oyuncuya göndermek için kullanılan fonksiyon
+	function sendGameOver() {
+	if (s.readyState === WebSocket.OPEN) {
+		const data = {
+			type: 'gameOver',
+		};
+		s.send(JSON.stringify(data));
+		}
+	}
+
+	// Klavye girişi Dinleme  ve Oyuncu raket hareket tetiklenen olay işleyicisi
+	document.addEventListener('keydown', sendPlayer1PaddlePosition);
+	document.addEventListener('keydown', sendPlayer2PaddlePosition);
+	document.addEventListener("keydown", handleKeyDown);
+	document.addEventListener("keyup", handleKeyUp);
+
+
+	// Klavye Giriş Takibi
+	function handleKeyDown(event) {
+		if(p1Socket == user){
+			if (event.key === "w") {
+				wPressed = true;
+			}
+			if (event.key === "s") {
+				sPressed = true;
+			}
+		}else{
+			if (event.key === "ArrowUp") {
+				upArrowPressed = true;
+			}
+			if (event.key === "ArrowDown") {
+				downArrowPressed = true;
+			}
+		}
+	}
+
+	function handleKeyUp(event) {
+		if(p1Socket == user){
+			if (event.key === "w") {
+				wPressed = false;
+			}
+			if (event.key === "s") {
+				sPressed = false;
+			}
+		}else{
+			if (event.key === "ArrowUp") {
+				upArrowPressed = false;
+			}
+			if (event.key === "ArrowDown") {
+				downArrowPressed = false;
+			}
+		}
+	}
+
+	function resetBall() {
+		ballPosition.x = canvas.width / 2;
+		ballPosition.y = canvas.height / 2;
+		ballSpeed.x = -ballSpeed.x;
+		ballSpeed.y = 7;
+	}
+
+
+	// Raketleri çizer
+	function drawPaddles() {
+		context.fillStyle = paddleColor1;
+		context.fillRect(10, player1Y, paddleWidth, paddleHeight);
+		context.fillStyle = paddleColor2;
+		context.fillRect(canvas.width - paddleWidth - 10, player2Y, paddleWidth, paddleHeight);
+	}
+
+	// Topu çizer
+	function drawBall() {
+		context.fillStyle = ballColor;
+		context.beginPath();
+		context.arc(ballPosition.x, ballPosition.y, ballRadius, 0, Math.PI * 2, false);
+		context.closePath();
+		context.fill();
+	}
+
+	function file(){
+		context.fillStyle = "#fff";
+		context.fillRect(canvas.width / 2 - 2, 0, 4, canvas.height);
+	}
+
+	function updatePaddleAndScore(){
+		// Raket hareketi
+		if (wPressed && player1Y > 0) {
+			player1Y -= 3;
+			sendPlayer1PaddlePosition();
+		}
+		if (sPressed && player1Y < canvas.height - paddleHeight) {
+			player1Y += 3;
+			sendPlayer1PaddlePosition();
+		}
+		if (upArrowPressed && player2Y > 0) {
+			player2Y -= 3;
+			sendPlayer2PaddlePosition();
+		}
+		if (downArrowPressed && player2Y < canvas.height - paddleHeight) {
+			player2Y += 3;
+			sendPlayer2PaddlePosition();
+		}
+
+
+		//Puan Kontrol
+		if (player1Score === 11 || player2Score === 11) {
+			// Puan Kontrolü
+			document.getElementById("player1-score").textContent = player1Score;
+			document.getElementById("player2-score").textContent = player2Score;
+			gameOver = true;	
+			sendGameOver();
+			setTimeout(function() {
+				window.location.href = '{% url "sohbet_anasayfa" %}';
+				}, 1500);
+		}
+	}
+
+	// Oyun döngüsü
+	function gameLoop() {
+		// Canvas'ı temizler
+		context.clearRect(0, 0, canvas.width, canvas.height);
+		if (gameOver) {
+			context.clearRect(0, 0, canvas.width, canvas.height);
+			context.font = "30px Arial";
+			context.fillStyle = "Auqa";
+			context.fillText("Oyun bitti!", canvas.width / 2 - 100, canvas.height / 2);
+		}
+		else {
+			// Raketleri çizer
+			drawPaddles();
+			// Topu çizer
+			drawBall();
+			//Raket Hareketi
+			updatePaddleAndScore();
+			//Puan Kontrol
+			puankont();
+			// File çizer
+			file();
+			//Top hareketi
+			if(p1Socket === user)
+				moveBall();
+			// Oyun döngüsünü tekrar başlatır
+			requestAnimationFrame(gameLoop);
+		}
+	}
+	// Top Hareketi
+	//setInterval(gameLoop, 30);
+	setInterval(sendBallPosition, 10);
+</script>
+</body>
+</html>
