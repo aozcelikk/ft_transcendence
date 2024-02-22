@@ -92,7 +92,7 @@
 		<input type="text" placeholder="Oyuncu 3 Takma Adı" id="player3-name" required>
 	</div>
 	<button onclick="FinalGame()" id="final-button" style="display : none">Finali Oyunu Başlat</button>
-<script>
+<script type="text/javascript">
 	
 	const player1Name = document.getElementById("player1-name");
 	const player2Name = document.getElementById("player2-name");
@@ -293,9 +293,6 @@
 	}
 
 	function StartGame() {
-		alert(`Oyuncu 1: ${player1Name.value}`);
-		alert(`Oyuncu 2: ${player2Name.value}`);
-		alert(`Oyuncu 3: ${player3Name.value}`);	
 		document.getElementById("start-button").style.display = "none";
 		requestAnimationFrame(render);
 	}
