@@ -79,13 +79,13 @@
 				// Oyun döngüsünü başlatır
 				gameLoop();
 			}
-			else{/*
+			else{
 				setTimeout(function() {
 					window.location.reload();
-				}, 500);*/
+				}, 500);
 				context.font = "30px Arial";
 				context.fillStyle = "White";
-				context.fillText("Oyuncu Beklenmekte...", canvas.width / 2 - 150, canvas.height / 2);
+				context.fillText("Oyuncu Beklenmekte...", canvas.width / 2 - 100, canvas.height / 2);
 			}
 		}
 	};
@@ -131,7 +131,7 @@
 	// Oyuncu  Puanı
 	var player1Score = 0;
 	var player2Score = 0;
-	const winnerScore = 2;
+	const winnerScore = 4;
 
 	// Oyun Durumu
 	var gameOver = false;
@@ -319,8 +319,8 @@
 	});
 
 	function resetBall() {
-		ballPosition.x = canvas.width / 2;
-		ballPosition.y = canvas.height / 2;
+		ballPosition.x = Math.random() * canvas.width;
+		ballPosition.y = Math.random() * canvas.height;
 		ballSpeed.x = -ballSpeed.x;
 		ballSpeed.y = 3;
 	}
@@ -377,7 +377,7 @@
 			sendGameOver();
 			setTimeout(function() {
 				window.location.href = '{% url "sohbet_anasayfa" %}';
-				}, 3000);
+				}, 1500);
 		}
 	}
 
@@ -392,39 +392,22 @@
 			sendGameOver();
 			setTimeout(function() {
 				window.location.href = '{% url "sohbet_anasayfa" %}';
-				}, 3000);
+				}, 1500);
 		}
 	}
 
-	let lastUpdateTime = 0;
-	const updateInterval = 15; // 16 milisaniye (60 FPS)
 	// Oyun döngüsü
 	function gameLoop(timestamp) {
-		if (timestamp - lastUpdateTime > updateInterval) {
-			sendBallPosition();
-			lastUpdateTime = timestamp;
-		  }
 		// Canvas'ı temizler
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		if (gameOver) {
 			context.clearRect(0, 0, canvas.width, canvas.height);
 			context.font = "30px Arial";
 			context.fillStyle = "White";
-			if (winnerScore === player1Score){
-				if (p1Socket === user)
-					context.fillText("Kazandın!", canvas.width / 2 - 80, canvas.height / 2);
-				else
-					context.fillText("Kaybettin!", canvas.width / 2 - 80, canvas.height / 2);
-			}
-			else{
-				if (p2Socket === user)
-					context.fillText("Kazandın!", canvas.width / 2 - 80, canvas.height / 2);
-				else
-					context.fillText("Kaybettin!", canvas.width / 2 - 80, canvas.height / 2);
-			}
+			context.fillText("Oyun bitti!", canvas.width / 2 - 100, canvas.height / 2);
 			setTimeout(function() {
 				window.location.href = '{% url "sohbet_anasayfa" %}';
-			}, 3000);
+			}, 1500);
 		}
 		else {
 			// Raketleri çizer
@@ -438,14 +421,14 @@
 			// File çizer
 			file();
 			//Top hareketi
-			//if(p1Socket === user)
+			if(p1Socket === user)
 				moveBall();
 			// Oyun döngüsünü tekrar başlatır
 			requestAnimationFrame(gameLoop);
 		}
 	}
 	// Top Hareketi
-	//setInterval(sendBallPosition, 1);
+	setInterval(sendBallPosition, 1);
 </script>
 </body>
 </html>

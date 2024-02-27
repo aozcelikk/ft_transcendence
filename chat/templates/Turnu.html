@@ -52,6 +52,17 @@
 		margin-top: 20px;
 		text-align: center;
 	}
+
+	#player-input{
+		padding: 10px 20px;
+		font-size: 16px;
+		border: none;
+		border-radius: 4px;
+		cursor: pointer;
+		margin: 0 10px;
+		margin-top: 20px;
+		text-align: center;
+	}
 	
 	#final-button,#start-button{
 		position : absolute;
@@ -75,14 +86,49 @@
 	<div id="settings-button" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
 		<button onclick="StartGame()" id="start-button">Oyunu Başlat</button>
 	</div>
+	<div id="player-input">
+		<input type="text" placeholder="Oyuncu 1 Takma Adı" id="player1-name">
+		<input type="text" placeholder="Oyuncu 2 Takma Adı" id="player2-name">
+		<input type="text" placeholder="Oyuncu 3 Takma Adı" id="player3-name">
+	</div>
 	<button onclick="FinalGame()" id="final-button" style="display : none">Finali Oyunu Başlat</button>
 <script>
-	const player1Name = prompt("1.oyuncunun Takma adını yazınız:");
-	const player2Name = prompt("2.oyuncunun Takma adını yazınız:");
-	const player3Name = prompt("3.oyuncunun Takma adını yazınız:");
+
 
 	const canvas = document.getElementById("pong");
 	const context = canvas.getContext("2d");
+
+	const player1Name = document.getElementById("player1-name");
+	const player2Name = document.getElementById("player2-name");
+	const player3Name = document.getElementById("player3-name");
+	const startButton = document.getElementById("start-button");
+	
+	player1Name.required = true;
+	player2Name.required = true;
+	player3Name.required = true;
+	startButton.disabled = true;
+
+	context.font = "20px Arial";
+	context.fillStyle = "White";
+	context.fillText("Lütfen Dikkat! Tüm Oyuncuların Adını Girmeden Oyun Baslamaz", canvas.width / 2 - 255, canvas.height / 2);
+
+	const handleInputChange = () => {
+	  // Tüm metin kutularının doldurulup doldurulmadığını kontrol ediyor
+	  const allFieldsFilled = player1Name.value && player2Name.value && player3Name.value;
+	
+	  // Tüm metin kutuları doldurulmuşsa oyun başlatma düğmesini etkinleştiriyor
+	  if (allFieldsFilled) {
+		startButton.disabled = false;
+	  } else {
+		startButton.disabled = true;
+	  }
+	};
+	// Metin kutularına veri girişi yapıldığında olay işleyicisini ekliyor
+	player1Name.addEventListener("input", handleInputChange);
+	player2Name.addEventListener("input", handleInputChange);
+	player3Name.addEventListener("input", handleInputChange);
+	
+
 
 	const paddleWidth = 10;
 	const paddleHeight = 80;
@@ -206,8 +252,8 @@
 		document.getElementById("player1-score").textContent = player1Score;
 		document.getElementById("player2-score").textContent = player2Score;
 		if(tek){
-			playerName1.innerText = player1Name + " ";
-			playerName2.innerText = player2Name + " ";
+			playerName1.innerText = player1Name.value + " ";
+			playerName2.innerText = player2Name.value + " ";
 		}else{
 			playerName1.innerText = yfinal + " ";
 			playerName2.innerText = final + " ";
@@ -216,10 +262,10 @@
 		if(player1Score === winningScore || player2Score === winningScore) {
 			if (tek){
 				if (player1Score > player2Score)
-					yfinal = player1Name;
+					yfinal = player1Name.value;
 				else
-					yfinal = player2Name;
-				final = player3Name;
+					yfinal = player2Name.value;
+				final = player3Name.value;
 			}
 			else{
 				if (player1Score > player2Score)
@@ -249,16 +295,17 @@
 			context.fillStyle = "White";
 
 			if (tek){
-				context.fillText("Yarı Final Kazananı: " + yfinal, canvas.width / 2 - 150, canvas.height / 2);
+				context.fillText("Yarı Final Kazananı: " + yfinal, canvas.width / 2 - 200, canvas.height / 2);
 				setTimeout(function() {
 					context.clearRect(0, 0, canvas.width, canvas.height);
-					context.fillText("Sıradaki Maç: " + yfinal + " - " + final, canvas.width / 2 - 150, canvas.height / 2);
+					alert("Sıradaki Maç: " + yfinal + " - " + final);
+					context.fillText("Sıradaki Maç: " + yfinal + " - " + final, canvas.width / 2 - 180, canvas.height / 2);
 					setTimeout(function() {
 						document.getElementById("final-button").style.display = "block";
 					}, 2000);
 				}, 3000);
 			}else{
-				context.fillText("Kazanan: " + kazanan, canvas.width / 2 - 150, canvas.height / 2);
+				context.fillText("Kazanan: " + kazanan, canvas.width / 2 - 100, canvas.height / 2);
 				setTimeout(function() {
 					window.location.href = '{% url "sohbet_anasayfa" %}';
 				}, 3000);
@@ -270,14 +317,17 @@
 	}
 
 	function resetBall() {
-		ballX = Math.random() * (canvas.width - Math.random());
-		ballY = Math.random() * (canvas.height - Math.random());
+		ballX = canvas.width / 2;
+		ballY = canvas.height / 2;
 		ballSpeedX = -ballSpeedX;
 		ballSpeedY = 7;
 	}
 
 	function StartGame() {
 		document.getElementById("start-button").style.display = "none";
+		player1Name.hidden = true;
+		player2Name.hidden = true;
+		player3Name.hidden = true;
 		requestAnimationFrame(render);
 	}
 
