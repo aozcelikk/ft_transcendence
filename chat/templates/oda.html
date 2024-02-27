@@ -79,13 +79,13 @@
 				// Oyun döngüsünü başlatır
 				gameLoop();
 			}
-			else{/*
+			else{
 				setTimeout(function() {
 					window.location.reload();
-				}, 500);*/
+				}, 500);
 				context.font = "30px Arial";
 				context.fillStyle = "White";
-				context.fillText("Oyuncu Beklenmekte...", canvas.width / 2 - 150, canvas.height / 2);
+				context.fillText("Oyuncu Beklenmekte...", canvas.width / 2 - 100, canvas.height / 2);
 			}
 		}
 	};
@@ -131,7 +131,7 @@
 	// Oyuncu  Puanı
 	var player1Score = 0;
 	var player2Score = 0;
-	const winnerScore = 2;
+	const winnerScore = 11;
 
 	// Oyun Durumu
 	var gameOver = false;
@@ -377,7 +377,7 @@
 			sendGameOver();
 			setTimeout(function() {
 				window.location.href = '{% url "sohbet_anasayfa" %}';
-				}, 3000);
+				}, 1500);
 		}
 	}
 
@@ -392,7 +392,7 @@
 			sendGameOver();
 			setTimeout(function() {
 				window.location.href = '{% url "sohbet_anasayfa" %}';
-				}, 3000);
+				}, 1500);
 		}
 	}
 
@@ -410,21 +410,10 @@
 			context.clearRect(0, 0, canvas.width, canvas.height);
 			context.font = "30px Arial";
 			context.fillStyle = "White";
-			if (winnerScore === player1Score){
-				if (p1Socket === user)
-					context.fillText("Kazandın!", canvas.width / 2 - 80, canvas.height / 2);
-				else
-					context.fillText("Kaybettin!", canvas.width / 2 - 80, canvas.height / 2);
-			}
-			else{
-				if (p2Socket === user)
-					context.fillText("Kazandın!", canvas.width / 2 - 80, canvas.height / 2);
-				else
-					context.fillText("Kaybettin!", canvas.width / 2 - 80, canvas.height / 2);
-			}
+			context.fillText("Oyun bitti!", canvas.width / 2 - 100, canvas.height / 2);
 			setTimeout(function() {
 				window.location.href = '{% url "sohbet_anasayfa" %}';
-			}, 3000);
+			}, 1500);
 		}
 		else {
 			// Raketleri çizer
