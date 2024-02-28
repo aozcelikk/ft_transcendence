@@ -50,23 +50,7 @@
 	<div class="col-xs-12 text-center">
 		<h1 class ="col-sm-9">Açık Odalar</h1>
 	</div>
-	
 	<form method="post" action="{% url 'sohbet_anasayfa' %}">
-	{% comment %} {% for oda in odalar %}
-	{% if oda.is_over == 0 %}
-		{% csrf_token %}
-		<div class="card-body">
-			<div class="alert alert-success">
-				<input type="hidden" id="option" name="option" value='2'>
-				<input type="hidden" id="oda_ismi" name="oda_ismi" value='{{ oda.room_name }}'>
-				<p>Oyun Odası Adı = {{ oda.room_name }}
-					<button type="submit" id="submit" class="btn btn-primary">Oyuna Katıl</button>
-				</p>
-			</div>
-		</div>
-		{% endif %}
-		{% endfor %} {% endcomment %}
-
 		<div class="container mt-5 table-responsive">
 			<table class="table table-striped"
 			cellspacing="0" cellpadding="1" border="1" width="300">
@@ -85,9 +69,8 @@
 						<tr>
 							{% if not oda.is_over %}
 								<td>{% if oda.game_creator == request.user.username %}Siz{% else %}{{ oda.game_creator }}{% endif %}</td>
-								<td>{% if oda.game_opponent == request.user.username %}Siz{%else%}{{ oda.game_opponent }}{% endif %}</td>
+								<td>{% if oda.game_opponent == request.user.username %}Siz{%else%}{{ oda.game_opponent }}{% endif %}{% if not oda.game_opponent or not oda.game_opponent  %}Oyuncu Beklenmekte{% endif %}</td>
 								<td>{{oda.room_name}}</td>
-								{% comment %} is over durumunu 0 1 2 kontrolünü sağla {% endcomment %}
 								<td>{% if oda.is_over == 0 %}Devam Ediyor{%endif%}</td>
 								<td><input type="hidden" id="option" name="option" value='2'>
 								<input type="hidden" id="oda_ismi" name="oda_ismi" value='{{ oda.room_name }}'>
@@ -102,19 +85,8 @@
 </div>
 {% endblock %}
 
+
 {% block js_files %}
 	<script src="{% static 'chat/js/script.js' %}"></script>
-
-	<script>
-		let roomName = document.getElementById('oda_ismi').value
-		if (roomName !== null && roomName !== undefined && roomName !== "") {
-			const room = roomName.replace(/"/g, "");
-			// boşluk ve özel karakterler olmayacak
-			const regex = /^([a-zA-Z0-9]{4,20})$/;
-			if (!regex.test(room)) {
-				throw new Error(`Geçersiz oda adı: ${room}. Oda adı sadece harf ve sayılardan oluşabilir.`);
-			}
-		}
-	</script>
 {% endblock %}
 

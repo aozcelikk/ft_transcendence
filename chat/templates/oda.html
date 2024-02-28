@@ -433,11 +433,12 @@
 	}
 
 	let lastUpdateTime = 0;
-	const updateInterval = 15; // 16 milisaniye (60 FPS)
+	const updateInterval = 20;
 	// Oyun döngüsü
 	function gameLoop(timestamp) {
 		if (timestamp - lastUpdateTime > updateInterval) {
 			sendBallPosition();
+			moveBall();
 			lastUpdateTime = timestamp;
 		  }
 		// Canvas'ı temizler
@@ -475,7 +476,7 @@
 			file();
 			//Top hareketi
 			//if(p1Socket === user)
-				moveBall();
+				//moveBall();
 			// Oyun döngüsünü tekrar başlatır
 			requestAnimationFrame(gameLoop);
 		}
