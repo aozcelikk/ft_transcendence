@@ -48,11 +48,6 @@
 	<canvas id="pong" width="800" height="400"></canvas>
 	<div id="scoreboard">
 		<h4>{{ creator }} <span id="player1-score">0</span> - {{ opponent }} <span id="player2-score"> 0</span></h4>
-		{% if creator  == user %}
-			<button onclick="changeColor('paddleColor1')">Raket Rengini Değiştir</button>
-		{% else %}
-			<button onclick="changeColor('paddleColor2')">Raket Rengini Değiştir</button>
-		{% endif %}		
 	</div>
 	
 	{{room_name|json_script:"roomName"}}
@@ -61,9 +56,9 @@
 	const oda = JSON.parse(document.getElementById("roomName").textContent);
 	const s = new WebSocket('ws://' + window.location.host + '/ws/sohbet/'+ oda +'/');
 
+	let message = document.getElementById('message');
 	// Oyuncu Ayarı
 	var playerCount = 0;
-	let p2 = true;
 	let user = '{{user}}';
 	var p1Socket = '{{ creator }}';
 	var p2Socket = '{{ opponent }}';
@@ -71,8 +66,6 @@
 	// WebSocket bağlantısı açıldığında tetiklenen olay işleyicisi
 	s.onopen = function() {
 		console.log('WebSocket bağlantısı açıldı.');
-		if (user === p2Socket && p2 )
-			s.send(JSON.stringify(data = {type: 'update', player: 1}));
 		if (p1Socket && p2Socket){
 			if (p1Socket != '' ){
 				playerCount++;
@@ -86,13 +79,13 @@
 				// Oyun döngüsünü başlatır
 				gameLoop();
 			}
-			else{/*
+			else{
 				setTimeout(function() {
 					window.location.reload();
-				}, 500);*/
+				}, 500);
 				context.font = "30px Arial";
 				context.fillStyle = "White";
-				context.fillText("Oyuncu Beklenmekte...", canvas.width / 2 - 150, canvas.height / 2);
+				context.fillText("Oyuncu Beklenmekte...", canvas.width / 2 - 100, canvas.height / 2);
 			}
 		}
 	};
@@ -105,6 +98,7 @@
 			window.location.href = '{% url "sohbet_anasayfa" %}';
 		}, 1500);
 	};
+
 
 	const canvas = document.getElementById("pong");
 	const context = canvas.getContext("2d");
@@ -125,8 +119,8 @@
 	};
 	//top Hızı
 	let ballSpeed = {
-		x: 5,
-		y: 5
+		x: 3,
+		y: 3
 	};
 	//Topun yuvarlıklıgı
 	const ballRadius = 7;
@@ -137,7 +131,7 @@
 	// Oyuncu  Puanı
 	var player1Score = 0;
 	var player2Score = 0;
-	const winnerScore = 11;
+	const winnerScore = 4;
 
 	// Oyun Durumu
 	var gameOver = false;
@@ -170,11 +164,6 @@
 		sendPlayerScore(2,player2Score);
 	}
 
-	function colorcont(){
-		sendPlayerColor(1,paddleColor1);
-		sendPlayerColor(2,paddleColor2);
-	}
-
 	function puankont(){
 		if (p1Socket === user){
 		if (ballPosition.x - ballRadius < 0) {
@@ -198,14 +187,6 @@
 		const data = JSON.parse(event.data);
 		// Mesajın türüne göre işlem yap
 		switch (data.type) {
-			case 'update':
-				if (data.player === 1 && p2){
-					if (user === p1Socket && p2)
-						location.reload();
-					p2 = false;
-				}
-				break;
-			
 			case 'paddlePosition':
 				// Diğer oyuncunun sopasının konumunu güncelle
 				if (data.player === 1) {
@@ -229,15 +210,6 @@
 					player1Score = data.score;
 				} else if (data.player === 2) {
 					player2Score = data.score;
-				}
-				break;
-
-			case 'colorAll':
-				// renk
-				if (data.player === 1) {
-					paddleColor1 = data.color;
-				} else if (data.player === 2) {
-					paddleColor2 = data.color;
 				}
 				break;
 
@@ -324,17 +296,6 @@
 		s.send(JSON.stringify(data));
 		}
 	}
-	// Oyuncu raket rengini diğer oyuncuya göndermek için kullanılan fonksiyon
-	function sendPlayerColor(player, color) {
-		if (s.readyState === WebSocket.OPEN) {
-			const data = {
-				type: 'colorAll',
-				player: player,
-				color: color
-			};
-			s.send(JSON.stringify(data));
-			}
-		}
 	
 	// Oyunun bittiğini diğer oyuncuya göndermek için kullanılan fonksiyon
 	function sendGameOver() {
@@ -358,10 +319,10 @@
 	});
 
 	function resetBall() {
-		ballPosition.x = canvas.width / 2;
-		ballPosition.y = (canvas.height / 2 ) * Math.random();
+		ballPosition.x = Math.random() * canvas.width;
+		ballPosition.y = Math.random() * canvas.height;
 		ballSpeed.x = -ballSpeed.x;
-		ballSpeed.y = 5;
+		ballSpeed.y = 3;
 	}
 	// Raketleri çizer
 	function drawPaddles() {
@@ -416,7 +377,7 @@
 			sendGameOver();
 			setTimeout(function() {
 				window.location.href = '{% url "sohbet_anasayfa" %}';
-				}, 3000);
+				}, 1500);
 		}
 	}
 
@@ -431,39 +392,22 @@
 			sendGameOver();
 			setTimeout(function() {
 				window.location.href = '{% url "sohbet_anasayfa" %}';
-				}, 3000);
+				}, 1500);
 		}
 	}
 
-	let lastUpdateTime = 0;
-	const updateInterval = 15; // 16 milisaniye (60 FPS)
 	// Oyun döngüsü
 	function gameLoop(timestamp) {
-		if (timestamp - lastUpdateTime > updateInterval) {
-			sendBallPosition();
-			lastUpdateTime = timestamp;
-		  }
 		// Canvas'ı temizler
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		if (gameOver) {
 			context.clearRect(0, 0, canvas.width, canvas.height);
 			context.font = "30px Arial";
 			context.fillStyle = "White";
-			if (winnerScore === player1Score){
-				if (p1Socket === user)
-					context.fillText("Kazandın!", canvas.width / 2 - 80, canvas.height / 2);
-				else
-					context.fillText("Kaybettin!", canvas.width / 2 - 80, canvas.height / 2);
-			}
-			else{
-				if (p2Socket === user)
-					context.fillText("Kazandın!", canvas.width / 2 - 80, canvas.height / 2);
-				else
-					context.fillText("Kaybettin!", canvas.width / 2 - 80, canvas.height / 2);
-			}
+			context.fillText("Oyun bitti!", canvas.width / 2 - 100, canvas.height / 2);
 			setTimeout(function() {
 				window.location.href = '{% url "sohbet_anasayfa" %}';
-			}, 3000);
+			}, 1500);
 		}
 		else {
 			// Raketleri çizer
@@ -477,37 +421,14 @@
 			// File çizer
 			file();
 			//Top hareketi
-			//if(p1Socket === user)
+			if(p1Socket === user)
 				moveBall();
 			// Oyun döngüsünü tekrar başlatır
 			requestAnimationFrame(gameLoop);
 		}
 	}
-
-	function getRandomColor() {
-		var rasgele = '0123456789ABCDEF';
-		var color = '#';
-		for (var i = 0; i < 6; i++) {
-		  color += rasgele[Math.floor(Math.random() * 16)];
-		}
-		return color;
-	}
-  
-	function changeColor(elementId) {
-		var color = getRandomColor();
-
-		if (elementId === 'paddleColor1') {
-			paddleColor1 = color;
-		} else if (elementId === 'paddleColor2') {
-			paddleColor2 = color;
-		} else if (elementId === 'ballColor') {
-			ballColor = color;
-		}
-		colorcont();
-	}
-	
 	// Top Hareketi
-	//setInterval(sendBallPosition, 1);
+	setInterval(sendBallPosition, 1);
 </script>
 </body>
 </html>

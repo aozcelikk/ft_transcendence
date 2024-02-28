@@ -15,8 +15,10 @@ import json
 class GameConsumer(AsyncWebsocketConsumer):
     is_active = True  # Oyuncunun sekmede olup olmadığını belirleyen özellik
     async def connect(self):
+        # Get the room name from the URL
         self.player_id = self.scope['url_route']['kwargs']['room_name']
         self.room_name = 'player_%s' % self.player_id
+        # Join the room group
         await self.channel_layer.group_add(
             self.room_name,
             self.channel_name,
@@ -24,8 +26,10 @@ class GameConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
+
     
     async def disconnect(self, close_code):
+        # Leave the room group
         await self.channel_layer.group_discard(
             self.room_name,
             self.channel_name,
@@ -33,26 +37,17 @@ class GameConsumer(AsyncWebsocketConsumer):
         
 
 
-    # Websocket mesaj kontrol
+    # Receive message from WebSocket
     async def receive(self, text_data):
         data = json.loads(text_data)
         message_type = data['type']
-
-        if message_type == 'update':
-            self.player = data['player']
-            
-            await self.channel_layer.group_send(
-            self.room_name,
-            {
-                'type': 'update',
-                'player': self.player
-            }
-            )
-
-        elif message_type == 'paddlePosition':
+        # Handle different message types
+        if message_type == 'paddlePosition':
+            # Update the paddle position
             self.paddle_position = data['position']
             self.player = data['player']
 
+            # Send the updated paddle position to other users in the room
             await self.channel_layer.group_send(
                 self.room_name,
                 {
@@ -63,7 +58,9 @@ class GameConsumer(AsyncWebsocketConsumer):
             )
 
         elif message_type == 'ballPosition':
+            # Update the ball position
             self.ball_position = data['position']
+            # Send the updated ball position to other users in the room
             await self.channel_layer.group_send(
                 self.room_name,
                 {
@@ -73,8 +70,10 @@ class GameConsumer(AsyncWebsocketConsumer):
             )
 
         elif message_type == 'playerScore':
+            # Update the player score
             self.player_score = data['score']
             self.player = data['player']
+            # Send the updated player score to other users in the room
             await self.channel_layer.group_send(
                 self.room_name,
                 {
@@ -84,19 +83,8 @@ class GameConsumer(AsyncWebsocketConsumer):
                 }
             )
 
-        elif message_type == 'colorAll':
-            self.player_color = data['color']
-            self.player = data['player']
-            await self.channel_layer.group_send(
-                self.room_name,
-                {
-                    'type': 'colorAll',
-                    'player': self.player,
-                    'color': self.player_color
-                }
-            )
-
         elif message_type == 'gameOver':
+            # The game is over
             await self.channel_layer.group_send(
                 self.room_name,
                 {
@@ -104,30 +92,31 @@ class GameConsumer(AsyncWebsocketConsumer):
                 }
             )
 
+    # Send message to WebSocket
+    # async def send_message(self, data):
+    #     if data:
+    #         if data != 'gameOver':
+    #             if self.is_active:  # Check if the player is active
+    #                 await self.send(json.dumps(data))
     async def send_message(self, data):
         if data:
-            if self.is_active:
+            if self.is_active:  # Check if the player is active
                 try:
                     await self.send(json.dumps(data))
                 except Exception as e:
                     print()
 
-
-    async def update(self, event):
-        player = event['player']
-        await self.send_message({
-            'type': 'update',
-            'player': player
-        })
-
+    # Handle paddle position updates from other users
     async def paddlePosition(self, event):
         player = event['player']
         position = event['position']
 
+        # Update the paddle position
         if player != self.channel_name:
             self.paddle_position = position
 
         await asyncio.sleep(0.01)
+        # Send the updated paddle position to the client
         await self.send_message({
             'type': 'paddlePosition',
             'player': player,
@@ -135,10 +124,18 @@ class GameConsumer(AsyncWebsocketConsumer):
         })
 
 
+    # Handle ball position updates from other users
     async def ballPosition(self, event):
         if self.is_active:
             position = event['position']
+
+            # Update the ball position
             self.ball_position = position
+
+            # await self.channel_layer.group_send(self.player_id, {
+            #         'type': 'ballPosition',
+            #         'position': position
+            # })
             await asyncio.sleep(0.01)
             await self.send_message({
                 'type': 'ballPosition',
@@ -146,34 +143,26 @@ class GameConsumer(AsyncWebsocketConsumer):
             })
 
 
+    # Handle player score updates from other users
     async def playerScore(self, event):
         player = event['player']
         score = event['score']
 
+        # Update the player score
         if player != self.channel_name:
             self.player_score = score
 
+        # Send the updated player score to the client
         await self.send_message({
             'type': 'playerScore',
             'player': player,
             'score': score
         })
-
-    async def colorAll(self, event):
-        player = event['player']
-        color = event['color']
-
-        if player != self.channel_name:
-            self.player_color = color
-
-        await self.send_message({
-            'type': 'colorAll',
-            'player': player,
-            'color': color
-        })
     
 
+    # Handle game over messages from other users
     async def gameOver(self, event):
+        # Send the game over message to the client
         await self.send_message({
             'type': 'gameOver',
         })
