@@ -46,9 +46,29 @@ def sohbet_anasayfa(request):
             return redirect('/sohbet/' + room_name)
     return render(request, 'sohbet_anasayfa.html', {'odalar':odalar})
 
+# @login_required
+# def sohbet_oda(request,room_name):
+#     game = get_object_or_404(Room, room_name=room_name)
+
+#     return render(request, "oda.html", {
+#         'room_name': room_name,
+#         'user': lambda: request.user.username if request.user.username == game.game_creator else game.game_opponent,
+#         'creator': game.game_creator,
+#         'opponent': game.game_opponent,
+#         'winner': game.winner,
+#         'game_over': game.is_over
+#         })
+
+
 @login_required
 def sohbet_oda(request,room_name):
     game = get_object_or_404(Room, room_name=room_name)
+    user1 = Room.objects.filter(game_creator=game.game_creator).last()
+    user2 = Room.objects.filter(game_opponent=game.game_opponent).last()
+
+    if game.game_creator and game.game_opponent:
+        user1.refresh_from_db()
+        user2.refresh_from_db()
 
     return render(request, "oda.html", {
         'room_name': room_name,

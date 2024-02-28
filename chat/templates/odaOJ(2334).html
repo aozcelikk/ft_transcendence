@@ -49,9 +49,6 @@
 	<div id="scoreboard">
 		<h4>{{ creator }} <span id="player1-score">0</span> - {{ opponent }} <span id="player2-score"> 0</span></h4>
 	</div>
-	<button onclick="changeColor('paddleColor1')">1. Raket Rengini Değiştir</button>
-	<button onclick="changeColor('paddleColor2')">2. Raket Rengini Değiştir</button>
-	<button onclick="changeColor('ballColor')">Topun Rengini Değiştir</button>
 	
 	{{room_name|json_script:"roomName"}}
 <script>
@@ -134,7 +131,7 @@
 	// Oyuncu  Puanı
 	var player1Score = 0;
 	var player2Score = 0;
-	const winnerScore = 11;
+	const winnerScore = 2;
 
 	// Oyun Durumu
 	var gameOver = false;
@@ -165,11 +162,6 @@
 	function scorecont(){
 		sendPlayerScore(1,player1Score);
 		sendPlayerScore(2,player2Score);
-	}
-
-	function colorcont(){
-		sendPlayerColor(1,paddleColor1);
-		sendPlayerColor(2,paddleColor2);
 	}
 
 	function puankont(){
@@ -218,15 +210,6 @@
 					player1Score = data.score;
 				} else if (data.player === 2) {
 					player2Score = data.score;
-				}
-				break;
-
-			case 'colorAll':
-				// renk
-				if (data.player === 1) {
-					paddleColor1 = data.color;
-				} else if (data.player === 2) {
-					paddleColor2 = data.color;
 				}
 				break;
 
@@ -313,17 +296,6 @@
 		s.send(JSON.stringify(data));
 		}
 	}
-
-	function sendPlayerColor(player, color) {
-		if (s.readyState === WebSocket.OPEN) {
-			const data = {
-				type: 'colorAll',
-				player: player,
-				color: color
-			};
-			s.send(JSON.stringify(data));
-			}
-		}
 	
 	// Oyunun bittiğini diğer oyuncuya göndermek için kullanılan fonksiyon
 	function sendGameOver() {
@@ -472,30 +444,6 @@
 			requestAnimationFrame(gameLoop);
 		}
 	}
-
-
-	function getRandomColor() {
-		var rasgele = '0123456789ABCDEF';
-		var color = '#';
-		for (var i = 0; i < 6; i++) {
-		  color += rasgele[Math.floor(Math.random() * 16)];
-		}
-		return color;
-	}
-  
-	function changeColor(elementId) {
-		var color = getRandomColor();
-
-		if (elementId === 'paddleColor1') {
-			paddleColor1 = color;
-		} else if (elementId === 'paddleColor2') {
-			paddleColor2 = color;
-		} else if (elementId === 'ballColor') {
-			ballColor = color;
-		}
-		colorcont();
-	}
-	
 	// Top Hareketi
 	//setInterval(sendBallPosition, 1);
 </script>

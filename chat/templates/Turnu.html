@@ -141,8 +141,8 @@
 	let ballX = canvas.width / 2;
 	let ballY = canvas.height / 2;
 	const ballRadius = 10;
-	let ballSpeedX = 10;
-	let ballSpeedY = 10;
+	let ballSpeedX = 6;
+	let ballSpeedY = 6;
 	let ballColor = "#fff";
 
 	let player1Score = 0;
@@ -318,9 +318,9 @@
 
 	function resetBall() {
 		ballX = canvas.width / 2;
-		ballY = canvas.height / 2;
+		ballY = (canvas.height / 2) * Math.random();
 		ballSpeedX = -ballSpeedX;
-		ballSpeedY = 7;
+		ballSpeedY = 6;
 	}
 
 	function StartGame() {
