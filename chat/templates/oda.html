@@ -344,15 +344,16 @@
 	}
 
 	document.addEventListener("keydown", function(event) {
-		if (!bas) {
+		/*if (!bas) {
 			bas = true;
 			updatePaddleAndScore(event);
-		}
+		}*/
+		updatePaddleAndScore(event);
 	});
 	
-	document.addEventListener("keyup", function(event) {
+	{% comment %} document.addEventListener("keyup", function(event) {
 		bas = false;
-	});
+	}); {% endcomment %}
 
 	function resetBall() {
 		ballPosition.x = canvas.width / 2;
@@ -385,20 +386,20 @@
 	function updatePaddleAndScore(event){
 		if(p1Socket == user){
 			if (event.key === "w" && player1Y > 0) {
-				player1Y -= 7;
+				player1Y -= 10;
 				sendPlayer1PaddlePosition();
 			}
 			if (event.key === "s" && player1Y < canvas.height - paddleHeight) {
-				player1Y += 7;
+				player1Y += 10;
 				sendPlayer1PaddlePosition();
 			}
 		}else{
 			if (event.key === "ArrowUp" && player2Y > 0) {
-				player2Y -= 7;
+				player2Y -= 10;
 				sendPlayer2PaddlePosition();
 			}
 			if (event.key === "ArrowDown" && player2Y < canvas.height - paddleHeight) {
-				player2Y += 7;
+				player2Y += 10;
 				sendPlayer2PaddlePosition();
 			}
 		}
@@ -433,12 +434,12 @@
 	}
 
 	let lastUpdateTime = 0;
-	const updateInterval = 20;
+	const updateInterval = 15;
 	// Oyun döngüsü
 	function gameLoop(timestamp) {
 		if (timestamp - lastUpdateTime > updateInterval) {
-			sendBallPosition();
 			moveBall();
+			sendBallPosition();
 			lastUpdateTime = timestamp;
 		  }
 		// Canvas'ı temizler
