@@ -30,8 +30,13 @@
             {% for game in game_history %}
                 <tr>
                     <td>{{ game.game_creator }}</td>
-                    <td>{{ game.game_opponent }}</td>
-                    <td>{{ game.winner }}</td>
+                    <td>{% if game.game_opponent == None %} Oyuncu Bekleniyor
+                        {% else %}{{ game.game_opponent }}
+                        {% endif %}</td>
+                    <td>{% if game.winner == None %}
+                        {% if game.game_opponent == None %} Oyuncu Bekleniyor
+                        {% else %}Devam Ediyor{% endif %}
+                        {% else %}{{ game.winner }}{% endif %}</td>
                     <td>{{ game.room_name }}</td>
                     <td>{% if  game.is_over  == 1 %}
                             Bitti

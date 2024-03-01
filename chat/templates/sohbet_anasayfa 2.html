@@ -66,7 +66,7 @@
                 <tbody>
                     {% for oda in odalar %}
                         {% csrf_token %}
-						<tr>
+                        <tr>
                             {% if not oda.is_over %}
                                 <td>{% if oda.game_creator == request.user.username %}Siz{% else %}{{ oda.game_creator }}{% endif %}</td>
                                 <td>{% if oda.game_opponent == request.user.username %}Siz{%else%}{% if oda.game_opponent == None %}Oyuncu Beklenmekte{% else %}{{ oda.game_opponent }}{% endif %}{% endif %}</td>
@@ -84,53 +84,38 @@
 		</form>
 	</div>
 	
-	{% comment %} <script>
-        var socket = new WebSocket('ws://' + window.location.host + '/ws/sohbet/anasayfa/');
-        socket.onopen = function() {
-            console.log('WebSocket bağlantısı açıldı.');
-            socket.send(JSON.stringify(data = {type: 'update', giris: 4}));
-        };
-        socket.onmessage = function(event) {
-           var data = JSON.parse(event.data);
-            console.log(data.giris);
-            if (data.giris == 1) {
-                location.reload();
-            }
-        };
-        socket.onclose = function(event) {
-            var data = JSON.parse(event.data);
-            console.log('WebSocket bağlantısı kapandı.');
-            if (data.giris == -1) {
-                location.reload();
-            }
-        };
-	</script> {% endcomment %}
-
-
-    <script>
-        var socket = new WebSocket('ws://' + window.location.host + '/ws/sohbet/anasayfa/');
-        var giris = 0;
-        socket.onopen = function() {
-            console.log('WebSocket bağlantısı açıldı.');
-            socket.send(JSON.stringify(data = {type: 'update', giris: giris, sayfa: 'yenile'}));
-        };
-        socket.onmessage = function(event) {
-            var data = JSON.parse(event.data);
-            console.log(data.giris);
-            console.log(giris);
-            if ((data.giris == giris) && data.sayfa == 'yenile'){    
-                giris = data.giris;
-                if ((data.giris == giris) && data.sayfa == 'yenile')
-                    location.reload();
-            }
-        };
-        socket.onclose = function() {
-            console.log('WebSocket bağlantısı kapandı.');
-            socket.send(JSON.stringify(data = {type: 'update', giris: giris, sayfa: 'yenile'}));
-        };
-        window.addEventListener('beforeunload', function() {
-            socket.send(JSON.stringify({type: 'update', giris: giris, sayfa: 'yenile'}));
-        });
-    </script>
-
+	<script>
+		var websocket_uri = 'ws://' + window.location.host + '/ws/sohbet_anasayfa/';
+	
+		var websocket = new WebSocket(websocket_uri);
+	
+		websocket.onopen = function() {
+			console.log('Websocket connected');
+		};
+	
+		websocket.onclose = function() {
+			console.log('Websocket disconnected');
+		};
+	
+		websocket.onmessage = function(e) {
+			var data = JSON.parse(e.data);
+	
+			var room_name = data['room_name'];
+			var is_over = data['is_over'];
+	
+			var row = document.querySelector(room_name);
+			if (row) {
+				var status_cell = row.querySelector('td:nth-child(4)');
+				if (is_over) {
+					status_cell.innerHTML = 'Tamamlandı';
+				} else {
+					status_cell.innerHTML = 'Devam Ediyor';
+				}
+			}
+		};
+	
+		websocket.onerror = function(e) {
+			console.log('Websocket error');
+		};
+	</script>
 	{% endblock %}

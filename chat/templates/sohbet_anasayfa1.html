@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block css_files %}
+	<link rel="stylesheet" href="{% static 'chat/css/styles.css' %}">
+{% endblock %}
+
+{% block title %}
+{% trans "Sohbet Anasayfası" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5 pt-5">
+	<h2 class="text-center">Ping Pong</h2>
+	<h3 class="text-center"> Merhaba, {{ request.user.username }}</h3>
+	{% if messages %}
+	{% for messages in messages %}
+		<div class="alert alert-dark">
+			{{ messages }}
+		</div>
+	{% endfor %}
+	{% endif %}
+
+	<form method="post" action="{% url 'sohbet_anasayfa' %}">
+		{% csrf_token %}
+		<div class="col-md-6 mx-auto mt-4">
+			<div class="row">
+				<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+					<label>Seçenek Seçiniz</label>
+					<select class="form-control" name="option">
+						<option value="1">Oda Oluştur</option>
+					</select>
+				</div>
+				<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+					<label>Oda Adı</label>
+					<input type="text" id="oda_ismi" name="oda_ismi" class="form-control" required>
+				</div>
+				<div class="mb-3">
+					<br>
+					<button type="submit" id="submit" class="btn btn-primary" style="background-color:#7a1b0c;">Oyunu Başlat</button>
+					<a href="{% url 'oyun_gecmis' %}" class="btn btn-dark">Oyun Geçmiş Tablosu</a>
+					<a href="{% url 'turnuva' %}" class="btn btn-success">Turnuva Oyna</a>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div class="col-xs-12 text-center">
+		<h1 class ="col-sm-9">Açık Odalar</h1>
+	</div>
+	<form method="post" action="{% url 'sohbet_anasayfa' %}">
+		<div class="container mt-5 table-responsive">
+			<table class="table table-striped"
+			cellspacing="0" cellpadding="1" border="1" width="300">
+				<thead>
+					<tr>
+						<th scope="col">1.Oyuncu</th>
+						<th scope="col">2.Oyuncu</th>
+						<th scope="col">Oda Adı</th>
+						<th scope="col">Durumu</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for oda in odalar %}
+						{% csrf_token %}
+						<tr>
+							{% if not oda.is_over %}
+								<td>{% if oda.game_creator == request.user.username %}Siz{% else %}{{ oda.game_creator }}{% endif %}</td>
+								<td>{% if oda.game_opponent == request.user.username %}Siz{%else%}{% if oda.game_opponent == None %}Oyuncu Beklenmekte{% else %}{{ oda.game_opponent }}{% endif %}{% endif %}</td>
+								<td>{{oda.room_name}}</td>
+								<td>{% if oda.is_over == 0 %}Devam Ediyor{%endif%}</td>
+								<td><input type="hidden" id="option" name="option" value='2'>
+								<input type="hidden" id="oda_ismi" name="oda_ismi" value='{{ oda.room_name }}'>
+								{% if oda.game_opponent == None %}<button type="submit" id="submit" class="btn btn-sm btn-primary">Katıl</button>{% endif %}</td>
+							{% endif %}
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+	</form>
+</div>
+{% endblock %}
+
+
+{% block js_files %}
+	<script src="{% static 'chat/js/script.js' %}"></script>
+	<script>
+		var websocket_uri = 'ws://' + window.location.host + '/ws/sohbet_anasayfa/';
+	
+		var websocket = new WebSocket(websocket_uri);
+	
+		websocket.onopen = function() {
+			console.log('Websocket connected');
+		};
+	
+		websocket.onclose = function() {
+			console.log('Websocket disconnected');
+		};
+	
+		websocket.onmessage = function(e) {
+			var data = JSON.parse(e.data);
+	
+			var room_name = data['room_name'];
+			var is_over = data['is_over'];
+	
+			var row = document.querySelector('tr[data-room-name="' + room_name + '"]');
+			if (row) {
+				var status_cell = row.querySelector('td:nth-child(4)');
+				if (is_over) {
+					status_cell.innerHTML = 'Tamamlandı';
+				} else {
+					status_cell.innerHTML = 'Devam Ediyor';
+				}
+			}
+		};
+	
+		websocket.onerror = function(e) {
+			console.log('Websocket error');
+		};
+	</script>
+	
+{% endblock %}
+
