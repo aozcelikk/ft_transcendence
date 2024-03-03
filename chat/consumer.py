@@ -206,126 +206,6 @@ class GameConsumer(AsyncWebsocketConsumer):
         room.save()
 
 
-# class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
-#     kisi = 0
-#     async def connect(self):
-#         SohbetAnasayfaConsumer.kisi += 1
-#         self.room_name = 'sohbet_anasayfa'
-#         await self.channel_layer.group_add(
-#             self.room_name,
-#             self.channel_name
-#         )
-
-#         await self.accept()
-
-#     async def disconnect(self, close_code):
-#         # Odadan ayrıl
-#         SohbetAnasayfaConsumer.kisi -= 1
-#         await self.channel_layer.group_discard(
-#             self.room_name,
-#             self.channel_name
-#         )
-
-
-#     async def receive(self, text_data):
-#         data = json.loads(text_data)
-#         message_type = data['type']
-
-#         if message_type == 'update':
-#             self.giris = data['giris']
-#             await self.channel_layer.group_send(
-#                 self.room_name,
-#                 {
-#                     'type': 'update',
-#                     'giris': self.giris
-#                 }
-#             )
-
-#     async def update(self, event):
-#         giris = event['giris']
-#         self.giris = giris
-#         # Mesajı tüm oda üyelerine gönder
-#         await self.send_message({
-#                 'type': 'update',
-#                 'giris': SohbetAnasayfaConsumer.kisi
-#             })
-
-#     async def send_message(self, data):
-#         if data:
-#             try:
-#                 await self.send(json.dumps(data))
-#             except Exception as e:
-#                 print()
-
-
-
-# class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
-#     kisi = 0
-
-#     async def connect(self):
-#         SohbetAnasayfaConsumer.kisi += 1
-#         self.room_name = 'sohbet_anasayfa'
-#         await self.channel_layer.group_add(
-#             self.room_name,
-#             self.channel_name
-#         )
-
-#         # Kullanıcı bağlandığında giris değerini 1 olarak ayarla
-#         await self.channel_layer.group_send(
-#             self.room_name,
-#             {
-#                 'type': 'update',
-#                 'giris': 1
-#             }
-#         )
-
-#         await self.accept()
-
-#     async def disconnect(self, close_code):
-#         # Odadan ayrıl
-#         SohbetAnasayfaConsumer.kisi -= 1
-#         await self.channel_layer.group_discard(
-#             self.room_name,
-#             self.channel_name
-#         )
-
-#         # Kullanıcı çıktığında giris değerini -1 olarak ayarla
-#         await self.channel_layer.group_send(
-#             self.room_name,
-#             {
-#                 'type': 'update',
-#                 'giris': -1
-#             }
-#         )
-
-#     async def receive(self, text_data):
-#         data = json.loads(text_data)
-#         message_type = data['type']
-
-#         if message_type == 'update':
-#             await self.channel_layer.group_send(
-#                 self.room_name,
-#                 {
-#                     'type': 'update',
-#                     'giris': data['giris']
-#                 }
-#             )
-
-#     async def update(self, event):
-#         giris = event['giris']
-#         # Mesajı tüm oda üyelerine gönder
-#         await self.send_message({
-#                 'type': 'update',
-#                 'giris': SohbetAnasayfaConsumer.kisi
-#             })
-
-#     async def send_message(self, data):
-#         if data:
-#             try:
-#                 await self.send(json.dumps(data))
-#             except Exception as e:
-#                 print()
-
 
 class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
     kisi = 0
@@ -337,17 +217,6 @@ class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
             self.room_name,
             self.channel_name
         )
-
-        # Kullanıcı bağlandığında tüm sayfaları yenile
-        await self.channel_layer.group_send(
-            self.room_name,
-            {
-                'type': 'update',
-                'giris': 1,
-                'sayfa': 'geldi',
-            }
-        )
-
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -356,16 +225,6 @@ class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(
             self.room_name,
             self.channel_name
-        )
-
-        # Kullanıcı çıktığında tüm sayfaları yenile
-        await self.channel_layer.group_send(
-            self.room_name,
-            {
-                'type': 'update',
-                'giris': -1,
-                'sayfa': 'gitti',
-            }
         )
 
     async def receive(self, text_data):
@@ -379,16 +238,18 @@ class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
                     'type': 'update',
                     'giris': data['giris'],
                     'sayfa': data['sayfa'],
+                    'yenile': data['yenile'],
                 }
             )
 
     async def update(self, event):
-        giris = event['giris']
+        event['giris'] = SohbetAnasayfaConsumer.kisi
         # Mesajı tüm oda üyelerine gönder
         await self.send_message({
                 'type': 'update',
-                'giris': SohbetAnasayfaConsumer.kisi,
+                'giris': event['giris'],
                 'sayfa': 'yenile',
+                'yenile': event['yenile'],
             })
 
     async def send_message(self, data):
@@ -397,4 +258,83 @@ class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
                 await self.send(json.dumps(data))
             except Exception as e:
                 print()
+
+
+
+
+# class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
+#     kisi = 0
+
+#     async def connect(self):
+#         SohbetAnasayfaConsumer.kisi += 1
+#         self.room_name = 'sohbet_anasayfa'
+#         await self.channel_layer.group_add(
+#             self.room_name,
+#             self.channel_name
+#         )
+
+#         # Kullanıcı bağlandığında tüm sayfaları yenile
+#         # await self.channel_layer.group_send(
+#         #     self.room_name,
+#         #     {
+#         #         'type': 'update',
+#         #         'giris': 1,
+#         #         'sayfa': 'geldi',
+#         #         'yenile': 'yenile',
+#         #     }
+#         # )
+
+#         await self.accept()
+
+#     async def disconnect(self, close_code):
+#         # Odadan ayrıl
+#         SohbetAnasayfaConsumer.kisi -= 1
+#         await self.channel_layer.group_discard(
+#             self.room_name,
+#             self.channel_name
+#         )
+
+#         # Kullanıcı çıktığında tüm sayfaları yenile
+#         # await self.channel_layer.group_send(
+#         #     self.room_name,
+#         #     {
+#         #         'type': 'update',
+#         #         'giris': -1,
+#         #         'sayfa': 'gitti',
+#         #         'yenile': 'yenile',
+#         #     }
+#         # )
+
+#     async def receive(self, text_data):
+#         data = json.loads(text_data)
+#         message_type = data['type']
+
+#         if message_type == 'update':
+#             await self.channel_layer.group_send(
+#                 self.room_name,
+#                 {
+#                     'type': 'update',
+#                     'giris': data['giris'],
+#                     'sayfa': data['sayfa'],
+#                     'yenile': data['yenile'],
+#                 }
+#             )
+
+#     async def update(self, event):
+#         giris = event['giris']
+#         # Mesajı tüm oda üyelerine gönder
+#         print(event['yenile'])
+#         await self.send_message({
+#                 'type': 'update',
+#                 'giris': SohbetAnasayfaConsumer.kisi,
+#                 'sayfa': 'yenile',
+#                 'yenile': event['yenile'],
+#             })
+
+#     async def send_message(self, data):
+#         if data:
+#             try:
+#                 await self.send(json.dumps(data))
+#             except Exception as e:
+#                 print()
 
