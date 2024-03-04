@@ -3,7 +3,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
-
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -38,6 +37,10 @@ def sohbet_anasayfa(request):
             if game is None:
                 messages.success(request, "The room does not exist")
                 return redirect("sohbet_anasayfa")
+            if game.game_creator == user:
+                return redirect('/sohbet/' + room_name)
+            elif game.game_opponent == user:
+                return redirect('/sohbet/' + room_name)
             if game.player_count() >= 2:
                 messages.success(request, "The room is already full or finish")
                 return redirect("sohbet_anasayfa")
@@ -45,24 +48,6 @@ def sohbet_anasayfa(request):
             game.save()
             return redirect('/sohbet/' + room_name)
     return render(request, 'sohbet_anasayfa.html', {'odalar':odalar})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 @login_required
@@ -100,3 +85,19 @@ def guncelleme(request, room_name):
 
 def turnuva(request):
     return render(request,'Turnu.html')
+
+
+def fetch_rooms(request):
+    rooms = Room.objects.all()
+    rooms_list = [
+        {
+            'name': room.room_name,
+            'size': room.player_count(),
+            'creator': room.game_creator,
+            'opponent': room.game_opponent,
+            'is_over': room.is_over
+        }
+        for room in rooms
+    ]
+    # JSON yanıtını döndür
+    return JsonResponse({'rooms': rooms_list})

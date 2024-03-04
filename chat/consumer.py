@@ -4,7 +4,7 @@
 # events - bağlanma, bağlantıyı kesme, mesaj alma olayı
 
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer,WebsocketConsumer
 from asgiref.sync import sync_to_async, async_to_sync
 from .models import Room
 from channels.db import database_sync_to_async
@@ -207,11 +207,39 @@ class GameConsumer(AsyncWebsocketConsumer):
 
 
 
+class RoomConsumer(WebsocketConsumer):
+    def connect(self):
+        # WebSocket bağlantısını kabul et
+        self.accept()
+
+        # Kanal adını belirle
+        self.room_group_name = 'update_rooms'
+        # Kanala katıl
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    def disconnect(self, close_code):
+        # Kanaldan ayrıl
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    def update_rooms(self, event):
+        rooms = event['rooms']
+        print(rooms)
+
+        # Alınan güncellemeleri istemciye gönder
+        self.send(text_data=json.dumps({
+            'rooms': rooms
+        }))
+
+
 class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
-    kisi = 0
 
     async def connect(self):
-        SohbetAnasayfaConsumer.kisi += 1
         self.room_name = 'sohbet_anasayfa'
         await self.channel_layer.group_add(
             self.room_name,
@@ -221,7 +249,6 @@ class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         # Odadan ayrıl
-        SohbetAnasayfaConsumer.kisi -= 1
         await self.channel_layer.group_discard(
             self.room_name,
             self.channel_name
@@ -236,20 +263,15 @@ class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
                 self.room_name,
                 {
                     'type': 'update',
-                    'giris': data['giris'],
                     'sayfa': data['sayfa'],
-                    'yenile': data['yenile'],
                 }
             )
 
     async def update(self, event):
-        event['giris'] = SohbetAnasayfaConsumer.kisi
         # Mesajı tüm oda üyelerine gönder
         await self.send_message({
                 'type': 'update',
-                'giris': event['giris'],
                 'sayfa': 'yenile',
-                'yenile': event['yenile'],
             })
 
     async def send_message(self, data):
@@ -262,79 +284,4 @@ class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
 
 
 
-# class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
-#     kisi = 0
-
-#     async def connect(self):
-#         SohbetAnasayfaConsumer.kisi += 1
-#         self.room_name = 'sohbet_anasayfa'
-#         await self.channel_layer.group_add(
-#             self.room_name,
-#             self.channel_name
-#         )
-
-#         # Kullanıcı bağlandığında tüm sayfaları yenile
-#         # await self.channel_layer.group_send(
-#         #     self.room_name,
-#         #     {
-#         #         'type': 'update',
-#         #         'giris': 1,
-#         #         'sayfa': 'geldi',
-#         #         'yenile': 'yenile',
-#         #     }
-#         # )
-
-#         await self.accept()
-
-#     async def disconnect(self, close_code):
-#         # Odadan ayrıl
-#         SohbetAnasayfaConsumer.kisi -= 1
-#         await self.channel_layer.group_discard(
-#             self.room_name,
-#             self.channel_name
-#         )
-
-#         # Kullanıcı çıktığında tüm sayfaları yenile
-#         # await self.channel_layer.group_send(
-#         #     self.room_name,
-#         #     {
-#         #         'type': 'update',
-#         #         'giris': -1,
-#         #         'sayfa': 'gitti',
-#         #         'yenile': 'yenile',
-#         #     }
-#         # )
-
-#     async def receive(self, text_data):
-#         data = json.loads(text_data)
-#         message_type = data['type']
-
-#         if message_type == 'update':
-#             await self.channel_layer.group_send(
-#                 self.room_name,
-#                 {
-#                     'type': 'update',
-#                     'giris': data['giris'],
-#                     'sayfa': data['sayfa'],
-#                     'yenile': data['yenile'],
-#                 }
-#             )
-
-#     async def update(self, event):
-#         giris = event['giris']
-#         # Mesajı tüm oda üyelerine gönder
-#         print(event['yenile'])
-#         await self.send_message({
-#                 'type': 'update',
-#                 'giris': SohbetAnasayfaConsumer.kisi,
-#                 'sayfa': 'yenile',
-#                 'yenile': event['yenile'],
-#             })
-
-#     async def send_message(self, data):
-#         if data:
-#             try:
-#                 await self.send(json.dumps(data))
-#             except Exception as e:
-#                 print()
 
