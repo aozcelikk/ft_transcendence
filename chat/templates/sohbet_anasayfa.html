@@ -61,6 +61,7 @@
         var socket = new WebSocket('ws://' + window.location.host + '/ws/anasayfa/');
         socket.onopen = function() {
             fetchRooms();
+            socket.send(JSON.stringify(data = {type: 'update', sayfa: 'yenile'}));
         };
         socket.onmessage = function(event) {
             var data = JSON.parse(event.data);
@@ -81,21 +82,28 @@
         document.addEventListener('DOMContentLoaded', function () {
             const odaIsmiInput = document.getElementById('oda_ismi');
             document.getElementById("submitHistory").onclick = function(e){
+                fetchRooms();
                 socket.send(JSON.stringify(data = {type: 'update', sayfa: 'yenile'}));
             };
             document.getElementById("submitTurnuva").onclick = function(e){
+                fetchRooms();
                 socket.send(JSON.stringify(data = {type: 'update', sayfa: 'yenile'}));
             };
             document.getElementById("submitStart").onclick = function(e){
+                fetchRooms();
                 socket.send(JSON.stringify(data = {type: 'update', sayfa: 'yenile'}));
                 if (odaIsmiInput.value === '') {
-                    // Olayı iptal et
                     e.preventDefault();
-        
-                    // Hata mesajı göster
                     alert('Lütfen bir oda adı girin.');
                 }
             };
+            if(document.getElementById('submit'))
+            {
+                document.getElementById("submit").onclick = function(e){
+                    fetchRooms();
+                    socket.send(JSON.stringify(data = {type: 'update', sayfa: 'yenile'}));
+                };
+            }
         });
 
         function fetchRooms() {

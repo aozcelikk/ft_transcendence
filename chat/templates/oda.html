@@ -215,7 +215,8 @@
 			case 'ballPosition':
 				// Topun konumunu güncelle
 				if (p2Socket === user){
-					ballPosition = data.position;
+					ballPosition.x = Math.abs(data.position.x);
+					ballPosition.y = Math.abs(data.position.y);
 				}
 					//ballPosition = data.position;
 				break;
@@ -434,11 +435,15 @@
 	}
 
 	let lastUpdateTime = 0;
-	const updateInterval = 15;
+	const updateInterval = 20;
 	// Oyun döngüsü
 	function gameLoop(timestamp) {
 		if (timestamp - lastUpdateTime > updateInterval) {
-			moveBall();
+			if (p2Socket === user){
+				if(ballPosition === data.position)
+					moveBall();
+			}else
+				moveBall();
 			sendBallPosition();
 			lastUpdateTime = timestamp;
 		  }
