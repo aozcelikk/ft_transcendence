@@ -3,143 +3,74 @@
 {% load i18n %}
 
 {% block css_files %}
-    <link rel="stylesheet" href="{% static 'chat/css/styles.css' %}">
+	<link rel="stylesheet" href="{% static 'chat/css/styles.css' %}">
 {% endblock %}
 
 {% block title %}
 {% trans "Sohbet Anasayfası" %}
 {% endblock %}
+
 {% block content %}
+
 <div class="container mt-5 pt-5">
-    <h2 class="text-center">Ping Pong</h2>
-    <h3 class="text-center"> Merhaba, {{ request.user.username }}</h3>
-    {% if messages %}
-    {% for messages in messages %}
-        <div class="alert alert-dark">
-            {{ messages }}
-        </div>
-    {% endfor %}
-    {% endif %}
-    <form method="post" action="{% url 'sohbet_anasayfa' %}">
-        {% csrf_token %}
-        <div class="col-md-6 mx-auto mt-4">
-            <div class="row">
-                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                    <label>Seçenek Seçiniz</label>
-                    <select class="form-control" name="option">
-                        <option value="1">Oda Oluştur</option>
-                    </select>
-                </div>
-                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                    <label>Oda Adı</label>
-                    <input type="text" id="oda_ismi" name="oda_ismi" class="form-control">
-                </div>
-                <div class="mb-3">
-                    <br>
-                    <button type="submit" id="submitStart" class="btn btn-primary" style="background-color:#7a1b0c;">Oyunu Başlat</button>
-                    <a href="{% url 'oyun_gecmis' %}" id="submitHistory" class="btn btn-dark">Oyun Geçmiş Tablosu</a>
-                    <a href="{% url 'turnuva' %}" id="submitTurnuva" class="btn btn-success">Turnuva Oyna</a>
-                </div>
-            </div>
-        </div>
-        <table class="table table-striped" id="rooms-table" border="1">
-            <thead>
-                <tr>
-                    <th>Room Name</th>
-                    <th>Creator</th>
-                    <th>Is Over</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
-    </form>
-    
+	<h2 class="text-center">Ping Pong</h2>
+	<h3 class="text-center"> Merhaba, {{ request.user.username }}</h3>
+	{% if messages %}
+	{% for messages in messages %}
+		<div class="alert alert-dark">
+			{{ messages }}
+		</div>
+	{% endfor %}
+	{% endif %}
+
+	<form method="post" action="{% url 'sohbet_anasayfa' %}">
+		{% csrf_token %}
+		<div class="col-md-6 mx-auto mt-4">
+			<div class="row">
+				<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+					<label>Seçenek Seçiniz</label>
+					<select class="form-control" name="option">
+						<option value="1">Oda Oluştur</option>
+					</select>
+				</div>
+				<div class="col-12 col-md-8 col-lg-6 col-xl-5">
+					<label>Oda Adı</label>
+					<input type="text" id="oda_ismi" name="oda_ismi" class="form-control" required>
+				</div>
+				<div class="mb-3">
+					<br>
+					<button type="submit" id="submit" class="btn btn-primary" style="background-color:#7a1b0c;">Oyunu Başlat</button>
+					<a href="{% url 'oyun_gecmis' %}" class="btn btn-dark">Oyun Geçmiş Tablosu</a>
+					<a href="{% url 'turnuva' %}" class="btn btn-success">Turnuva Oyna</a>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<div class="col-xs-12 text-center">
+		<h1 class ="col-sm-9">Açık Odalar</h1>
 	</div>
-    <script>
-        var socket = new WebSocket('ws://' + window.location.host + '/ws/anasayfa/');
-        socket.onopen = function() {
-            fetchRooms();
-            socket.send(JSON.stringify(data = {type: 'update', sayfa: 'yenile'}));
-        };
-        socket.onmessage = function(event) {
-            var data = JSON.parse(event.data);
-            if (data.sayfa == 'yenile')
-            {
-                fetchRooms();
-            }
-        };
-        socket.onclose = function() {
-            fetchRooms();
-            socket.send(JSON.stringify(data = {type: 'update', sayfa: 'yenile'}));
-        };
-        window.addEventListener('beforeunload', function() {
-            fetchRooms();
-            socket.send(JSON.stringify(data = {type: 'update', sayfa: 'yenile'}));
-        });
+	
+	<form method="post" action="{% url 'sohbet_anasayfa' %}">
+	{% for oda in odalar %}
+	{% if oda.is_over == 0 %}
+		{% csrf_token %}
+		<div class="card-body">
+			<div class="alert alert-success">
+				<input type="hidden" id="option" name="option" value='2'>
+				<input type="hidden" id="oda_ismi" name="oda_ismi" value='{{ oda.room_name }}'>
+				<p>Oyun Odası Adı = {{ oda.room_name }}
+					<button type="submit" id="submit" class="btn btn-primary">Oyuna Katıl</button>
+				</p>
+			</div>
+		</div>
+		{% endif %}
+		{% endfor %}
+	</form>
+</div>
+{% endblock %}
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const odaIsmiInput = document.getElementById('oda_ismi');
-            document.getElementById("submitHistory").onclick = function(e){
-                fetchRooms();
-                socket.send(JSON.stringify(data = {type: 'update', sayfa: 'yenile'}));
-            };
-            document.getElementById("submitTurnuva").onclick = function(e){
-                fetchRooms();
-                socket.send(JSON.stringify(data = {type: 'update', sayfa: 'yenile'}));
-            };
-            document.getElementById("submitStart").onclick = function(e){
-                fetchRooms();
-                socket.send(JSON.stringify(data = {type: 'update', sayfa: 'yenile'}));
-                if (odaIsmiInput.value === '') {
-                    e.preventDefault();
-                    alert('Lütfen bir oda adı girin.');
-                }
-            };
-            if(document.getElementById('submit'))
-            {
-                document.getElementById("submit").onclick = function(e){
-                    fetchRooms();
-                    socket.send(JSON.stringify(data = {type: 'update', sayfa: 'yenile'}));
-                };
-            }
-        });
+{% block js_files %}
+	<script src="{% static 'chat/js/script.js' %}"></script>
+{% endblock %}
 
-        function fetchRooms() {
-            fetch('fetch-rooms')
-                .then(response => response.json())
-                .then(data => {
-                    updateRoomsList(data.rooms);
-                })
-                .catch(error => console.error('Hata:', error));
-        }
-
-        function updateRoomsList(rooms) {
-            const tableBody = document.querySelector('#rooms-table tbody');
-            tableBody.innerHTML = '';
-        
-            rooms.forEach(room => {
-                let creator = room.creator;
-                if (room.size < 2 && room.opponent === null) {
-                    if (room.creator === '{{ request.user.username }}') {
-                        creator = 'Siz';
-                    }
-                    const row = `
-                        <tr>
-                            <td>${room.name}</td>
-                            <td>${creator}</td>
-                            <td>${room.is_over ? 'Bitmiş' : 'Devam ediyor'}</td>
-                            <td>
-                                <input type="hidden" id="option" name="option" value='2'>
-                                <input type="hidden" id="oda_ismi" name="oda_ismi" value="${room.name}">
-                                <button type="submit" id="submit" class="btn btn-sm btn-secondary">Join</button>
-                            </td>
-                        </tr>`;
-                    tableBody.innerHTML += row;
-                }
-            });
-        }
-        
-    </script>
-	{% endblock %}

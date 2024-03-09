@@ -86,7 +86,10 @@
 				// Oyun döngüsünü başlatır
 				gameLoop();
 			}
-			else{
+			else{/*
+				setTimeout(function() {
+					window.location.reload();
+				}, 500);*/
 				context.font = "30px Arial";
 				context.fillStyle = "White";
 				context.fillText("Oyuncu Beklenmekte...", canvas.width / 2 - 150, canvas.height / 2);
@@ -215,8 +218,7 @@
 			case 'ballPosition':
 				// Topun konumunu güncelle
 				if (p2Socket === user){
-					ballPosition.x = Math.abs(data.position.x);
-					ballPosition.y = Math.abs(data.position.y);
+					ballPosition = data.position;
 				}
 					//ballPosition = data.position;
 				break;
@@ -345,16 +347,15 @@
 	}
 
 	document.addEventListener("keydown", function(event) {
-		/*if (!bas) {
+		if (!bas) {
 			bas = true;
 			updatePaddleAndScore(event);
-		}*/
-		updatePaddleAndScore(event);
+		}
 	});
 	
-	{% comment %} document.addEventListener("keyup", function(event) {
+	document.addEventListener("keyup", function(event) {
 		bas = false;
-	}); {% endcomment %}
+	});
 
 	function resetBall() {
 		ballPosition.x = canvas.width / 2;
@@ -387,20 +388,20 @@
 	function updatePaddleAndScore(event){
 		if(p1Socket == user){
 			if (event.key === "w" && player1Y > 0) {
-				player1Y -= 10;
+				player1Y -= 7;
 				sendPlayer1PaddlePosition();
 			}
 			if (event.key === "s" && player1Y < canvas.height - paddleHeight) {
-				player1Y += 10;
+				player1Y += 7;
 				sendPlayer1PaddlePosition();
 			}
 		}else{
 			if (event.key === "ArrowUp" && player2Y > 0) {
-				player2Y -= 10;
+				player2Y -= 7;
 				sendPlayer2PaddlePosition();
 			}
 			if (event.key === "ArrowDown" && player2Y < canvas.height - paddleHeight) {
-				player2Y += 10;
+				player2Y += 7;
 				sendPlayer2PaddlePosition();
 			}
 		}
@@ -435,15 +436,10 @@
 	}
 
 	let lastUpdateTime = 0;
-	const updateInterval = 20;
+	const updateInterval = 15; // 16 milisaniye (60 FPS)
 	// Oyun döngüsü
 	function gameLoop(timestamp) {
 		if (timestamp - lastUpdateTime > updateInterval) {
-			if (p2Socket === user){
-				if(ballPosition === data.position)
-					moveBall();
-			}else
-				moveBall();
 			sendBallPosition();
 			lastUpdateTime = timestamp;
 		  }
@@ -482,7 +478,7 @@
 			file();
 			//Top hareketi
 			//if(p1Socket === user)
-				//moveBall();
+				moveBall();
 			// Oyun döngüsünü tekrar başlatır
 			requestAnimationFrame(gameLoop);
 		}
