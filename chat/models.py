@@ -1,6 +1,4 @@
 from django.db import models
-from django.core.exceptions import ValidationError
-
 
 class Room(models.Model):
     room_name = models.CharField(max_length=255, unique=True)
@@ -19,4 +17,3 @@ class Room(models.Model):
 
     def __str__(self):
         return self.room_name
-    

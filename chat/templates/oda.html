@@ -86,10 +86,7 @@
 				// Oyun döngüsünü başlatır
 				gameLoop();
 			}
-			else{/*
-				setTimeout(function() {
-					window.location.reload();
-				}, 500);*/
+			else{
 				context.font = "30px Arial";
 				context.fillStyle = "White";
 				context.fillText("Oyuncu Beklenmekte...", canvas.width / 2 - 150, canvas.height / 2);
@@ -137,7 +134,7 @@
 	// Oyuncu  Puanı
 	var player1Score = 0;
 	var player2Score = 0;
-	const winnerScore = 11;
+	const winnerScore = 3;
 
 	// Oyun Durumu
 	var gameOver = false;
@@ -218,7 +215,8 @@
 			case 'ballPosition':
 				// Topun konumunu güncelle
 				if (p2Socket === user){
-					ballPosition = data.position;
+					ballPosition.x = Math.abs(data.position.x);
+					ballPosition.y = Math.abs(data.position.y);
 				}
 					//ballPosition = data.position;
 				break;
@@ -347,15 +345,16 @@
 	}
 
 	document.addEventListener("keydown", function(event) {
-		if (!bas) {
+		/*if (!bas) {
 			bas = true;
 			updatePaddleAndScore(event);
-		}
+		}*/
+		updatePaddleAndScore(event);
 	});
 	
-	document.addEventListener("keyup", function(event) {
+	{% comment %} document.addEventListener("keyup", function(event) {
 		bas = false;
-	});
+	}); {% endcomment %}
 
 	function resetBall() {
 		ballPosition.x = canvas.width / 2;
@@ -388,20 +387,20 @@
 	function updatePaddleAndScore(event){
 		if(p1Socket == user){
 			if (event.key === "w" && player1Y > 0) {
-				player1Y -= 7;
+				player1Y -= 10;
 				sendPlayer1PaddlePosition();
 			}
 			if (event.key === "s" && player1Y < canvas.height - paddleHeight) {
-				player1Y += 7;
+				player1Y += 10;
 				sendPlayer1PaddlePosition();
 			}
 		}else{
 			if (event.key === "ArrowUp" && player2Y > 0) {
-				player2Y -= 7;
+				player2Y -= 10;
 				sendPlayer2PaddlePosition();
 			}
 			if (event.key === "ArrowDown" && player2Y < canvas.height - paddleHeight) {
-				player2Y += 7;
+				player2Y += 10;
 				sendPlayer2PaddlePosition();
 			}
 		}
@@ -414,6 +413,7 @@
 			document.getElementById("player2-score").textContent = player2Score;
 			gameOver = true;	
 			sendGameOver();
+			return;
 			setTimeout(function() {
 				window.location.href = '{% url "sohbet_anasayfa" %}';
 				}, 3000);
@@ -429,6 +429,7 @@
 			document.getElementById("player2-score").textContent = player2Score;
 			gameOver = true;	
 			sendGameOver();
+			return;
 			setTimeout(function() {
 				window.location.href = '{% url "sohbet_anasayfa" %}';
 				}, 3000);
@@ -436,10 +437,15 @@
 	}
 
 	let lastUpdateTime = 0;
-	const updateInterval = 15; // 16 milisaniye (60 FPS)
+	const updateInterval = 20;
 	// Oyun döngüsü
 	function gameLoop(timestamp) {
 		if (timestamp - lastUpdateTime > updateInterval) {
+			if (p2Socket === user){
+				if(ballPosition === data.position)
+					moveBall();
+			}else
+				moveBall();
 			sendBallPosition();
 			lastUpdateTime = timestamp;
 		  }
@@ -478,7 +484,7 @@
 			file();
 			//Top hareketi
 			//if(p1Socket === user)
-				moveBall();
+				//moveBall();
 			// Oyun döngüsünü tekrar başlatır
 			requestAnimationFrame(gameLoop);
 		}

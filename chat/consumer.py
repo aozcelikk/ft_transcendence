@@ -4,8 +4,8 @@
 # events - bağlanma, bağlantıyı kesme, mesaj alma olayı
 
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer
-from asgiref.sync import sync_to_async
+from channels.generic.websocket import AsyncWebsocketConsumer,WebsocketConsumer
+from asgiref.sync import sync_to_async, async_to_sync
 from .models import Room
 from channels.db import database_sync_to_async
 import asyncio
@@ -32,77 +32,87 @@ class GameConsumer(AsyncWebsocketConsumer):
         )
         
 
-
     # Websocket mesaj kontrol
     async def receive(self, text_data):
-        data = json.loads(text_data)
-        message_type = data['type']
+        if text_data:
+            print("Received message:", text_data)
+            try:
+                data = json.loads(text_data)
+                print("Parsed JSON data:", data['type'])
+                if data['type']:
+                    await self.send(text_data=json.dumps({"text": data['type']}))
+            except json.JSONDecodeError as e:
+                print("Error: Invalid JSON format -", str(e))
+            data = json.loads(text_data)
+            message_type = data['type']
 
-        if message_type == 'update':
-            self.player = data['player']
-            
-            await self.channel_layer.group_send(
-            self.room_name,
-            {
-                'type': 'update',
-                'player': self.player
-            }
-            )
-
-        elif message_type == 'paddlePosition':
-            self.paddle_position = data['position']
-            self.player = data['player']
-
-            await self.channel_layer.group_send(
+            if message_type == 'update':
+                self.player = data['player']
+                
+                await self.channel_layer.group_send(
                 self.room_name,
                 {
-                    'type': 'paddlePosition',
-                    'player': self.player,
-                    'position': self.paddle_position
+                    'type': 'update',
+                    'player': self.player
                 }
-            )
+                )
 
-        elif message_type == 'ballPosition':
-            self.ball_position = data['position']
-            await self.channel_layer.group_send(
-                self.room_name,
-                {
-                    'type': 'ballPosition',
-                    'position': self.ball_position
-                }
-            )
+            elif message_type == 'paddlePosition':
+                self.paddle_position = data['position']
+                self.player = data['player']
 
-        elif message_type == 'playerScore':
-            self.player_score = data['score']
-            self.player = data['player']
-            await self.channel_layer.group_send(
-                self.room_name,
-                {
-                    'type': 'playerScore',
-                    'player': self.player,
-                    'score': self.player_score
-                }
-            )
+                await self.channel_layer.group_send(
+                    self.room_name,
+                    {
+                        'type': 'paddlePosition',
+                        'player': self.player,
+                        'position': self.paddle_position
+                    }
+                )
 
-        elif message_type == 'colorAll':
-            self.player_color = data['color']
-            self.player = data['player']
-            await self.channel_layer.group_send(
-                self.room_name,
-                {
-                    'type': 'colorAll',
-                    'player': self.player,
-                    'color': self.player_color
-                }
-            )
+            elif message_type == 'ballPosition':
+                self.ball_position = data['position']
+                await self.channel_layer.group_send(
+                    self.room_name,
+                    {
+                        'type': 'ballPosition',
+                        'position': self.ball_position
+                    }
+                )
 
-        elif message_type == 'gameOver':
-            await self.channel_layer.group_send(
-                self.room_name,
-                {
-                    'type': 'gameOver',
-                }
-            )
+            elif message_type == 'playerScore':
+                self.player_score = data['score']
+                self.player = data['player']
+                await self.channel_layer.group_send(
+                    self.room_name,
+                    {
+                        'type': 'playerScore',
+                        'player': self.player,
+                        'score': self.player_score
+                    }
+                )
+
+            elif message_type == 'colorAll':
+                self.player_color = data['color']
+                self.player = data['player']
+                await self.channel_layer.group_send(
+                    self.room_name,
+                    {
+                        'type': 'colorAll',
+                        'player': self.player,
+                        'color': self.player_color
+                    }
+                )
+
+            elif message_type == 'gameOver':
+                await self.channel_layer.group_send(
+                    self.room_name,
+                    {
+                        'type': 'gameOver',
+                    }
+                )
+        else:
+            print("Error: Empty message received")
 
     async def send_message(self, data):
         if data:
@@ -194,5 +204,84 @@ class GameConsumer(AsyncWebsocketConsumer):
     @sync_to_async
     def save_room(room):
         room.save()
+
+
+
+class RoomConsumer(WebsocketConsumer):
+    def connect(self):
+        # WebSocket bağlantısını kabul et
+        self.accept()
+
+        # Kanal adını belirle
+        self.room_group_name = 'update_rooms'
+        # Kanala katıl
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    def disconnect(self, close_code):
+        # Kanaldan ayrıl
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    def update_rooms(self, event):
+        rooms = event['rooms']
+        print(rooms)
+
+        # Alınan güncellemeleri istemciye gönder
+        self.send(text_data=json.dumps({
+            'rooms': rooms
+        }))
+
+
+class SohbetAnasayfaConsumer(AsyncWebsocketConsumer):
+
+    async def connect(self):
+        self.room_name = 'sohbet_anasayfa'
+        await self.channel_layer.group_add(
+            self.room_name,
+            self.channel_name
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Odadan ayrıl
+        await self.channel_layer.group_discard(
+            self.room_name,
+            self.channel_name
+        )
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        message_type = data['type']
+
+        if message_type == 'update':
+            await self.channel_layer.group_send(
+                self.room_name,
+                {
+                    'type': 'update',
+                    'sayfa': data['sayfa'],
+                }
+            )
+
+    async def update(self, event):
+        # Mesajı tüm oda üyelerine gönder
+        await self.send_message({
+                'type': 'update',
+                'sayfa': 'yenile',
+            })
+
+    async def send_message(self, data):
+        if data:
+            try:
+                await self.send(json.dumps(data))
+            except Exception as e:
+                print()
+
+
+
 
 
